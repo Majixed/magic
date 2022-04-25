@@ -9,8 +9,8 @@ class Programming(commands.Cog, description="Compile code using various programm
     def __init__(self, bot):
         self.bot = bot
 
-    # Compile python code
-    @commands.command(aliases=["py"], brief="Compile python code")
+    # Compile Python code
+    @commands.command(aliases=["py"], brief="Compile Python code")
     async def python(self, ctx, *, code):
         if ctx.author.id in allowed_IDs:
             try:
@@ -18,6 +18,24 @@ class Programming(commands.Cog, description="Compile code using various programm
                     with open(f"prog/python/{ctx.author.id}.py", "w") as f:
                         f.write(code)
                     with subprocess.Popen(["python3", f"prog/python/{ctx.author.id}.py"], \
+                            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
+                        out = p.communicate()[0].decode("utf-8")
+
+                        await ctx.send(f"```\n{out}\n```")
+            except Exception as e:
+                print(e)
+        else:
+            await ctx.send(embed=embed_noowner)
+
+    # Compile JavaScript code
+    @commands.command(aliases=["js"], brief="Compile JavaScript code")
+    async def javascript(self, ctx, *, code):
+        if ctx.author.id in allowed_IDs:
+            try:
+                async with ctx.typing():
+                    with open(f"prog/javascript/{ctx.author.id}.js", "w") as f:
+                        f.write(code)
+                    with subprocess.Popen(["jsc", f"prog/javascript/{ctx.author.id}.js"], \
                             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
                         out = p.communicate()[0].decode("utf-8")
 
