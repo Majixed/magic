@@ -1,1 +1,9 @@
 .git
+tex/staging/*
+tex/preamble/*.tex
+tex/preamble/tmp/*.tmp
+tex/luapreamble/*.tex
+tex/log/texout.log
+tex/inputs/*
+prog/python/*
+prog/javascript/*
