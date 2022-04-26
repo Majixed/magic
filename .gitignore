@@ -1,9 +1,10 @@
 .git
 tex/staging/*
 tex/preamble/*.tex
-tex/preamble/tmp/*.tmp
+tex/preamble/tmp/*
 tex/luapreamble/*.tex
-tex/log/texout.log
+tex/luapreamble/tmp/*
+tex/log/*
 tex/inputs/*
 prog/python/*
 prog/javascript/*
