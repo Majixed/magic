@@ -8,7 +8,7 @@ currpath = os.getcwd()
 currdir = os.path.basename(currpath)
 
 if currdir != "magic":
-    print(f"Fatal error: Current directory is not named 'magic', is named {currdir}. Aborting launch...")
+    print(f"Fatal error: Current directory is not named 'magic', is named '{currdir}'. Aborting launch...")
     exit()
 
 prefix = "&"
@@ -23,8 +23,8 @@ bot = commands.Bot(
 # Prettify the help page
 menu = DefaultMenu(
         page_left=":page_left:963100801717403718",
-        page_right=":page_right:963100747787026433", 
-        remove=":delete:962038961432322128", 
+        page_right=":page_right:963100747787026433",
+        remove=":delete:962038961432322128",
         active_time=180
         )
 bot.help_command = PrettyHelp(menu=menu, color=0xcccccc)
