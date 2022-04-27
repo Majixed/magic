@@ -59,7 +59,7 @@ class Programming(commands.Cog, description="Compile code using various programm
                     subprocess.call(f"clang -o {ctx.author.id}.out {ctx.author.id}.c > {ctx.author.id}.log 2>&1")
                     await ctx.send(f"```\n{subprocess.getoutput(f'cat {ctx.author.id}.log')}\n\n{subprocess.getoutput(f'{ctx.author.id}.out')}\n```")
                     subprocess.call(f"rm -f {ctx.author.id}.out")
-                    subprocess.call("cd ~/Documents/magic")
+                    subprocess.call("cd ../../..")
             except Exception as e:
                 print(e)
         else:

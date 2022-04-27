@@ -19,9 +19,9 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         if ctx.author.id in allowed_IDs or ctx.author.id in allowed_IDs_admin:
             async with ctx.typing():
                 subprocess.call(f"rm -f ~group/{ctx.author.id}.*")
-                subprocess.call(f"rm -rf ~/Documents/magic/tex/staging/{ctx.author.id}")
-                subprocess.call(f"mkdir ~/Documents/magic/tex/staging/{ctx.author.id}")
-                subprocess.call(f"cd ~/Documents/magic/tex/staging/{ctx.author.id}")
+                subprocess.call(f"rm -rf {os.getcwd()}/tex/staging/{ctx.author.id}")
+                subprocess.call(f"mkdir {os.getcwd()}/tex/staging/{ctx.author.id}")
+                subprocess.call(f"cd {os.getcwd()}/tex/staging/{ctx.author.id}")
                 with open(f"{ctx.author.id}.tex", "w") as f_docclass:
                     f_docclass.write("\\documentclass[preview, border=20pt, 12pt]{standalone}\n")
                     f_docclass.write("\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}\n")
@@ -39,7 +39,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                 subprocess.call(f"open 'shortcuts://run-shortcut?name=pdfpng3&input={ctx.author.id}.pdf'")
                 subprocess.call("sleep 1.5")
                 subprocess.call(f"mv ~group/{ctx.author.id}.png .")
-                subprocess.call("cd ~/Documents/magic")
+                subprocess.call("cd ../../..")
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(name="\u200b", value=f"```tex\n{code}\n```", inline=False)
             embed_err.add_field(name="Compilation error", value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```", inline=False)
