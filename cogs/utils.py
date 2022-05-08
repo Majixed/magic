@@ -134,14 +134,35 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                     admin_data = json.load(json_read)
             except Exception as e:
                 print(e)
-
+                await ctx.send(f"```\n{e}\n```")
             try:
-                admin_data["botAdmin"] += [userid]
+                admin_data["botAdmin"] += [int(userid)]
 
                 with open("admins.json", "w") as json_write:
                     json.dump(admin_data, json_write, indent=4)
 
-                await ctx.send(embed=discord.Embed(description=f"{userid} is now an admin"))
+                await ctx.send(embed=discord.Embed(description=f"`{userid}` is now an admin", color=green))
+            except Exception as e:
+                print(e)
+                await ctx.send(f"```\n{e}\n```")
+
+    # Remove a bot administrator
+    @commands.command(brief="Remove a bot administrator")
+    async def removeadmin(self, ctx, userid):
+        if ctx.author.id in bot_owner:
+            try:
+                with open("admins.json", "r") as json_read:
+                    admin_data = json.load(json_read)
+            except Exception as e:
+                print(e)
+                await ctx.send(f"```\n{e}\n```")
+            try:
+                admin_data["botAdmin"].remove(int(userid))
+
+                with open("admins.json", "w") as json_write:
+                    json.dump(admin_data, json_write, indent=4)
+
+                await ctx.send(embed=discord.Embed(description=f"`{userid}` is no longer an admin", color=green))
             except Exception as e:
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
