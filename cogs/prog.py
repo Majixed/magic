@@ -12,7 +12,7 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile Python code
     @commands.command(aliases=["py"], brief="Compile Python code")
     async def python(self, ctx, *, code):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
                     with open(f"prog/python/{ctx.author.id}.py", "w") as f:
@@ -30,7 +30,7 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile JavaScript code
     @commands.command(aliases=["js"], brief="Compile JavaScript code")
     async def javascript(self, ctx, *, code):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
                     with open(f"prog/javascript/{ctx.author.id}.js", "w") as f:
@@ -48,7 +48,7 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile C code
     @commands.command(aliases=["cc"], brief="Compile C code")
     async def clang(self, ctx, *, code):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
                     subprocess.call(f"rm -rf prog/clang/{ctx.author.id}")

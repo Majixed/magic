@@ -15,7 +15,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Upload a file
     @commands.command(brief="Upload a file to discord")
     async def upload(self, ctx, *, path_to_file):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 await ctx.send(file=discord.File(f"{path_to_file}"))
             except:
@@ -27,7 +27,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(aliases=["run", "sh"], brief="Send commands to the shell for execution")
     async def shell(self, ctx, *, command):
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) ran shell command: {command}")
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             async with ctx.typing():
                 with subprocess.Popen([command], \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -70,7 +70,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Load an extension
     @commands.command(brief="Load an extension")
     async def load(self, ctx, *, extension):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 self.bot.load_extension(f"cogs.{extension}")
                 await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully loaded", color=green))
@@ -84,7 +84,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Unload an extension
     @commands.command(brief="Unload an extension")
     async def unload(self, ctx, *, extension):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 self.bot.unload_extension(f"cogs.{extension}")
                 await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully unloaded", color=green))
@@ -98,7 +98,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Reload an extension
     @commands.command(brief="Reload an extension")
     async def reload(self, ctx, *, extension):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 self.bot.reload_extension(f"cogs.{extension}")
                 await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully reloaded", color=green))
@@ -112,7 +112,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Reload all extensions
     @commands.command(brief="Reload all extensions")
     async def reboot(self, ctx):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             try:
                 for filename in os.listdir("./cogs"):
                     if filename.endswith(".py"):
@@ -127,7 +127,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Get a list of all the guilds the bot is in
     @commands.command(brief="Show all guilds where the bot is present")
     async def showguilds(self, ctx):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             glist = ""
             for guild in self.bot.guilds:
                 glist += f"{guild.name:<20} ({guild.id})\n"
@@ -138,7 +138,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Shut down the bot
     @commands.command(aliases=["poweroff", "halt"], brief="Shut down the bot completely")
     async def shutdown(self, ctx):
-        if ctx.author.id in allowed_IDs:
+        if ctx.author.id in bot_owner:
             await ctx.send(embed=embed_shutdown)
             await sys.exit(f"Ran the shutdown command as {ctx.invoked_with}")
         else:
