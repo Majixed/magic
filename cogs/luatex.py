@@ -1,4 +1,5 @@
 import os
+import json
 import codecs
 import discord
 import asyncio
@@ -15,6 +16,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     # Compile LuaLaTeX
     @commands.command(aliases=["lualatex"], brief="Compile LuaLaTeX code")
     async def luatex(self, ctx, *, code):
+        with open("admins.json", "r") as json_read:
+            admin_list = json.load(json_read)
+        bot_admin = admin_list["botAdmin"]
+
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) compiled lualatex: {code}")
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             async with ctx.typing():
@@ -92,6 +97,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     # Upload your LuaLaTeX preamble
     @commands.command(brief="Upload your own or another user's LuaLaTeX preamble")
     async def luapreamble(self, ctx, *, userid=None):
+        with open("admins.json", "r") as json_read:
+            admin_list = json.load(json_read)
+        bot_admin = admin_list["botAdmin"]
+
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             if userid is None:
                 try:
@@ -141,6 +150,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     # Replace your LuaLaTeX preamble
     @commands.command(brief="Replace your LuaLaTeX preamble with an input file or text")
     async def replaceluapreamble(self, ctx, *, code=None):
+        with open("admins.json", "r") as json_read:
+            admin_list = json.load(json_read)
+        bot_admin = admin_list["botAdmin"]
+
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             if code is None and ctx.message.attachments:
                 if ctx.message.attachments[0].size >= 250000:
@@ -169,6 +182,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     # Reset your LuaLaTeX preamble
     @commands.command(brief="Reset your LuaLaTeX preamble to the default")
     async def resetluapreamble(self, ctx):
+        with open("admins.json", "r") as json_read:
+            admin_list = json.load(json_read)
+        bot_admin = admin_list["botAdmin"]
+
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             subprocess.call(f"rm -f tex/luapreamble/{ctx.author.id}.tex")
             await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
@@ -178,6 +195,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     # Append to your LuaLaTeX preamble
     @commands.command(brief="Append lines to your LuaLaTeX preamble")
     async def appendluapreamble(self, ctx, *, code):
+        with open("admins.json", "r") as json_read:
+            admin_list = json.load(json_read)
+        bot_admin = admin_list["botAdmin"]
+
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
                 with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:

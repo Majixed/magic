@@ -7,15 +7,6 @@ from discord.ext import commands
 bot_owner = [598847267377643530]
 #              Majixed#0586
 
-def getadmins():
-    try:
-        with open("admins.json", "r") as json_read:
-            admin_list = json.load(json_read)
-
-        bot_admin = admin_list["botAdmin"]
-    except Exception as e:
-        print(f"```\n{e}\n```")
-
 # Colors
 red = 0xff5555
 green = 0x55ff55
