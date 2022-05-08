@@ -177,7 +177,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                     r.write(code)
                 await ctx.send(embed=discord.Embed(description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.", color=green))
         else:
-            ctx.send(embed=embed_noowner)
+            await ctx.send(embed=embed_noowner)
 
     # Reset your LuaLaTeX preamble
     @commands.command(brief="Reset your LuaLaTeX preamble to the default")

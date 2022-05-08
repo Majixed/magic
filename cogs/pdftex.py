@@ -177,7 +177,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     r.write(code)
                 await ctx.send(embed=discord.Embed(description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.", color=green))
         else:
-            ctx.send(embed=embed_noowner)
+            await ctx.send(embed=embed_noowner)
 
     # Reset your pdfLaTeX preamble
     @commands.command(brief="Reset your pdfLaTeX preamble to the default")
