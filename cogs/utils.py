@@ -136,6 +136,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
             try:
+                if int(userid) in admin_data["botAdmin"]:
+                    return await ctx.send(embed=discord.Embed(description="This user is already an admin", color=red))
                 admin_data["botAdmin"] += [int(userid)]
 
                 with open("admins.json", "w") as json_write:
@@ -145,6 +147,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             except Exception as e:
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
+        else:
+            await ctx.send(embed=embed_noowner)
 
     # Remove a bot administrator
     @commands.command(brief="Remove a bot administrator")
@@ -157,6 +161,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
             try:
+                if int(userid) not in admin_data["botAdmin"]:
+                    return await ctx.send(embed=discord.Embed(description="This user is not already an admin", color=red))
                 admin_data["botAdmin"].remove(int(userid))
 
                 with open("admins.json", "w") as json_write:
@@ -166,6 +172,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             except Exception as e:
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
+        else:
+            await ctx.send(embed=embed_noowner)
 
     # Get a list of all the guilds the bot is in
     @commands.command(brief="Show all guilds where the bot is present")
