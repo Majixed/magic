@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import asyncio
 import discord
 import datetime
@@ -34,7 +35,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                     out = p.communicate()[0].decode("utf-8")
                     err = p.communicate()[1].decode("utf-8")
                     ret = p.returncode
-                       
+
                     sh_color = light_gray if ret == 0 else red
                     embed_sh = discord.Embed(color=sh_color)
                     embed_sh.add_field(name="stdin", value=f"```sh\n{command}\n```", inline=False)
@@ -123,6 +124,27 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
         else:
             await ctx.send(embed=embed_noowner)
+
+    # Add a bot administrator
+    @commands.command(brief="Add a bot administrator")
+    async def addadmin(self, ctx, userid):
+        if ctx.author.id in bot_owner:
+            try:
+                with open("admins.json", "r") as json_read:
+                    admin_data = json.load(json_read)
+            except Exception as e:
+                print(e)
+
+            try:
+                admin_data["botAdmin"] += [userid]
+
+                with open("admins.json", "w") as json_write:
+                    json.dump(admin_data, json_write, indent=4)
+
+                await ctx.send(embed=discord.Embed(description=f"{userid} is now an admin"))
+            except Exception as e:
+                print(e)
+                await ctx.send(f"```\n{e}\n```")
 
     # Get a list of all the guilds the bot is in
     @commands.command(brief="Show all guilds where the bot is present")
