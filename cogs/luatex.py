@@ -23,6 +23,9 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) compiled lualatex: {code}")
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             async with ctx.typing():
+                err_msg=None
+                err_img=None
+                out_img=None
                 subprocess.call(f"rm -f ~group/{ctx.author.id}.*")
                 subprocess.call(f"rm -rf {os.getcwd()}/tex/staging/{ctx.author.id}")
                 subprocess.call(f"mkdir {os.getcwd()}/tex/staging/{ctx.author.id}")
@@ -65,8 +68,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
 
                         if str(reaction.emoji) == emo_del:
-                            await out_img.delete()
-                            await err_msg.delete()
+                            if out_img is not None:
+                                await out_img.delete()
+                            if err_msg is not None:
+                                await err_msg.delete()
                             break
 
                     except asyncio.TimeoutError:
@@ -84,8 +89,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
 
                         if str(reaction.emoji) == emo_del:
-                            await err_img.delete()
-                            await err_msg.delete()
+                            if err_img is not None:
+                                await err_img.delete()
+                            if err_msg is not None:
+                                await err_msg.delete()
                             break
 
                     except asyncio.TimeoutError:

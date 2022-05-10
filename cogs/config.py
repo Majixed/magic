@@ -25,7 +25,4 @@ react_timeout = 180.0
 
 # Common shorthands
 embed_noowner = discord.Embed(description="You must be a bot owner to use this command.", color=red)
-embed_noarg = discord.Embed(description="Missing required argument(s).", color=red)
-embed_badarg = discord.Embed(description="Bad argument(s).", color=red)
-embed_nocmd = discord.Embed(description="Command not found.", color=red)
 embed_shutdown = discord.Embed(description="Shutting down, goodbye.", color=green)

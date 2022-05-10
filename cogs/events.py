@@ -19,12 +19,10 @@ class Events(commands.Cog):
     # Basic error handling
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(embed=embed_noarg)
         if isinstance(error, commands.CommandNotFound):
-            await ctx.send(embed=discord.Embed(description=f"Command `{ctx.invoked_with}` not found.", color=red))
-        if isinstance(error, commands.BadArgument):
-            await ctx.send(embed=embed_badarg)
+            pass
+        else:
+            await ctx.send(f"```\n{error}\n```")
 
     # Command log
     @commands.Cog.listener()
