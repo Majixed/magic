@@ -1,4 +1,5 @@
 .git
+dash
 prog/clang/*
 prog/python/*
 prog/javascript/*
