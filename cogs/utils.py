@@ -75,16 +75,14 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Run dash shell commands
     @commands.command(brief="Send commands to the dash shell for execution")
     async def dash(self, ctx, *, command):
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) ran shell command: {command}")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) ran shell command (dash): {command}")
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
 
         if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
             async with ctx.typing():
-                with open("dash", "w") as sh_input:
-                    sh_input.write(command)
-                with subprocess.Popen(["dash", "dash"], \
+                with subprocess.Popen(["dash", "-c", command], \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
                     out = p.communicate()[0].decode("utf-8")
                     err = p.communicate()[1].decode("utf-8")
@@ -243,7 +241,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         if ctx.author.id in bot_owner:
             glist = ""
             for guild in self.bot.guilds:
-                glist += f"{guild.name:<20} ({guild.id})\n"
+                glist += f"{guild.name} ({guild.id})\n"
             await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```\n{glist}\n```", color=light_gray))
         else:
             await ctx.send(embed=embed_noowner)
