@@ -3,6 +3,7 @@ import aiohttp
 import json
 
 from discord.ext import commands
+from googletrans import Translator
 from .config import *
 
 class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
@@ -40,6 +41,13 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
             await ctx.send("```\n{}\n```".format(result["error"]))
             return
         await ctx.send("```\n{}\n```".format("\n".join(result["result"])))
+
+    # A translator?!
+    @commands.command(aliases=["tr"], brief="Translate between different languages")
+    async def translate(self, ctx, src: str, dest: str, *, content):
+        transl = Translator()
+        result = transl.translate(content, src=src, dest=dest).text
+        await ctx.send(result)
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))
