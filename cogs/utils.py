@@ -2,6 +2,7 @@ import os
 import json
 import asyncio
 import discord
+import inspect
 import datetime
 import subprocess
 
@@ -30,6 +31,19 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             channel = self.bot.get_channel(channel_id)
             msg = await channel.fetch_message(message_id)
             await msg.delete()
+        else:
+            await ctx.send(embed=embed_noowner)
+
+    # Evaluate a python expression
+    @commands.command(name="eval", brief="Evaluate a python expression")
+    async def eval_(self, ctx, *, command):
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) evaluated: {command}")
+        if ctx.author.id in bot_owner:
+            result = eval(command)
+            if inspect.isawaitable(result):
+                await ctx.send(f"```\n{await result}\n```")
+            else:
+                await ctx.send(f"```\n{result}\n```")
         else:
             await ctx.send(embed=embed_noowner)
 
