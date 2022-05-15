@@ -199,9 +199,12 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="reboot", brief="Reload all extensions")
     async def reboot_(self, ctx):
         if ctx.author.id in bot_owner:
-            for filename in os.listdir("./cogs"):
-                if filename.endswith(".py"):
-                    self.bot.reload_extension(f"cogs.{filename[:-3]}")
+            try:
+                for filename in os.listdir("./cogs"):
+                    if filename.endswith(".py"):
+                        self.bot.reload_extension(f"cogs.{filename[:-3]}")
+            except Exception as e:
+                await ctx.send(f"```\n{e}\n```")
             else:
                 await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
         else:
