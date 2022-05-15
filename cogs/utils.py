@@ -251,6 +251,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         if ctx.author.id in bot_owner:
             await ctx.send(embed=embed_shutdown)
             await self.bot.close()
+            print("")
+            print("-----------------")
             print("Connection closed")
         else:
             await ctx.send(embed=embed_noowner)

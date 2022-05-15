@@ -12,8 +12,10 @@ class Events(commands.Cog):
     # Message when the bot is ready to be operated
     @commands.Cog.listener()
     async def on_ready(self):
+        print("")
         print("Logged in as {0.user} ({0.user.id})".format(self.bot))
         print("--------------------------------------------")
+        print("")
 
     # Basic error handling
     @commands.Cog.listener()
@@ -45,12 +47,15 @@ class Events(commands.Cog):
     # Respond to messages with uppercase "LOL"
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-        if message.author.bot:
-            return
-        elif "LOL" in message.content:
-            await message.channel.send("Haha. That was so funny.")
+        try:
+            if message.author == self.bot.user:
+                return
+            if message.author.bot:
+                return
+            elif "LOL" in message.content:
+                await message.channel.send("Haha. That was so funny.")
+        except Exception as e:
+            print(e)
 
 def setup(bot):
     bot.add_cog(Events(bot))
