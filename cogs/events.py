@@ -13,8 +13,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("")
-        print("Logged in as {0.user} ({0.user.id})".format(self.bot))
-        print("--------------------------------------------")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Logged in as {self.bot.user} ({self.bot.user.id})")
+        print("------------------------------------------------------------------")
         print("")
 
     # Basic error handling

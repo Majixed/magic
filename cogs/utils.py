@@ -34,6 +34,16 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         else:
             await ctx.send(embed=embed_noowner)
 
+    # Send a message to a specific channel
+    @commands.command(name="send", brief="Send a message to a specific channel")
+    async def send_(self, ctx, channel: int, *, content):
+        if ctx.author.id in bot_owner:
+            target_channel = self.bot.get_channel(channel)
+            await target_channel.send(content)
+            await ctx.send(embed=discord.Embed(description="Your message has been sent", color=green))
+        else:
+            await ctx.send(embed=embed_noowner)
+
     # Evaluate a python expression
     @commands.command(name="eval", brief="Evaluate a python expression")
     async def eval_(self, ctx, *, command):
@@ -189,12 +199,9 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="reboot", brief="Reload all extensions")
     async def reboot_(self, ctx):
         if ctx.author.id in bot_owner:
-            try:
-                for filename in os.listdir("./cogs"):
-                    if filename.endswith(".py"):
-                        self.bot.reload_extension(f"cogs.{filename[:-3]}")
-            except Exception as e:
-                await ctx.send(f"```\n{e}\n```")
+            for filename in os.listdir("./cogs"):
+                if filename.endswith(".py"):
+                    self.bot.reload_extension(f"cogs.{filename[:-3]}")
             else:
                 await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
         else:
@@ -276,8 +283,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             await ctx.send(embed=embed_shutdown)
             await self.bot.close()
             print("")
-            print("-----------------")
-            print("Connection closed")
+            print("---------------------------------------")
+            print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed")
         else:
             await ctx.send(embed=embed_noowner)
 
