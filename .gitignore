@@ -1,5 +1,5 @@
 .git
-dash
+admins.json
 prog/clang/*
 prog/python/*
 prog/javascript/*

@@ -20,6 +20,16 @@ bot = commands.Bot(
     case_insensitive = True
     )
 
+# Check if admins.json exists, if not, create it.
+if not os.path.isfile("admins.json"):
+    with open("admins.json", "w") as json_new:
+        json_new.write("""
+{
+    "botAdmin": [
+    ]
+}
+""")
+
 # Prettify the help page
 menu = DefaultMenu(
         page_left=":page_left:963100801717403718",
