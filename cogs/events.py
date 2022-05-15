@@ -2,7 +2,7 @@ import discord
 import datetime
 
 from discord.ext import commands
-from .config import *
+from config.config import *
 
 
 class Events(commands.Cog):
@@ -12,7 +12,6 @@ class Events(commands.Cog):
     # Message when the bot is ready to be operated
     @commands.Cog.listener()
     async def on_ready(self):
-        print("--------------------------------------------")
         print("Logged in as {0.user} ({0.user.id})".format(self.bot))
         print("--------------------------------------------")
 

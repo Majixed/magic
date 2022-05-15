@@ -3,7 +3,7 @@ import datetime
 import subprocess
 
 from discord.ext import commands
-from .config import *
+from config.config import *
 
 class Programming(commands.Cog, description="Compile code using various programming languages"):
     def __init__(self, bot):

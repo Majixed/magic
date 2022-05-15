@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import asyncio
 import discord
@@ -7,7 +6,7 @@ import datetime
 import subprocess
 
 from discord.ext import commands
-from .config import *
+from config.config import *
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
     def __init__(self, bot):
@@ -32,7 +31,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
 
-        if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
+        if ctx.author.id in bot_owner:#or ctx.author.id in bot_admin:
             async with ctx.typing():
                 with subprocess.Popen(command, \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -80,7 +79,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
 
-        if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
+        if ctx.author.id in bot_owner:# or ctx.author.id in bot_admin:
             async with ctx.typing():
                 with subprocess.Popen(["dash", "-c", command], \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -171,7 +170,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                     if filename.endswith(".py"):
                         self.bot.reload_extension(f"cogs.{filename[:-3]}")
             except Exception as e:
-                await ctx.send(embed=discord.Embed(title="Error", description=f"```\n{e}\n```", color=red))
+                await ctx.send(f"```\n{e}\n```")
             else:
                 await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
         else:
@@ -251,7 +250,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     async def shutdown(self, ctx):
         if ctx.author.id in bot_owner:
             await ctx.send(embed=embed_shutdown)
-            await sys.exit(f"Ran the shutdown command as {ctx.invoked_with}")
+            await self.bot.close()
+            print("Connection closed")
         else:
             await ctx.send(embed=embed_noowner)
 

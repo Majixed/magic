@@ -4,7 +4,7 @@ import json
 
 from discord.ext import commands
 from googletrans import Translator
-from .config import *
+from config.config import *
 
 class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
     def __init__(self, bot):
