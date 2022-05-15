@@ -55,7 +55,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
 
-        if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
+        if ctx.author.id in bot_owner:# or ctx.author.id in bot_admin:
             async with ctx.typing():
                 with subprocess.Popen(command, \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -103,7 +103,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
 
-        if ctx.author.id in bot_owner or ctx.author.id in bot_admin:
+        if ctx.author.id in bot_owner:# or ctx.author.id in bot_admin:
             async with ctx.typing():
                 with subprocess.Popen(["dash", "-c", command], \
                         stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -222,7 +222,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 with open("admins.json", "w") as json_write:
                     json.dump(admin_data, json_write, indent=4)
 
-                await ctx.send(embed=discord.Embed(description=f"{username} (`{userid}`) is now an admin", color=green))
+                await ctx.send(embed=discord.Embed(description=f"{username} is now an admin", color=green))
             except Exception as e:
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
@@ -251,7 +251,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 with open("admins.json", "w") as json_write:
                     json.dump(admin_data, json_write, indent=4)
 
-                await ctx.send(embed=discord.Embed(description=f"{username} (`{userid}`) is no longer an admin", color=green))
+                await ctx.send(embed=discord.Embed(description=f"{username} is no longer an admin", color=green))
             except Exception as e:
                 print(e)
                 await ctx.send(f"```\n{e}\n```")
