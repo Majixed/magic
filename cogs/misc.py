@@ -11,25 +11,25 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         self.bot = bot
 
     # Echo author's message and delete source
-    @commands.command(brief="Echo your message and delete the source")
-    async def secho(self, ctx, *, message):
+    @commands.command(name="secho", brief="Echo your message and delete the source")
+    async def secho_(self, ctx, *, message):
         await ctx.message.delete()
         await ctx.send(message)
 
     # Echo author's message
-    @commands.command(aliases=["say"], brief="Echo your message")
-    async def echo(self, ctx, *, message):
+    @commands.command(name="echo", aliases=["say"], brief="Echo your message")
+    async def echo_(self, ctx, *, message):
         await ctx.send(message)
 
     # Return bot latency
-    @commands.command(aliases=["pong"], brief="Retrieve bot latency")
-    async def ping(self, ctx):
+    @commands.command(name="ping", aliases=["pong"], brief="Retrieve bot latency")
+    async def ping_(self, ctx):
         resp = "Pong" if ctx.invoked_with == "ping" else "Ping"
         await ctx.send(f"{resp}! `{round(self.bot.latency * 1000)} ms`")
 
     # Basic calculator
-    @commands.command(aliases=["calculate"], brief="Perform simple calculations")
-    async def calc(self, ctx, *, expression):
+    @commands.command(name="calc", aliases=["calculate"], brief="Perform simple calculations")
+    async def calc_(self, ctx, *, expression):
         addr = "https://api.mathjs.org/v4/"
         exprs = expression.split("\n")
         request = {"expr": exprs,
@@ -43,8 +43,8 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         await ctx.send("```\n{}\n```".format("\n".join(result["result"])))
 
     # A translator?!
-    @commands.command(aliases=["tr"], brief="Translate between different languages")
-    async def translate(self, ctx, src: str, dest: str, *, content):
+    @commands.command(name="translate", aliases=["tr"], brief="Translate between different languages")
+    async def translate_(self, ctx, src: str, dest: str, *, content):
         transl = Translator()
         result = transl.translate(content, src=src, dest=dest).text
         await ctx.send(result)

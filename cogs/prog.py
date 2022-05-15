@@ -10,8 +10,8 @@ class Programming(commands.Cog, description="Compile code using various programm
         self.bot = bot
 
     # Compile Python code
-    @commands.command(aliases=["py"], brief="Compile Python code")
-    async def python(self, ctx, *, code):
+    @commands.command(name="python", aliases=["py"], brief="Compile Python code")
+    async def python_(self, ctx, *, code):
         if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
@@ -28,8 +28,8 @@ class Programming(commands.Cog, description="Compile code using various programm
             await ctx.send(embed=embed_noowner)
 
     # Compile JavaScript code
-    @commands.command(aliases=["js"], brief="Compile JavaScript code")
-    async def javascript(self, ctx, *, code):
+    @commands.command(name="javascript", aliases=["js"], brief="Compile JavaScript code")
+    async def javascript_(self, ctx, *, code):
         if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
@@ -46,8 +46,8 @@ class Programming(commands.Cog, description="Compile code using various programm
             await ctx.send(embed=embed_noowner)
 
     # Compile C code
-    @commands.command(aliases=["cc"], brief="Compile C code")
-    async def clang(self, ctx, *, code):
+    @commands.command(name="clang", aliases=["cc"], brief="Compile C code")
+    async def clang_(self, ctx, *, code):
         if ctx.author.id in bot_owner:
             try:
                 async with ctx.typing():
