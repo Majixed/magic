@@ -41,7 +41,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Evaluate a python expression
     @commands.command(name="eval", brief="Evaluate a python expression")
     async def eval_(self, ctx, *, code):
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) evaluated: {command}")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) evaluated: {code}")
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         result = eval(code)
