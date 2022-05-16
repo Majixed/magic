@@ -44,7 +44,7 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
 
     # A translator?!
     @commands.command(name="translate", aliases=["tr"], brief="Translate between different languages")
-    async def translate_(self, ctx, src: str, dest: str, *, content):
+    async def translate_(self, ctx, src, dest, *, content):
         transl = Translator()
         result = transl.translate(content, src=src, dest=dest).text
         await ctx.send(result)

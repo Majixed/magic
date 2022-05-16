@@ -7,6 +7,9 @@ from discord.ext import commands
 bot_owner = [598847267377643530]
 #              Majixed#0586
 
+# The bot's prefix
+prefix = "&"
+
 # Colors
 red = 0xff5555
 green = 0x55ff55
@@ -23,6 +26,5 @@ emo_right = "<:page_right:963100747787026433>"
 # The value of timeout
 react_timeout = 180.0
 
-# Common shorthands
+# Commonly used variables
 embed_noowner = discord.Embed(description="You must be a bot owner to use this command.", color=red)
-embed_shutdown = discord.Embed(description="Shutting down, goodbye.", color=green)

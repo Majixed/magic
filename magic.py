@@ -3,6 +3,7 @@ import discord
 
 from discord.ext import commands
 from pretty_help import DefaultMenu, PrettyHelp
+from config.config import prefix
 
 currpath = os.getcwd()
 currdir = os.path.basename(currpath)
@@ -10,8 +11,6 @@ currdir = os.path.basename(currpath)
 if currdir != "magic":
     print(f"Fatal error: Current directory is not named 'magic', is named '{currdir}'. Aborting launch...")
     exit()
-
-prefix = "&"
 
 bot = commands.Bot(
     activity = discord.Game(name=f"{prefix}help"),
