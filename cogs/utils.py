@@ -302,5 +302,5 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         print("---------------------------------------")
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed")
 
-def setup(bot):
-    bot.add_cog(Utility(bot))
+async def setup(bot):
+    await bot.add_cog(Utility(bot))

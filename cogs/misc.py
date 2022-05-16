@@ -59,5 +59,5 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         result = transl.translate(content, src=src, dest=dest).text
         await ctx.send(result)
 
-def setup(bot):
-    bot.add_cog(Miscellaneous(bot))
+async def setup(bot):
+    await bot.add_cog(Miscellaneous(bot))

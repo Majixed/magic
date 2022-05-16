@@ -57,5 +57,5 @@ class Programming(commands.Cog, description="Compile code using various programm
             subprocess.call(f"rm -f {ctx.author.id}.out")
             subprocess.call("cd ../../..")
 
-def setup(bot):
-    bot.add_cog(Programming(bot))
+async def setup(bot):
+    await bot.add_cog(Programming(bot))
