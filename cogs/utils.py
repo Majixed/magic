@@ -41,7 +41,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Evaluate a python expression
     @commands.command(name="eval", brief="Evaluate a python expression")
     async def eval_(self, ctx, *, code):
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) evaluated: {code}")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - eval: {code}")
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         result = eval(code)
@@ -53,7 +53,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Run shell commands
     @commands.command(name="sh", brief="Send commands to the shell for execution")
     async def sh_(self, ctx, *, command):
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) ran shell command: {command}")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - sh: {command}")
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
@@ -100,7 +100,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Run dash shell commands
     @commands.command(name="dash", brief="Send commands to the dash shell for execution")
     async def dash_(self, ctx, *, command):
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {ctx.author} ({ctx.author.id}) ran shell command (dash): {command}")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - dash: {command}")
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
         bot_admin = admin_data["botAdmin"]
