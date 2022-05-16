@@ -16,13 +16,17 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Upload a file
     @commands.command(name="upload", brief="Upload a file to discord")
     async def upload_(self, ctx, *, filename):
+        """Uploads a file to the current discord channel, takes the path to the file as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
-        await ctx.send(file=discord.File(f"{filename}"))
+        await ctx.send(file=discord.File(filename))
 
     # Delete a message by ID
     @commands.command(name="deletemsg", brief="Delete a message by its ID")
     async def deletemsg_(self, ctx, channel_id: int, message_id: int):
+        """Deletes a specific message, takes the channel ID and the message ID as arguments"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         channel = self.bot.get_channel(channel_id)
@@ -32,6 +36,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Send a message to a specific channel
     @commands.command(name="send", brief="Send a message to a specific channel")
     async def send_(self, ctx, channel: int, *, content):
+        """Sends a message to a specific channel, takes the channel ID and message content as arguments"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         target_channel = self.bot.get_channel(channel)
@@ -41,6 +47,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Evaluate a python expression
     @commands.command(name="eval", brief="Evaluate a python expression")
     async def eval_(self, ctx, *, code):
+        """Evaluates a python expression in the same instance as the bot, takes a string of code as an argument"""
+
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - eval: {code}")
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
@@ -53,6 +61,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Run shell commands
     @commands.command(name="sh", brief="Send commands to the shell for execution")
     async def sh_(self, ctx, *, command):
+        """Sends commands to the shell for execution, takes a string of commands as an argument"""
+
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - sh: {command}")
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
@@ -100,6 +110,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Run dash shell commands
     @commands.command(name="dash", brief="Send commands to the dash shell for execution")
     async def dash_(self, ctx, *, command):
+        """Sends commands to the dash shell for execution, takes a string of commands as an argument"""
+
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - dash: {command}")
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
@@ -147,6 +159,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Load an extension
     @commands.command(name="load", brief="Load an extension")
     async def load_(self, ctx, *, extension):
+        """Loads an extension (module) of the bot, takes the extension name as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -160,6 +174,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Unload an extension
     @commands.command(name="unload", brief="Unload an extension")
     async def unload_(self, ctx, *, extension):
+        """Unloads an extension (module) of the bot, takes the extension name as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -173,6 +189,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Reload an extension
     @commands.command(name="reload", brief="Reload an extension")
     async def reload_(self, ctx, *, extension):
+        """Reloads an extension (module) of the bot, takes the extension name as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -186,6 +204,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Reload all extensions
     @commands.command(name="reboot", brief="Reload all extensions")
     async def reboot_(self, ctx):
+        """Reloads all extensions (modules) of the bot, takes no arguments"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -200,6 +220,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Add a bot administrator
     @commands.command(name="addadmin", brief="Add a bot administrator")
     async def addadmin_(self, ctx, userid: int):
+        """Adds a user to the bot administrators, takes the user ID as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -228,6 +250,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Remove a bot administrator
     @commands.command(name="removeadmin", brief="Remove a bot administrator")
     async def removeadmin_(self, ctx, userid: int):
+        """Removes a user from the bot administrators, takes the user ID as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         try:
@@ -256,6 +280,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Get a list of all the guilds the bot is in
     @commands.command(name="showguilds", brief="Show all guilds where the bot is present")
     async def showguilds_(self, ctx):
+        """Lists all the guilds the bot is present in, takes no arguments"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         glist = ""
@@ -266,6 +292,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Shut down the bot
     @commands.command(name="shutdown", aliases=["poweroff", "halt"], brief="Shut down the bot")
     async def shutdown_(self, ctx):
+        """Disconnects the bot from discord, takes no arguments"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         await ctx.send(embed=discord.Embed(description="Shutting down, goodbye", color=green))

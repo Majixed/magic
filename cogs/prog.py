@@ -12,6 +12,8 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile Python code
     @commands.command(name="python", aliases=["py"], brief="Compile Python code")
     async def python_(self, ctx, *, code):
+        """Compiles python code, takes a string of code as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
@@ -25,6 +27,8 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile JavaScript code
     @commands.command(name="javascript", aliases=["js"], brief="Compile JavaScript code")
     async def javascript_(self, ctx, *, code):
+        """Compiles JavaScript code, takes a string of code as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
@@ -38,6 +42,8 @@ class Programming(commands.Cog, description="Compile code using various programm
     # Compile C code
     @commands.command(name="clang", aliases=["cc"], brief="Compile C code")
     async def clang_(self, ctx, *, code):
+        """Compiles C code, takes a string of code as an argument"""
+
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         async with ctx.typing():

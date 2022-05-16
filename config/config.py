@@ -27,4 +27,4 @@ emo_right = "<:page_right:963100747787026433>"
 react_timeout = 180.0
 
 # Commonly used variables
-embed_noowner = discord.Embed(description="You must be a bot owner to use this command.", color=red)
+embed_noowner = discord.Embed(description="You must be a bot owner to use this command", color=red)
