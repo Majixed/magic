@@ -4,7 +4,7 @@ import discord
 
 from discord.ext import commands
 from pretty_help import DefaultMenu, PrettyHelp
-from config.config import prefix
+from config.config import prefix, light_gray
 
 currpath = os.getcwd()
 currdir = os.path.basename(currpath)
@@ -40,7 +40,7 @@ menu = DefaultMenu(
         remove=":delete:962038961432322128",
         active_time=180
         )
-bot.help_command = PrettyHelp(menu=menu, color=0xcccccc)
+bot.help_command = PrettyHelp(menu=menu, color=light_gray)
 
 # Load all extensions
 async def load_extensions():

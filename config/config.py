@@ -16,7 +16,7 @@ green = 0x55ff55
 blue = 0x5555ff
 white = 0xffffff
 black = 0x000000
-light_gray = 0xcccccc
+light_gray = 0x2f3136
 
 # Custom emojis
 emo_del = "<:delete:962038961432322128>"
