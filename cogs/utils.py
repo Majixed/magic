@@ -32,6 +32,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         channel = self.bot.get_channel(channel_id)
         msg = await channel.fetch_message(message_id)
         await msg.delete()
+        await ctx.send(embed=discord.Embed(description="The requested message has been deleted", color=green))
 
     # Send a message to a specific channel
     @commands.command(name="send", brief="Send a message to a specific channel")
@@ -80,7 +81,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 sh_color = light_gray if ret == 0 else red
                 embed_sh = discord.Embed(color=sh_color)
                 embed_sh.add_field(name="stdin", value=f"```sh\n{command}\n```", inline=False)
-                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
                 if out:
                     embed_sh.add_field(name="stdout", value=f"```\n{out[:1016]}\n```", inline=False)
                 if err:
@@ -129,7 +130,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 sh_color = light_gray if ret == 0 else red
                 embed_sh = discord.Embed(color=sh_color)
                 embed_sh.add_field(name="stdin", value=f"```sh\n{command}\n```", inline=False)
-                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
                 if out:
                     embed_sh.add_field(name="stdout", value=f"```\n{out[:1016]}\n```", inline=False)
                 if err:
@@ -163,13 +164,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
-        try:
-            self.bot.load_extension(f"cogs.{extension}")
-            await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully loaded", color=green))
-        except Exception as e:
-            embed_ext_err = discord.Embed(color=red)
-            embed_ext_err.add_field(name="Error", value=f"```\n{e}\n```", inline=False)
-            await ctx.send(embed=embed_ext_err)
+        await self.bot.load_extension(f"cogs.{extension}")
+        await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully loaded", color=green))
 
     # Unload an extension
     @commands.command(name="unload", brief="Unload an extension")
@@ -178,13 +174,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
-        try:
-            self.bot.unload_extension(f"cogs.{extension}")
-            await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully unloaded", color=green))
-        except Exception as e:
-            embed_ext_err = discord.Embed(color=red)
-            embed_ext_err.add_field(name="Error", value=f"```\n{e}\n```", inline=False)
-            await ctx.send(embed=embed_ext_err)
+        await self.bot.unload_extension(f"cogs.{extension}")
+        await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully unloaded", color=green))
 
     # Reload an extension
     @commands.command(name="reload", brief="Reload an extension")
@@ -193,13 +184,8 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
-        try:
-            self.bot.reload_extension(f"cogs.{extension}")
-            await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully reloaded", color=green))
-        except Exception as e:
-            embed_ext_err = discord.Embed(color=red)
-            embed_ext_err.add_field(name="Error", value=f"```\n{e}\n```", inline=False)
-            await ctx.send(embed=embed_ext_err)
+        await self.bot.reload_extension(f"cogs.{extension}")
+        await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully reloaded", color=green))
 
     # Reload all extensions
     @commands.command(name="reboot", brief="Reload all extensions")
@@ -211,7 +197,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         try:
             for filename in os.listdir("./cogs"):
                 if filename.endswith(".py"):
-                    self.bot.reload_extension(f"cogs.{filename[:-3]}")
+                    await self.bot.reload_extension(f"cogs.{filename[:-3]}")
         except Exception as e:
             await ctx.send(f"```\n{e}\n```")
         else:
