@@ -297,10 +297,10 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
         await ctx.send(embed=discord.Embed(description="Shutting down, goodbye", color=green))
-        await self.bot.close()
         print("")
         print("---------------------------------------")
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed")
+        await self.bot.close()
 
 async def setup(bot):
     await bot.add_cog(Utility(bot))

@@ -13,7 +13,7 @@ if currdir != "magic":
     print(f"Fatal error: Current directory is not named 'magic', is named '{currdir}'. Aborting launch...")
     exit()
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 
 bot = commands.Bot(
     activity = discord.Game(name=f"{prefix}help"),
