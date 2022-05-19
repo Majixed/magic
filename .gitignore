@@ -3,10 +3,3 @@ admins.json
 prog/clang/*
 prog/python/*
 prog/javascript/*
-tex/staging/*
-tex/preamble/*.tex
-tex/preamble/tmp/*
-tex/luapreamble/*.tex
-tex/luapreamble/tmp/*
-tex/log/*
-tex/inputs/*
