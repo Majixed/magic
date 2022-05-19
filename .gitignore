@@ -1,4 +1,5 @@
 .git
+admins.json
 tex/staging/*
 tex/preamble/*.tex
 tex/preamble/tmp/*
