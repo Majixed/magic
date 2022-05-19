@@ -1,25 +1,27 @@
-rm -f ~group/$1.*
-rm -rf tex/staging/$1
-mkdir tex/staging/$1
-cd tex/staging/$1
+uid=$1
 
-echo "\\documentclass[preview, border=20pt, 12pt]{standalone}" > $1.tex
-echo "\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" >> $1.tex
+rm -f ~group/$uid.*
+rm -rf tex/staging/$uid
+mkdir tex/staging/$uid
+cd tex/staging/$uid
 
-if [ -f "../../preamble/$1.tex" ]; then
-    cat ../../preamble/$1.tex >> $1.tex
+echo "\\documentclass[preview, border=20pt, 12pt]{standalone}" > $uid.tex
+echo "\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" >> $uid.tex
+
+if [ -f "../../preamble/$uid.tex" ]; then
+    cat ../../preamble/$uid.tex >> $uid.tex
 else
-    cat ../../preamble/default/default.tex >> $1.tex
+    cat ../../preamble/default/default.tex >> $uid.tex
 fi
 
-echo "\\\begin{document}" >> $1.tex
-cat ../../inputs/$1.tmp >> $1.tex
-echo "\n\\end{document}" >> $1.tex
+echo "\\\begin{document}" >> $uid.tex
+cat ../../inputs/$uid.tmp >> $uid.tex
+echo "\n\\end{document}" >> $uid.tex
 
-pdflatex -jobname=$1 -no-shell-escape -interaction=nonstopmode $1.tex > ../../log/texout.log
+pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
 
-mv $1.pdf ~group
-open "shortcuts://run-shortcut?name=pdfpng3&input=$1.pdf"
+mv $uid.pdf ~group
+open "shortcuts://run-shortcut?name=pdfpng3&input=$uid.pdf"
 sleep 1.5
-mv ~group/$1.png .
+mv ~group/$uid.png .
 cd ../../..

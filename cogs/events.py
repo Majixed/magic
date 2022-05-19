@@ -25,10 +25,7 @@ class Events(commands.Cog):
     # Command log
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        if not ctx.kwargs.values() or ctx.kwargs.values() == None:
-            print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - {ctx.command}")
-        else:
-            print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - {ctx.command}:", *ctx.kwargs.values())
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - command: {ctx.message.lstrip{prefix}}")
 
     # Listen for message edits
     @commands.Cog.listener()

@@ -272,6 +272,17 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             glist += f"{guild.name} ({guild.id})\n"
         await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```\n{glist}\n```", color=light_gray))
 
+    # Make the bot leave a guild
+    @commands.command(name="leaveguild", brief="Leave the specified guild")
+    async def leaveguild_(self, ctx, guildid: int):
+        """Leaves the specified guild, takes the guild ID as an argument"""
+
+        if ctx.author.id not in bot_owner:
+            return await ctx.send(embed=embed_noowner)
+        guild = self.bot.get_guild(guildid)
+        await ctx.send(embed=discord.Embed(description=f"Leaving guild {guild}", color=green))
+        await guild.leave()
+
     # Shut down the bot
     @commands.command(name="shutdown", aliases=["poweroff", "halt"], brief="Shut down the bot")
     async def shutdown_(self, ctx):
