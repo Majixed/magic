@@ -2,8 +2,7 @@ import discord
 import datetime
 
 from discord.ext import commands
-from .config import *
-
+from config.config import *
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -12,9 +11,8 @@ class Events(commands.Cog):
     # Message when the bot is ready to be operated
     @commands.Cog.listener()
     async def on_ready(self):
-        print("--------------------------------------------")
-        print("Logged in as {0.user} ({0.user.id})".format(self.bot))
-        print("--------------------------------------------")
+        print("")
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Logged in as {self.bot.user} ({self.bot.user.id})")
 
     # Basic error handling
     @commands.Cog.listener()
@@ -27,16 +25,10 @@ class Events(commands.Cog):
     # Command log
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        channel = self.bot.get_channel(960503364871938068)
-
-        embed_cmd_gld = discord.Embed(description=f"{ctx.author} ({ctx.author.id}) used command `{ctx.command}` in guild {ctx.guild}", color=light_gray)
-        embed_cmd_gld.timestamp = datetime.datetime.utcnow()
-        embed_cmd_dm = discord.Embed(description=f"{ctx.author} ({ctx.author.id}) used command `{ctx.command}` in DM", color=light_gray)
-        embed_cmd_dm.timestamp = datetime.datetime.utcnow()
-        if not ctx.guild:
-            await channel.send(embed=embed_cmd_dm)
+        if not ctx.kwargs.values() or ctx.kwargs.values() == None:
+            print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - {ctx.command}")
         else:
-            await channel.send(embed=embed_cmd_gld)
+            print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - {ctx.command}:", *ctx.kwargs.values())
 
     # Listen for message edits
     @commands.Cog.listener()
@@ -46,12 +38,15 @@ class Events(commands.Cog):
     # Respond to messages with uppercase "LOL"
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-        if message.author.bot:
-            return
-        elif "LOL" in message.content:
-            await message.channel.send("Haha. That was so funny.")
+        try:
+            if message.author == self.bot.user:
+                return
+            if message.author.bot:
+                return
+            elif "LOL" in message.content:
+                await message.channel.send("Haha. That was so funny.")
+        except Exception as e:
+            print(e)
 
-def setup(bot):
-    bot.add_cog(Events(bot))
+async def setup(bot):
+    await bot.add_cog(Events(bot))
