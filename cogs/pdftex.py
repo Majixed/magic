@@ -112,7 +112,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     except asyncio.TimeoutError:
                         await p_own.clear_reactions()
                         break
-            except:
+            except FileNotFoundError:
                 await ctx.send(embed=discord.Embed(description="You haven't set a custom preamble.", color=red))
         else:
             try:
@@ -133,7 +133,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     except asyncio.TimeoutError:
                         await p_usr.clear_reactions()
                         break
-            except:
+            except FileNotFoundError:
                 await ctx.send(embed=discord.Embed(description="This user does not have a custom preamble.", color=red))
 
     # Replace your pdfLaTeX preamble
