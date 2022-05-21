@@ -6,7 +6,7 @@ A personal discord.py utility bot built on iOS, for iOS.
 How to use
 ----------
 
-To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ terminal emulator from the App Store. If you want to make use of the ``pdftex`` and ``luatex`` modules, run ``luatex`` in the terminal:
+To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ terminal emulator from the App Store. It comes with ``python3`` pre-installed. If you want to make use of the ``pdftex`` and ``luatex`` modules, run ``luatex`` in the terminal:
 
 .. code:: sh
 
@@ -14,7 +14,7 @@ To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ ter
 
 This will install the pdfTeX and LuaTeX extensions to a-Shell. Type ``y`` at the prompt and wait for it to install.
 
-This bot is built using discord.py v2.0.0a, which is not available in PyPI. To install it, run the following commands:
+This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.0.0a, which is not available in PyPI. To install it, run the following commands:
 
 .. code:: sh
 
@@ -52,6 +52,6 @@ Finally, start up the bot,
 
     python3 magic.py
 
-Make sure you have given the bot the correct permissions in your discord server, so that you can use all of its features. The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. To use the LaTeX commands, you must open the Shortcuts app in Split View, so that it may be able to use the shortcut ``pdfpng3`` to convert the generated pdf file to png.
+Make sure you have given the bot the correct permissions in your discord server, so that you can use all of its features. The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``&help`` to get a list of all its commands.
 
 If you have any suggestions or queries, feel free to open an issue.
