@@ -40,7 +40,7 @@ Add your bot token to a ``.env`` file in the same directory:
 
 .. code:: sh
 
-    echo "TOKEN=<your bot's token>" > .env
+    $ echo "TOKEN=<your bot's token>" > .env
 
 To use the TeX commands, create `this <https://www.icloud.com/shortcuts/a406c5e667944bfea3059f41cd44e655>`_ shortcut in the iOS Shortcuts app. This will convert the output pdf of TeX to a png image which can be uploaded to the discord channel.
 
@@ -50,7 +50,7 @@ Finally, start up the bot:
 
 .. code:: sh
 
-    python3 magic.py
+    $ python3 magic.py
 
 Make sure you have given the bot the correct permissions in your discord server, so that you can use all of its features. The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``&help`` to get a list of all its commands.
 
