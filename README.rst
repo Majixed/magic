@@ -6,7 +6,7 @@ A personal discord.py utility bot built on iOS, for iOS.
 How to use
 ----------
 
-To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ terminal emulator from the App Store. It comes with ``python3`` pre-installed. If you want to make use of the ``pdftex`` and ``luatex`` modules, run ``luatex`` in the terminal:
+To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ terminal emulator from the App Store on an iPad with support for Split View. It comes with ``python3`` pre-installed. If you want to make use of the ``pdftex`` and ``luatex`` modules, run ``luatex`` in the terminal:
 
 .. code:: sh
 
@@ -22,7 +22,7 @@ This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.
     $ cd discord.py
     $ pip install -U .
 
-Additionally, the bot makes use of the `discord-pretty-help <https://github.com/stroupbslayen/discord-pretty-help>`_ and `googletrans <https://github.com/ssut/py-googletrans>`_ packages, so they must also be installed.
+Additionally, the bot makes use of the `discord-pretty-help <https://github.com/stroupbslayen/discord-pretty-help>`_ and `googletrans <https://github.com/ssut/py-googletrans>`_ packages, so they must also be installed:
 
 .. code:: sh
 
@@ -46,7 +46,7 @@ To use the TeX commands, create `this <https://www.icloud.com/shortcuts/a406c5e6
 
 Open the a-Shell terminal and Shortcuts app in Split View, so that the shortcut can run when a TeX command is invoked.
 
-Finally, start up the bot,
+Finally, start up the bot:
 
 .. code:: sh
 
