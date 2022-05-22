@@ -1,3 +1,5 @@
+import discord
+
 # List of UIDs allowed to run administrator commands
 # Replace this with your own user ID
 bot_owner = [598847267377643530]

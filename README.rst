@@ -47,9 +47,9 @@ To use the TeX commands, create `this <https://www.icloud.com/shortcuts/a406c5e6
 
 Open the a-Shell terminal and Shortcuts app in Split View, so that the shortcut can run when a TeX command is invoked.
 
-When starting the bot for the first time, you must edit a few variables in ``config/config.py``:
-- Replace the user ID in the ``bot_owner`` variable with your own discord user ID
-- Replace the emoji IDs in the ``emo_del``, ``emo_left`` and ``emo_right`` variables with the ID of your own custom emojis, or a default emoji of your choosing
+Before starting the bot for the first time, you must edit a few variables in ``config/config.py``:
+    - Replace the user ID in the ``bot_owner`` variable with your own discord user ID
+    - Replace the emoji IDs in the ``emo_del``, ``emo_left`` and ``emo_right`` variables with the ID of your own custom emojis, or a default emoji of your choosing
 
 Finally, start up the bot:
 
