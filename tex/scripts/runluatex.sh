@@ -6,7 +6,6 @@ mkdir tex/staging/$uid
 cd tex/staging/$uid
 
 echo "\\documentclass[preview, border=20pt, 12pt]{standalone}" > $uid.tex
-echo "\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" >> $uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
     cat ../../luapreamble/$uid.tex >> $uid.tex
