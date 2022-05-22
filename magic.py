@@ -3,8 +3,11 @@ import asyncio
 import discord
 
 from discord.ext import commands
+from dotenv import load_dotenv
 from pretty_help import DefaultMenu, PrettyHelp
 from config.config import prefix, light_gray
+
+load_dotenv()
 
 intents = discord.Intents.all()
 

@@ -22,11 +22,12 @@ This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.
     $ cd discord.py
     $ pip install -U .
 
-Additionally, the bot makes use of the `discord-pretty-help <https://github.com/stroupbslayen/discord-pretty-help>`_ and `googletrans <https://github.com/ssut/py-googletrans>`_ packages, so they must also be installed:
+Additionally, the bot makes use of the `discord-pretty-help <https://github.com/stroupbslayen/discord-pretty-help>`_, `python-dotenv <https://github.com/theskumar/python-dotenv>`_ and `googletrans <https://github.com/ssut/py-googletrans>`_ packages, so they must also be installed:
 
 .. code:: sh
 
     $ pip install discord-pretty-help
+    $ pip install python-dotenv
     $ pip install googletrans
 
 Clone this repository and make it your current working directory:
@@ -45,6 +46,10 @@ Add your bot token to a ``.env`` file in the same directory:
 To use the TeX commands, create `this <https://www.icloud.com/shortcuts/a406c5e667944bfea3059f41cd44e655>`_ shortcut in the iOS Shortcuts app. This will convert the output pdf of TeX to a png image which can be uploaded to the discord channel.
 
 Open the a-Shell terminal and Shortcuts app in Split View, so that the shortcut can run when a TeX command is invoked.
+
+When starting the bot for the first time, you must edit a few variables in ``config/config.py``:
+- Replace the user ID in the ``bot_owner`` variable with your own discord user ID
+- Replace the emoji IDs in the ``emo_del``, ``emo_left`` and ``emo_right`` variables with the ID of your own custom emojis, or a default emoji of your choosing
 
 Finally, start up the bot:
 

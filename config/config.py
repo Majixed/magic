@@ -1,11 +1,6 @@
-import json
-import discord
-
-from discord.ext import commands
-
 # List of UIDs allowed to run administrator commands
+# Replace this with your own user ID
 bot_owner = [598847267377643530]
-#              Majixed#0586
 
 # The bot's prefix
 prefix = "&"
@@ -19,11 +14,12 @@ black = 0x000000
 light_gray = 0x2f3136
 
 # Custom emojis
+# Replace these with your own custom emojis
 emo_del = "<:delete:962038961432322128>"
 emo_left = "<:page_left:963100801717403718>"
 emo_right = "<:page_right:963100747787026433>"
 
-# The value of timeout
+# Timeout value
 react_timeout = 180.0
 
 # Commonly used variables
