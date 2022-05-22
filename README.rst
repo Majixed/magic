@@ -52,7 +52,7 @@ Finally, start up the bot:
 
     $ launch
 
-Make sure you have given the bot the privileged message content intent in the discord developer portal, otherwise, it may not be able to respond to the prefix and some features may not work.
+Make sure you have given the bot the privileged Message Content intent in the `Discord Developer Portal <https://discord.com/developers/>`_, otherwise it may not be able to respond to the prefix and some features may not work.
 
 The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``&help`` to get a list of all its commands.
 
