@@ -1,4 +1,5 @@
 .git
+magic.log
 admins.json
 tex/staging/*
 tex/preamble/*.tex

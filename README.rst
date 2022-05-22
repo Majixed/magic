@@ -50,8 +50,10 @@ Finally, start up the bot:
 
 .. code:: sh
 
-    $ python3 magic.py
+    $ launch
 
-Make sure you have given the bot the correct permissions in your discord server, so that you can use all of its features. The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``&help`` to get a list of all its commands.
+Make sure you have given the bot the privileged message content intent in the discord developer portal, otherwise, it may not be able to respond to the prefix and some features may not work.
+
+The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``&help`` to get a list of all its commands.
 
 If you have any suggestions or queries, feel free to open an issue.
