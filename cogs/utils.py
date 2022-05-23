@@ -276,7 +276,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         for guild in self.bot.guilds:
             g_disp.append(f"{guild.name:<{maxlen}} ({guild.id})")
         g_out = '\n'.join(g_disp)
-        await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```{g_out}```", color=light_gray))
+        await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```\n{g_out}\n```", color=light_gray))
 
     # Make the bot leave a guild
     @commands.command(name="leaveguild", brief="Leave the specified guild")
