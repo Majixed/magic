@@ -267,10 +267,16 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
-        glist = ""
+        g_list = []
         for guild in self.bot.guilds:
-            glist += f"{guild.name} ({guild.id})\n"
-        await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```\n{glist}\n```", color=light_gray))
+            g_list.append(guild.name)
+        maxlen = int(len(max(g_list, key=len, default="")))
+
+        g_disp = []
+        for guild in self.bot.guilds:
+            g_disp.append(f"{guild.name:<{maxlen}} ({guild.id})")
+        g_out = '\n'.join(g_disp)
+        await ctx.send(embed=discord.Embed(title="List of my guilds", description=f"```{g_out}```", color=light_gray))
 
     # Make the bot leave a guild
     @commands.command(name="leaveguild", brief="Leave the specified guild")
