@@ -28,7 +28,7 @@ Additionally, the bot makes use of the `discord-pretty-help <https://github.com/
 
     $ pip install discord-pretty-help
     $ pip install python-dotenv
-    $ pip install googletrans
+    $ pip install googletrans==3.1.0a0
 
 Clone this repository and make it your current working directory:
 
