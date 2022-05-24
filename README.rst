@@ -1,9 +1,9 @@
 magic
 =====
 
-.. image:: https://img.shields.io/github/languages/top/Majixed/magic
-   :alt: top-language
-   :align: center
+.. raw:: html
+
+    <img src="https://img.shields.io/github/languages/top/Majixed/magic" align="center" alt="top-language">
 
 A personal discord.py utility bot built on iOS, for iOS.
 
