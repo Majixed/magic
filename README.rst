@@ -3,9 +3,9 @@ magic
 
 .. raw:: html
 
-    <h1 align="center">
+    <h3 align="center">
     <img src="https://img.shields.io/github/languages/top/Majixed/magic" alt="top-language">
-    </h1>
+    </h3>
 
 A personal discord.py utility bot built on iOS, for iOS.
 
