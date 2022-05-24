@@ -3,7 +3,6 @@ import json
 import codecs
 import discord
 import asyncio
-import datetime
 import subprocess
 
 from discord.ext import commands
