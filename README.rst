@@ -3,6 +3,7 @@ magic
 
 .. image:: https://img.shields.io/github/languages/top/Majixed/magic
    :alt: top-language
+   :align: center
 
 A personal discord.py utility bot built on iOS, for iOS.
 
