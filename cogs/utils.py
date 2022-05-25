@@ -32,7 +32,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         channel = self.bot.get_channel(channel_id)
         msg = await channel.fetch_message(message_id)
         await msg.delete()
-        await ctx.send(embed=discord.Embed(description="The requested message has been deleted", color=green))
+        await ctx.send(embed=discord.Embed(description="The requested message has been deleted", color=green), delete_after=5)
 
     # Send a message to a specific channel
     @commands.command(name="send", brief="Send a message to a specific channel")
