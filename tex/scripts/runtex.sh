@@ -19,8 +19,13 @@ echo "\n\\end{document}" >> $uid.tex
 
 pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
 
-mv $uid.pdf ~group
-open "shortcuts://run-shortcut?name=pdfpng3&input=$uid.pdf"
-sleep 1.5
-mv ~group/$uid.png .
+if [ -f $uid.pdf ]; then
+    mv $uid.pdf ~group
+    open "shortcuts://run-shortcut?name=pdfpng3&input=$uid.pdf"
+    sleep 1.5
+    if [ -f ~group/$uid.png ]; then
+        mv ~group/$uid.png .
+    fi
+fi
+
 cd ../../..
