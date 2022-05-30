@@ -38,48 +38,26 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             pass
         else:
             err_msg = await ctx.send(embed=embed_err)
-        try:
-            out_img = await ctx.send(file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"))
-            await out_img.add_reaction(emo_del)
+        out_img = await ctx.send(file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"))
+        await out_img.add_reaction(emo_del)
 
-            def check(reaction, user):
-                return reaction.message.id == out_img.id and user == ctx.author
+        def check(reaction, user):
+            return reaction.message.id == out_img.id and user == ctx.author
 
-            while True:
-                try:
-                    reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
 
-                    if str(reaction.emoji) == emo_del:
-                        if out_img is not None:
-                            await out_img.delete()
-                        if err_msg is not None:
-                            await err_msg.delete()
-                        break
-
-                except asyncio.TimeoutError:
-                    await out_img.clear_reactions()
+                if str(reaction.emoji) == emo_del:
+                    if out_img is not None:
+                        await out_img.delete()
+                    if err_msg is not None:
+                        await err_msg.delete()
                     break
-        except FileNotFoundError:
-            err_img = await ctx.send(file=discord.File("tex/failed.png"))
-            await err_img.add_reaction(emo_del)
 
-            def check(reaction, user):
-                return reaction.message.id == err_img.id and user == ctx.author
-
-            while True:
-                try:
-                    reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
-
-                    if str(reaction.emoji) == emo_del:
-                        if err_img is not None:
-                            await err_img.delete()
-                        if err_msg is not None:
-                            await err_msg.delete()
-                        break
-
-                except asyncio.TimeoutError:
-                    await err_img.clear_reactions()
-                    break
+            except asyncio.TimeoutError:
+                await out_img.clear_reactions()
+                break
 
     # Upload your pdfLaTeX preamble
     @commands.command(name="preamble", brief="Upload your own or another user's pdfLaTeX preamble")

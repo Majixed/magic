@@ -25,7 +25,11 @@ if [ -f $uid.pdf ]; then
     sleep 1.5
     if [ -f ~group/$uid.png ]; then
         mv ~group/$uid.png .
+    else
+        cp ../../failed.png $uid.png
     fi
+else
+    cp ../../failed.png $uid.png
 fi
 
 cd ../../..
