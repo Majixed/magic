@@ -5,7 +5,7 @@ rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
 
-echo "\\documentclass[preview, border=20pt, 12pt]{standalone}" > $uid.tex
+echo "\\documentclass[preview, border=10pt, 12pt]{standalone}" > $uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
     cat ../../luapreamble/$uid.tex >> $uid.tex
@@ -25,6 +25,11 @@ if [ -f $uid.pdf ]; then
     sleep 1.5
     if [ -f ~group/$uid.png ]; then
         mv ~group/$uid.png .
+        height=`convert $uid.png -format "%h" info:`
+        width=`convert $uid.png -format "%[fx:w]" info:`
+        minwidth=1000
+        newwidth=$(( width > minwidth ? width : minwidth ))
+        convert -background transparent -extent ${newwidth}x${height} $uid.png $uid.png
     else
         cp ../../failed.png $uid.png
     fi
