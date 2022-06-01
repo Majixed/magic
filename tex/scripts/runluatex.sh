@@ -25,11 +25,13 @@ if [ -f $uid.pdf ]; then
     sleep 1.5
     if [ -f ~group/$uid.png ]; then
         mv ~group/$uid.png .
-        height=`convert $uid.png -format "%h" info:`
-        width=`convert $uid.png -format "%[fx:w]" info:`
+
+        width=`identify -ping -format "%w" $uid.png`
         minwidth=1000
-        newwidth=$(( width > minwidth ? width : minwidth ))
-        convert -background transparent -extent ${newwidth}x${height} $uid.png $uid.png
+
+        if [ $width -lt $minwidth ]; then
+            convert -background transparent -extent ${minwidth}x $uid.png $uid.png
+        fi
     else
         cp ../../failed.png $uid.png
     fi
