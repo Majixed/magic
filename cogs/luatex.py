@@ -55,8 +55,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                     break
 
             except asyncio.TimeoutError:
-                await out_img.clear_reactions()
-                break
+                if ctx.channel.type != discord.ChannelType.private:
+                    await out_img.clear_reactions()
+                    break
+                else:
+                    break
 
     # Upload your LuaLaTeX preamble
     @commands.command(name="luapreamble", brief="Upload your own or another user's LuaLaTeX preamble")
@@ -86,8 +89,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                             break
 
                     except asyncio.TimeoutError:
-                        await p_own.clear_reactions()
-                        break
+                        if ctx.channel.type != discord.ChannelType.private:
+                            await p_own.clear_reactions()
+                            break
+                        else:
+                            break
             except FileNotFoundError:
                 await ctx.send(embed=discord.Embed(description="You haven't set a custom preamble.", color=red))
         else:
@@ -107,8 +113,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                             break
 
                     except asyncio.TimeoutError:
-                        await p_usr.clear_reactions()
-                        break
+                        if ctx.channel.type != discord.ChannelType.private:
+                            await p_usr.clear_reactions()
+                            break
+                        else:
+                            break
             except FileNotFoundError:
                 await ctx.send(embed=discord.Embed(description="This user does not have a custom preamble.", color=red))
 

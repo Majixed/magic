@@ -103,8 +103,11 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                     break
 
             except asyncio.TimeoutError:
-                await sh_out.clear_reactions()
-                break
+                if ctx.channel.type != discord.ChannelType.private:
+                    await sh_out.clear_reactions()
+                    break
+                else:
+                    break
 
     # Load an extension
     @commands.command(name="load", brief="Load an extension")
