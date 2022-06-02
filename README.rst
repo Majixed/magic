@@ -62,7 +62,7 @@ Finally, start up the bot:
 
 .. code:: sh
 
-    $ python3 magic.py
+    $ ./magic
 
 Make sure you have given the bot the privileged Message Content intent in the `Discord Developer Portal <https://discord.com/developers/>`_, otherwise it may not be able to respond to the prefix and some features may not work.
 

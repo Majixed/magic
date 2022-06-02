@@ -106,54 +106,6 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 await sh_out.clear_reactions()
                 break
 
-    # Run dash shell commands
-    @commands.command(name="dash", brief="Send commands to the dash shell for execution")
-    async def dash_(self, ctx, *, command):
-        """Sends commands to the dash shell for execution, takes a string of commands as an argument"""
-
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
-        async with ctx.typing():
-            with subprocess.Popen(["dash", "-c", command], \
-                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
-                out = p.communicate()[0].decode("utf-8")
-                err = p.communicate()[1].decode("utf-8")
-                ret = p.returncode
-
-                sh_color = light_gray if ret == 0 else red
-                embed_sh = discord.Embed(color=sh_color)
-                embed_sh.add_field(name="stdin", value=f"```sh\n{command}\n```", inline=False)
-                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
-                if out:
-                    embed_sh.add_field(name="stdout", value=f"```\n{out[:1016]}\n```", inline=False)
-                if err:
-                    embed_sh.add_field(name="stderr", value=f"```\n{err[:1016]}\n```", inline=False)
-                if ret == 0:
-                    embed_sh.set_footer(text=f"process completed with exit status {ret}")
-                else:
-                    embed_sh.set_footer(text=f"process errored out with exit status {ret}")
-        sh_out = await ctx.send(embed=embed_sh)
-        await sh_out.add_reaction(emo_del)
-
-        def check(reaction, user):
-            return reaction.message.id == sh_out.id and user == ctx.author
-
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
-
-                if str(reaction.emoji) == emo_del:
-                    await sh_out.delete()
-                    break
-
-            except asyncio.TimeoutError:
-                await sh_out.clear_reactions()
-                break
-
     # Load an extension
     @commands.command(name="load", brief="Load an extension")
     async def load_(self, ctx, *, extension):

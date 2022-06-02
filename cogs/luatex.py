@@ -25,11 +25,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
             err_msg=None
-            err_img=None
             out_img=None
             with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
                 f_input.write(code)
-            subprocess.call(f"dash tex/scripts/runluatex.sh {ctx.author.id}")
+            subprocess.call(f"sh tex/scripts/runluatex.sh {ctx.author.id}")
         embed_err = discord.Embed(title="", description="", color=red)
         embed_err.add_field(name="\u200b", value=f"```tex\n{code}\n```", inline=False)
         embed_err.add_field(name="Compilation error", value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```", inline=False)
