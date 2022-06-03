@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from pretty_help import DefaultMenu, PrettyHelp
-from config.config import prefix, light_gray
+from config.config import emo_del, emo_left, emo_right, prefix, light_gray, react_timeout
 
 load_dotenv()
 
@@ -31,10 +31,10 @@ if not os.path.isfile("admins.json"):
 
 # Prettify the help page
 menu = DefaultMenu(
-        page_left=":page_left:963100801717403718",
-        page_right=":page_right:963100747787026433",
-        remove=":delete:962038961432322128",
-        active_time=180
+        page_left=emo_left.lstrip("<").rstrip(">"),
+        page_right=emo_right.lstrip("<").rstrip(">"),
+        remove=emo_del.lstrip("<").rstrip(">"),
+        active_time=react_timeout
         )
 bot.help_command = PrettyHelp(menu=menu, color=light_gray)
 
