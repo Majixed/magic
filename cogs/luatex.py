@@ -26,11 +26,27 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         async with ctx.typing():
             err_msg=None
             out_img=None
+            if "```" in code:
+                lines = code.splitlines()
+                codeblock = False
+                final_code = []
+                for line in lines:
+                    if "```" in line:
+                        splits = line.split("```")
+                        for split in splits:
+                            if codeblock and split not in ["", "tex", "latex"]:
+                                final_code.append(f"{split}")
+                            codeblock = not codeblock
+                        if codeblock:
+                            final_code.append("")
+                        codeblock = not codeblock
+                    elif codeblock:
+                        final_code.append(line)
+                code = "\n".join(final_code).rstrip("\n")
             with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
                 f_input.write(code)
             subprocess.call(f"sh tex/scripts/runluatex.sh {ctx.author.id}")
         embed_err = discord.Embed(title="", description="", color=red)
-        embed_err.add_field(name="\u200b", value=f"```tex\n{code}\n```", inline=False)
         embed_err.add_field(name="Compilation error", value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```", inline=False)
         embed_err.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         if not subprocess.getoutput(f"grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log"):

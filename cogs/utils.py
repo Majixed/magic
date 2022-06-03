@@ -84,10 +84,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                     embed_sh.add_field(name="stdout", value=f"```\n{out[:1016]}\n```", inline=False)
                 if err:
                     embed_sh.add_field(name="stderr", value=f"```\n{err[:1016]}\n```", inline=False)
-                if ret == 0:
-                    embed_sh.set_footer(text=f"process completed with exit status {ret}")
-                else:
-                    embed_sh.set_footer(text=f"process errored out with exit status {ret}")
+                embed_sh.set_footer(text=f"process returned with exit status {ret}")
         sh_out = await ctx.send(embed=embed_sh)
         await sh_out.add_reaction(emo_del)
 
