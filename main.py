@@ -12,7 +12,7 @@ load_dotenv()
 intents = discord.Intents.all()
 
 bot = commands.Bot(
-    activity = discord.Game(name=f"{prefix}help"),
+    activity = discord.Activity(type=discord.ActivityType.listening, name=f"{prefix}help"),
     command_prefix = commands.when_mentioned_or(prefix),
     description = f"Hello there! I'm magic. My prefix is {prefix}, but you can also summon me with a mention.",
     case_insensitive = True,
