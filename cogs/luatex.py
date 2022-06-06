@@ -5,6 +5,7 @@ import discord
 import asyncio
 import subprocess
 
+from typing import Union
 from discord.ext import commands
 from conf.func import get_admins
 from conf.var import (
@@ -85,15 +86,18 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
 
     # Upload your LuaLaTeX preamble
     @commands.command(name="luapreamble", brief="Upload your own or another user's LuaLaTeX preamble")
-    async def luapreamble_(self, ctx, *, userid=None):
+    async def luapreamble_(self, ctx, *, user: Union[int, discord.User]=None):
         """Uploads your own or another user's LuaLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
         bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
-        if userid is None:
+        if user is None:
             try:
-                p_own = await ctx.send(file=discord.File(f"tex/luapreamble/{ctx.author.id}.tex"))
+                p_own = await ctx.send(
+                        "Your lualatex preamble",
+                        file=discord.File(f"tex/luapreamble/{ctx.author.id}.tex")
+                        )
                 await p_own.add_reaction(emo_del)
 
                 def check(reaction, user):
@@ -116,8 +120,16 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             except FileNotFoundError:
                 await ctx.send(embed=discord.Embed(description="You haven't set a custom preamble.", color=red))
         else:
+            if isinstance(user, int):
+                userid = user
+            elif isinstance(user, discord.User):
+                userid = user.id
+            username = await self.bot.fetch_user(userid)
             try:
-                p_usr = await ctx.send(file=discord.File(f"tex/luapreamble/{userid}.tex"))
+                p_usr = await ctx.send(
+                        f"{username}'s lualatex preamble",
+                        file=discord.File(f"tex/luapreamble/{userid}.tex")
+                        )
                 await p_usr.add_reaction(emo_del)
 
                 def check(reaction, user):

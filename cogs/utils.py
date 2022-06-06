@@ -6,6 +6,7 @@ import inspect
 import datetime
 import subprocess
 
+from typing import Union
 from discord.ext import commands
 from conf.var import (
         emo_del,
@@ -158,11 +159,15 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Add a bot administrator
     @commands.command(name="addadmin", brief="Add a bot administrator")
-    async def addadmin_(self, ctx, userid: int):
+    async def addadmin_(self, ctx, user: Union[int, discord.User]):
         """Adds a user to the bot administrators, takes the user ID as an argument"""
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
+        if isinstance(user, int):
+            userid = user
+        elif isinstance(user, discord.User):
+            userid = user.id
         try:
             username = await self.bot.fetch_user(userid)
         except Exception as e:
@@ -188,11 +193,15 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Remove a bot administrator
     @commands.command(name="removeadmin", brief="Remove a bot administrator")
-    async def removeadmin_(self, ctx, userid: int):
+    async def removeadmin_(self, ctx, user: Union[int, discord.User]):
         """Removes a user from the bot administrators, takes the user ID as an argument"""
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)
+        if isinstance(user, int):
+            userid = user
+        elif isinstance(user, discord.User):
+            userid = user.id
         try:
             username = await self.bot.fetch_user(userid)
         except Exception as e:
