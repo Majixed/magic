@@ -2,7 +2,7 @@ import discord
 import datetime
 
 from discord.ext import commands
-from config.config import *
+from conf.var import prefix
 
 class Events(commands.Cog):
     def __init__(self, bot):

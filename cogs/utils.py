@@ -7,7 +7,15 @@ import datetime
 import subprocess
 
 from discord.ext import commands
-from config.config import *
+from conf.var import (
+        emo_del,
+        bot_owner,
+        light_gray,
+        green,
+        red,
+        react_timeout,
+        embed_noowner
+        )
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
     def __init__(self, bot):
@@ -62,10 +70,6 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="sh", brief="Send commands to the shell for execution")
     async def sh_(self, ctx, *, command):
         """Sends commands to the shell for execution, takes a string of commands as an argument"""
-
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
 
         if ctx.author.id not in bot_owner:
             return await ctx.send(embed=embed_noowner)

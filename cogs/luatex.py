@@ -6,7 +6,16 @@ import asyncio
 import subprocess
 
 from discord.ext import commands
-from config.config import *
+from conf.func import get_admins
+from conf.var import (
+        emo_del,
+        bot_owner,
+        light_gray,
+        green,
+        red,
+        react_timeout,
+        embed_noowner
+        )
 
 class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     def __init__(self, bot):
@@ -17,10 +26,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def luatex_(self, ctx, *, code):
         """Compiles LuaLaTeX, takes the code as an argument"""
 
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
+        bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
@@ -82,10 +88,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def luapreamble_(self, ctx, *, userid=None):
         """Uploads your own or another user's LuaLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
+        bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
         if userid is None:
@@ -142,10 +145,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def replaceluapreamble_(self, ctx, *, code=None):
         """Replaces your LuaLaTeX preamble, takes either an input file or code as an argument"""
 
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
+        bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
         if code is None and ctx.message.attachments:
@@ -175,10 +175,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def resetluapreamble_(self, ctx):
         """Resets your LuaLaTeX preamble to the default, takes no arguments"""
 
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
+        bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
         subprocess.call(f"rm -f tex/luapreamble/{ctx.author.id}.tex")
@@ -189,10 +186,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def appendluapreamble_(self, ctx, *, code):
         """Appends lines to your LuaLaTeX preamble, takes the code as an argument"""
 
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        bot_admin = admin_data["botAdmin"]
-
+        bot_admin = get_admins()
         if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
             return await ctx.send(embed=embed_noowner)
         if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
