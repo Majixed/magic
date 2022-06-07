@@ -34,6 +34,8 @@ done
 
 mv ~group/$uid.png .
 
+convert -shave 1x1 $uid.png $uid.png
+
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
