@@ -10,34 +10,31 @@ from typing import Union
 from discord.ext import commands
 from conf.var import (
         emo_del,
-        bot_owner,
         light_gray,
         green,
         red,
-        react_timeout,
-        embed_noowner
+        react_timeout
         )
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
+
     def __init__(self, bot):
         self.bot = bot
 
     # Upload a file
     @commands.command(name="upload", brief="Upload a file to discord")
+    @commands.is_owner()
     async def upload_(self, ctx, *, filename):
         """Uploads a file to the current discord channel, takes the path to the file as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         await ctx.send(file=discord.File(filename))
 
     # Delete a message by ID
     @commands.command(name="deletemsg", brief="Delete a message by its ID")
+    @commands.is_owner()
     async def deletemsg_(self, ctx, channel_id: int, message_id: int):
         """Deletes a specific message, takes the channel ID and the message ID as arguments"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         channel = self.bot.get_channel(channel_id)
         msg = await channel.fetch_message(message_id)
         await msg.delete()
@@ -45,22 +42,20 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Send a message to a specific channel
     @commands.command(name="send", brief="Send a message to a specific channel")
-    async def send_(self, ctx, channel: int, *, content):
+    @commands.is_owner()
+    async def send_(self, ctx, channel_id: int, *, message):
         """Sends a message to a specific channel, takes the channel ID and message content as arguments"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
-        target_channel = self.bot.get_channel(channel)
-        await target_channel.send(content)
+        channel = self.bot.get_channel(channel_id)
+        await channel.send(message)
         await ctx.send(embed=discord.Embed(description="Your message has been sent", color=green))
 
     # Evaluate a python expression
     @commands.command(name="eval", brief="Evaluate a python expression")
+    @commands.is_owner()
     async def eval_(self, ctx, *, code):
         """Evaluates a python expression in the same instance as the bot, takes a string of code as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         result = eval(code)
         if inspect.isawaitable(result):
             await ctx.send(f"```\n{await result}\n```")
@@ -69,11 +64,10 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Run shell commands
     @commands.command(name="sh", brief="Send commands to the shell for execution")
+    @commands.is_owner()
     async def sh_(self, ctx, *, command):
         """Sends commands to the shell for execution, takes a string of commands as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
             with subprocess.Popen(command, \
                     stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -113,125 +107,93 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Load an extension
     @commands.command(name="load", brief="Load an extension")
+    @commands.is_owner()
     async def load_(self, ctx, *, extension):
         """Loads an extension (module) of the bot, takes the extension name as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         await self.bot.load_extension(f"cogs.{extension}")
         await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully loaded", color=green))
 
     # Unload an extension
     @commands.command(name="unload", brief="Unload an extension")
+    @commands.is_owner()
     async def unload_(self, ctx, *, extension):
         """Unloads an extension (module) of the bot, takes the extension name as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         await self.bot.unload_extension(f"cogs.{extension}")
         await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully unloaded", color=green))
 
     # Reload an extension
     @commands.command(name="reload", brief="Reload an extension")
+    @commands.is_owner()
     async def reload_(self, ctx, *, extension):
         """Reloads an extension (module) of the bot, takes the extension name as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         await self.bot.reload_extension(f"cogs.{extension}")
         await ctx.send(embed=discord.Embed(description=f"Extension `{extension}` successfully reloaded", color=green))
 
     # Reload all extensions
     @commands.command(name="reboot", brief="Reload all extensions")
+    @commands.is_owner()
     async def reboot_(self, ctx):
         """Reloads all extensions (modules) of the bot, takes no arguments"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
-        try:
-            for filename in os.listdir("./cogs"):
-                if filename.endswith(".py"):
-                    await self.bot.reload_extension(f"cogs.{filename[:-3]}")
-        except Exception as e:
-            await ctx.send(f"```\n{e}\n```")
-        else:
-            await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
+        for filename in os.listdir("./cogs"):
+            if filename.endswith(".py"):
+                await self.bot.reload_extension(f"cogs.{filename[:-3]}")
+        await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
 
     # Add a bot administrator
     @commands.command(name="addadmin", brief="Add a bot administrator")
+    @commands.is_owner()
     async def addadmin_(self, ctx, user: Union[int, discord.User]):
         """Adds a user to the bot administrators, takes the user ID as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         if isinstance(user, int):
             userid = user
         elif isinstance(user, discord.User):
             userid = user.id
-        try:
-            username = await self.bot.fetch_user(userid)
-        except Exception as e:
-            return await ctx.send(f"```\n{e}\n```")
-        try:
-            with open("admins.json", "r") as json_read:
-                admin_data = json.load(json_read)
-        except Exception as e:
-            print(e)
-            await ctx.send(f"```\n{e}\n```")
-        try:
-            if userid in admin_data["botAdmin"]:
-                return await ctx.send(embed=discord.Embed(description="This user is already an admin", color=red))
-            admin_data["botAdmin"] += [userid]
+        username = await self.bot.fetch_user(userid)
 
-            with open("admins.json", "w") as json_write:
-                json.dump(admin_data, json_write, indent=4)
+        with open("admins.json", "r") as json_read:
+            admin_data = json.load(json_read)
+        if userid in admin_data["botAdmin"]:
+            return await ctx.send(embed=discord.Embed(description="This user is already an admin", color=red))
+        admin_data["botAdmin"] += [userid]
 
-            await ctx.send(embed=discord.Embed(description=f"{username} is now an admin", color=green))
-        except Exception as e:
-            print(e)
-            await ctx.send(f"```\n{e}\n```")
+        with open("admins.json", "w") as json_write:
+            json.dump(admin_data, json_write, indent=4)
+
+        await ctx.send(embed=discord.Embed(description=f"{username} is now an admin", color=green))
 
     # Remove a bot administrator
     @commands.command(name="removeadmin", brief="Remove a bot administrator")
+    @commands.is_owner()
     async def removeadmin_(self, ctx, user: Union[int, discord.User]):
         """Removes a user from the bot administrators, takes the user ID as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         if isinstance(user, int):
             userid = user
         elif isinstance(user, discord.User):
             userid = user.id
-        try:
-            username = await self.bot.fetch_user(userid)
-        except Exception as e:
-            return await ctx.send(f"```\n{e}\n```")
-        try:
-            with open("admins.json", "r") as json_read:
-                admin_data = json.load(json_read)
-        except Exception as e:
-            print(e)
-            await ctx.send(f"```\n{e}\n```")
-        try:
-            if userid not in admin_data["botAdmin"]:
-                return await ctx.send(embed=discord.Embed(description="This user is not already an admin", color=red))
-            admin_data["botAdmin"].remove(userid)
+        username = await self.bot.fetch_user(userid)
+        with open("admins.json", "r") as json_read:
+            admin_data = json.load(json_read)
+        if userid not in admin_data["botAdmin"]:
+            return await ctx.send(embed=discord.Embed(description="This user is not already an admin", color=red))
+        admin_data["botAdmin"].remove(userid)
 
-            with open("admins.json", "w") as json_write:
-                json.dump(admin_data, json_write, indent=4)
+        with open("admins.json", "w") as json_write:
+            json.dump(admin_data, json_write, indent=4)
 
-            await ctx.send(embed=discord.Embed(description=f"{username} is no longer an admin", color=green))
-        except Exception as e:
-            print(e)
-            await ctx.send(f"```\n{e}\n```")
+        await ctx.send(embed=discord.Embed(description=f"{username} is no longer an admin", color=green))
 
     # Get a list of all the guilds the bot is in
     @commands.command(name="showguilds", brief="Show all guilds where the bot is present")
+    @commands.is_owner()
     async def showguilds_(self, ctx):
         """Lists all the guilds the bot is present in, takes no arguments"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         g_list = []
         for guild in self.bot.guilds:
             g_list.append(guild.name)
@@ -245,22 +207,20 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
     # Make the bot leave a guild
     @commands.command(name="leaveguild", brief="Leave the specified guild")
+    @commands.is_owner()
     async def leaveguild_(self, ctx, guildid: int):
         """Leaves the specified guild, takes the guild ID as an argument"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         guild = self.bot.get_guild(guildid)
         await ctx.send(embed=discord.Embed(description=f"Leaving guild {guild}", color=green))
         await guild.leave()
 
     # Shut down the bot
     @commands.command(name="shutdown", aliases=["poweroff", "halt"], brief="Shut down the bot")
+    @commands.is_owner()
     async def shutdown_(self, ctx):
         """Disconnects the bot from discord, takes no arguments"""
 
-        if ctx.author.id not in bot_owner:
-            return await ctx.send(embed=embed_noowner)
         await ctx.send(embed=discord.Embed(description="Shutting down, goodbye", color=green))
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed")
         await self.bot.close()

@@ -7,29 +7,26 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from conf.func import get_admins
+from conf.func import is_admin
 from conf.var import (
         emo_del,
-        bot_owner,
         light_gray,
         green,
         red,
         react_timeout,
-        embed_noowner
         )
 
 class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
+
     def __init__(self, bot):
         self.bot = bot
 
     # Compile pdfLaTeX
     @commands.command(name="tex", aliases=["latex", "pdflatex", "pdftex"], brief="Compile pdfLaTeX code")
+    @commands.check_any(commands.is_owner(), is_admin)
     async def tex_(self, ctx, *, code):
         """Compiles pdfLaTeX, takes the code as an argument"""
 
-        bot_admin = get_admins()
-        if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
-            return await ctx.send(embed=embed_noowner)
         async with ctx.typing():
             err_msg=None
             out_img=None
@@ -71,9 +68,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 reaction, user = await self.bot.wait_for("reaction_add", timeout=react_timeout, check=check)
 
                 if str(reaction.emoji) == emo_del:
-                    if out_img is not None:
+                    if out_img:
                         await out_img.delete()
-                    if err_msg is not None:
+                    if err_msg:
                         await err_msg.delete()
                     break
 
@@ -86,13 +83,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
     # Upload your pdfLaTeX preamble
     @commands.command(name="preamble", brief="Upload your own or another user's pdfLaTeX preamble")
+    @commands.check_any(commands.is_owner(), is_admin)
     async def preamble_(self, ctx, *, user: Union[int, discord.User]=None):
         """Uploads your own or another user's pdfLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
-        bot_admin = get_admins()
-        if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
-            return await ctx.send(embed=embed_noowner)
-        if user is None:
+        if not user:
             try:
                 p_own = await ctx.send("Your pdflatex preamble",
                         file=discord.File(f"tex/preamble/{ctx.author.id}.tex")
@@ -153,13 +148,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
     # Replace your pdfLaTeX preamble
     @commands.command(name="replacepreamble", brief="Replace your pdfLaTeX preamble with an input file or code")
+    @commands.check_any(commands.is_owner(), is_admin)
     async def replacepreamble_(self, ctx, *, code=None):
         """Replaces your pdfLaTeX preamble, takes either an input file or code as an argument"""
 
-        bot_admin = get_admins()
-        if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
-            return await ctx.send(embed=embed_noowner)
-        if code is None and ctx.message.attachments:
+        if not code and ctx.message.attachments:
             if ctx.message.attachments[0].size >= 250000:
                 return await ctx.send(embed=discord.Embed(description="Attached file is too large (over `250KB`).", color=red))
             else:
@@ -174,7 +167,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 else:
                     subprocess.call(f"mv tex/preamble/tmp/{ctx.author.id}.pre tex/preamble/{ctx.author.id}.tex")
                     await ctx.send(embed=discord.Embed(description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.", color=green))
-        elif code is None and not ctx.message.attachments:
+        elif not code and not ctx.message.attachments:
             return await ctx.send(embed=discord.Embed(description="You need to attach the file containing your preamble or enter the replacement text.", color=red))
         else:
             with open(f"tex/preamble/{ctx.author.id}.tex", "w") as r:
@@ -183,23 +176,19 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
     # Reset your pdfLaTeX preamble
     @commands.command(name="resetpreamble", brief="Reset your pdfLaTeX preamble to the default")
+    @commands.check_any(commands.is_owner(), is_admin)
     async def resetpreamble_(self, ctx):
         """Resets your pdfLaTeX preamble to the default, takes no arguments"""
 
-        bot_admin = get_admins()
-        if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
-            return await ctx.send(embed=embed_noowner)
         subprocess.call(f"rm -f tex/preamble/{ctx.author.id}.tex")
         await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
 
     # Append to your pdfLaTeX preamble
     @commands.command(name="appendpreamble", brief="Append lines to your pdfLaTeX preamble")
+    @commands.check_any(commands.is_owner(), is_admin)
     async def appendpreamble_(self, ctx, *, code):
         """Appends lines to your pdfLaTeX preamble, takes the code as an argument"""
 
-        bot_admin = get_admins()
-        if ctx.author.id not in bot_owner and ctx.author.id not in bot_admin:
-            return await ctx.send(embed=embed_noowner)
         if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")

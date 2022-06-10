@@ -1,9 +1,5 @@
 import discord
 
-# List of UIDs allowed to run owner commands
-# Replace this with your own user ID
-bot_owner = [598847267377643530]
-
 # The bot's prefix
 prefix = "&"
 
@@ -23,6 +19,3 @@ emo_right = "<:page_right:963100747787026433>"
 
 # Timeout value
 react_timeout = 180.0
-
-# Commonly used embeds
-embed_noowner = discord.Embed(description="You must be a bot owner to use this command", color=red)

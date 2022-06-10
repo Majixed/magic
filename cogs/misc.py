@@ -6,6 +6,7 @@ from discord.ext import commands
 from googletrans import Translator
 
 class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
+
     def __init__(self, bot):
         self.bot = bot
 

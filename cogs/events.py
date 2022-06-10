@@ -5,6 +5,7 @@ from discord.ext import commands
 from conf.var import prefix
 
 class Events(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -12,14 +13,6 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Logged in as {self.bot.user} ({self.bot.user.id})")
-
-    # Basic error handling
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            pass
-        else:
-            await ctx.send(f"```\n{error}\n```")
 
     # Command log
     @commands.Cog.listener()
