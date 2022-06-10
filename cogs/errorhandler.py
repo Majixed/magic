@@ -52,7 +52,7 @@ class ErrorHandler(commands.Cog):
             await ctx.send(embed=discord.Embed(description="Unable to view the requested channel, please check my permissions", color=red))
 
         elif isinstance(error, commands.CheckAnyFailure):
-            await ctx.send(embed=discord.Embed(description="You must be a bot admin to run this command", color=red))
+            await ctx.send(embed=discord.Embed(description="You must be a bot admin to use this command", color=red))
 
         elif isinstance(error, commands.MissingRequiredArgument):
 
