@@ -4,7 +4,7 @@ import discord
 
 from discord.ext import commands
 from dotenv import load_dotenv
-from pretty_help import DefaultMenu, PrettyHelp
+from pretty_help import EmojiMenu, PrettyHelp
 from conf.var import (
         emo_del,
         emo_left,
@@ -37,7 +37,7 @@ if not os.path.isfile("admins.json"):
 """)
 
 # Prettify the help page
-menu = DefaultMenu(
+menu = EmojiMenu(
         page_left=emo_left.lstrip("<").rstrip(">"),
         page_right=emo_right.lstrip("<").rstrip(">"),
         remove=emo_del.lstrip("<").rstrip(">"),

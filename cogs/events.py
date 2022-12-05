@@ -32,7 +32,7 @@ class Events(commands.Cog):
                 return
             if message.author.bot:
                 return
-            elif "LOL" in message.content:
+            elif any(trigger in message.content for trigger in ("LOL", "LMAO")):
                 await message.channel.send("Haha. That was so funny.")
         except Exception as e:
             print(e)

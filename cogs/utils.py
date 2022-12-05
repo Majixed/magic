@@ -138,7 +138,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     async def reboot_(self, ctx):
         """Reloads all extensions (modules) of the bot, takes no arguments"""
 
-        for filename in os.listdir("./cogs"):
+        for filename in os.listdir("cogs"):
             if filename.endswith(".py"):
                 await self.bot.reload_extension(f"cogs.{filename[:-3]}")
         await ctx.send(embed=discord.Embed(description="All extensions successfully reloaded", color=green))
