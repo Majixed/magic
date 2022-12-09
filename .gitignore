@@ -9,6 +9,3 @@ tex/luapreamble/*.tex
 tex/luapreamble/tmp/*
 tex/log/*
 tex/inputs/*
-prog/clang/*
-prog/python/*
-prog/javascript/*
