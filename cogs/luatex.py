@@ -181,8 +181,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     async def resetluapreamble_(self, ctx):
         """Resets your LuaLaTeX preamble to the default, takes no arguments"""
 
-        subprocess.call(f"rm -f tex/luapreamble/{ctx.author.id}.tex")
-        await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
+        if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
+            subprocess.call(f"rm -f tex/luapreamble/{ctx.author.id}.tex")
+            await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
+        else:
+            await ctx.send(embed=discord.Embed(description="You already have the default preamble.", color=red))
 
     # Append to your LuaLaTeX preamble
     @commands.command(name="appendluapreamble", brief="Append lines to your LuaLaTeX preamble")
@@ -192,11 +195,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
 
         if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:
-                fc.write(f"\n{code}")
+                fc.write(f"\n{code}\n")
         else:
             subprocess.call(f"cp tex/luapreamble/default/default.tex tex/luapreamble/{ctx.author.id}.tex")
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
-                fd.write(f"\n{code}")
+                fd.write(f"\n{code}\n")
         await ctx.send(embed=discord.Embed(description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.", color=green))
 
 async def setup(bot):

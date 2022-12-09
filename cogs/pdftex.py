@@ -180,8 +180,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     async def resetpreamble_(self, ctx):
         """Resets your pdfLaTeX preamble to the default, takes no arguments"""
 
-        subprocess.call(f"rm -f tex/preamble/{ctx.author.id}.tex")
-        await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
+        if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
+            subprocess.call(f"rm -f tex/preamble/{ctx.author.id}.tex")
+            await ctx.send(embed=discord.Embed(description="Your preamble has been reset to the default.", color=green))
+        else:
+            await ctx.send(embed=discord.Embed(description="You already have the default preamble.", color=red))
 
     # Append to your pdfLaTeX preamble
     @commands.command(name="appendpreamble", brief="Append lines to your pdfLaTeX preamble")
@@ -191,11 +194,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fc:
-                fc.write(f"\n{code}")
+                fc.write(f"\n{code}\n")
         else:
             subprocess.call(f"cp tex/preamble/default/default.tex tex/preamble/{ctx.author.id}.tex")
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
-                fd.write(f"\n{code}")
+                fd.write(f"\n{code}\n")
         await ctx.send(embed=discord.Embed(description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.", color=green))
 
 async def setup(bot):

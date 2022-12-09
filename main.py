@@ -38,9 +38,9 @@ if not os.path.isfile("admins.json"):
 
 # Prettify the help page
 menu = EmojiMenu(
-        page_left=emo_left.lstrip("<").rstrip(">"),
-        page_right=emo_right.lstrip("<").rstrip(">"),
-        remove=emo_del.lstrip("<").rstrip(">"),
+        page_left=emo_left.strip("<>"),
+        page_right=emo_right.strip("<>"),
+        remove=emo_del.strip("<>"),
         active_time=react_timeout
         )
 bot.help_command = PrettyHelp(menu=menu, color=light_gray)
