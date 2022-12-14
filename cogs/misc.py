@@ -1,7 +1,10 @@
+import platform
 import discord
 import aiohttp
 import json
+import sys
 
+from conf.var import light_gray
 from discord.ext import commands
 from googletrans import Translator
 
@@ -58,6 +61,23 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         transl = Translator()
         result = transl.translate(content, src=src, dest=dest).text
         await ctx.send(result)
+
+    # Retrieve bot info
+    @commands.command(name="about", brief="Retrieve information about the bot")
+    async def about_(self, ctx):
+        """Retrieves information about the bot, takes no arguments"""
+
+        embed_info = discord.Embed(title="About", description="", color=light_gray)
+
+        embed_info.add_field(name="Guilds", value=len(ctx.bot.guilds), inline=False)
+        embed_info.add_field(name="Members", value=len(list(ctx.bot.get_all_members())), inline=False)
+        embed_info.add_field(name="API Version", value="{} ({})".format(discord.__version__, discord.version_info[3]), inline=False)
+        embed_info.add_field(name="Python Version", value=sys.version.split("\n")[0], inline=False)
+        embed_info.add_field(name="Platform", value=platform.platform(), inline=False)
+        embed_info.add_field(name="Kernel", value=platform.version(), inline=False)
+
+        await ctx.send(embed=embed_info)
+
 
 async def setup(bot):
     await bot.add_cog(Miscellaneous(bot))

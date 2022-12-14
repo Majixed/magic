@@ -89,7 +89,8 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         if not user:
             try:
-                p_own = await ctx.send("Your pdflatex preamble",
+                p_own = await ctx.send(
+                        "Your `pdflatex` preamble",
                         file=discord.File(f"tex/preamble/{ctx.author.id}.tex")
                         )
                 await p_own.add_reaction(emo_del)
@@ -121,7 +122,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             username = await self.bot.fetch_user(userid)
             try:
                 p_usr = await ctx.send(
-                        f"{username}'s pdflatex preamble",
+                        f"{username}'s `pdflatex` preamble",
                         file=discord.File(f"tex/preamble/{userid}.tex")
                         )
                 await p_usr.add_reaction(emo_del)

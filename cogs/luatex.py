@@ -90,7 +90,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         if not user:
             try:
                 p_own = await ctx.send(
-                        "Your lualatex preamble",
+                        "Your `lualatex` preamble",
                         file=discord.File(f"tex/luapreamble/{ctx.author.id}.tex")
                         )
                 await p_own.add_reaction(emo_del)
@@ -122,7 +122,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             username = await self.bot.fetch_user(userid)
             try:
                 p_usr = await ctx.send(
-                        f"{username}'s lualatex preamble",
+                        f"{username}'s `lualatex` preamble",
                         file=discord.File(f"tex/luapreamble/{userid}.tex")
                         )
                 await p_usr.add_reaction(emo_del)
