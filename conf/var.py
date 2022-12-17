@@ -4,12 +4,12 @@ import discord
 prefix = "&"
 
 # Colors
-red = 0xff5555
-green = 0x55ff55
-blue = 0x5555ff
-white = 0xffffff
+red = 0xFF5555
+green = 0x55FF55
+blue = 0x5555FF
+white = 0xFFFFFF
 black = 0x000000
-light_gray = 0x2f3136
+light_gray = 0x2F3136
 
 # Custom emojis
 # Replace these with your own custom emojis

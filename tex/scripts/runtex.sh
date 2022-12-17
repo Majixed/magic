@@ -13,7 +13,7 @@ else
     cat ../../preamble/default/default.tex >> $uid.tex
 fi
 
-echo "\\\begin{document}" >> $uid.tex
+echo "\n\\\begin{document}" >> $uid.tex
 cat ../../inputs/$uid.tmp >> $uid.tex
 echo "\n\\end{document}" >> $uid.tex
 

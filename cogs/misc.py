@@ -8,8 +8,8 @@ from conf.var import light_gray
 from discord.ext import commands
 from googletrans import Translator
 
-class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
 
+class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -37,14 +37,15 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         await ctx.send(f"{resp}! `{round(self.bot.latency * 1000)} ms`")
 
     # Basic calculator
-    @commands.command(name="calc", aliases=["calculate"], brief="Perform simple calculations")
+    @commands.command(
+        name="calc", aliases=["calculate"], brief="Perform simple calculations"
+    )
     async def calc_(self, ctx, *, expression):
         """Queries the mathjs API to perform calculations on the given expression, takes the expression string as an argument"""
 
         addr = "https://api.mathjs.org/v4/"
         exprs = expression.split("\n")
-        request = {"expr": exprs,
-                   "precision": 10}
+        request = {"expr": exprs, "precision": 10}
         async with aiohttp.ClientSession() as session:
             async with session.post(addr, data=json.dumps(request)) as resp:
                 result = await resp.json()
@@ -54,7 +55,9 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         await ctx.send("```\n{}\n```".format("\n".join(result["result"])))
 
     # Translate between languages
-    @commands.command(name="translate", aliases=["tr"], brief="Translate between different languages")
+    @commands.command(
+        name="translate", aliases=["tr"], brief="Translate between different languages"
+    )
     async def translate_(self, ctx, src, dest, *, content):
         """Translate between two languages using the Google Translate API, takes the input language, output language, and message content as arguments"""
 
@@ -70,9 +73,17 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         embed_info = discord.Embed(title="About", description="", color=light_gray)
 
         embed_info.add_field(name="Guilds", value=len(ctx.bot.guilds), inline=False)
-        embed_info.add_field(name="Members", value=len(list(ctx.bot.get_all_members())), inline=False)
-        embed_info.add_field(name="API Version", value="{} ({})".format(discord.__version__, discord.version_info[3]), inline=False)
-        embed_info.add_field(name="Python Version", value=sys.version.split("\n")[0], inline=False)
+        embed_info.add_field(
+            name="Members", value=len(list(ctx.bot.get_all_members())), inline=False
+        )
+        embed_info.add_field(
+            name="API Version",
+            value="{} ({})".format(discord.__version__, discord.version_info[3]),
+            inline=False,
+        )
+        embed_info.add_field(
+            name="Python Version", value=sys.version.split("\n")[0], inline=False
+        )
         embed_info.add_field(name="Platform", value=platform.platform(), inline=False)
         embed_info.add_field(name="Kernel", value=platform.version(), inline=False)
 
