@@ -20,7 +20,7 @@ To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ ter
 
 This will install the pdfTeX and LuaTeX extensions to a-Shell. Type ``y`` at the prompt and wait for it to install.
 
-This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.0.0a, which can be installed from PyPI:
+This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.1.0, which can be installed from PyPI:
 
 .. code:: sh
 

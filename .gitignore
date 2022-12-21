@@ -2,7 +2,6 @@
 .git
 magic.log
 admins.json
-cogs/test.py
 tex/staging/*
 tex/preamble/*.tex
 tex/preamble/tmp/*
