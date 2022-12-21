@@ -1,7 +1,7 @@
 import discord
 
 # The bot's prefix
-prefix = "&"
+prefix = "-"
 
 # Colors
 red = 0xFF5555

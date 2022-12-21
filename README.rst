@@ -63,6 +63,6 @@ Finally, start up the bot:
 
 Make sure you have given the bot the privileged Message Content intent in the `Discord Developer Portal <https://discord.com/developers/>`_, otherwise it may not be able to respond to the prefix and some features may not work.
 
-The bot's default prefix is ``&``, you can change it by editing the ``prefix`` variable in ``conf/var.py``. Run ``&help`` to get a list of all its commands.
+The bot's default prefix is ``-``, you can change it by editing the ``prefix`` variable in ``conf/var.py``. Run ``-help`` to get a list of all its commands.
 
 If you have any suggestions or queries, feel free to open an issue.

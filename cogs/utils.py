@@ -184,14 +184,14 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             userid = user
         elif isinstance(user, discord.User):
             userid = user.id
-        username = await self.bot.fetch_user(userid)
+        username = self.bot.get_user(userid)
 
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
         if userid in admin_data["botAdmin"]:
             return await ctx.send(
                 embed=discord.Embed(
-                    description="This user is already an admin", color=red
+                    description=f"{username} is already an admin", color=red
                 )
             )
         admin_data["botAdmin"] += [userid]
@@ -213,13 +213,13 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             userid = user
         elif isinstance(user, discord.User):
             userid = user.id
-        username = await self.bot.fetch_user(userid)
+        username = self.bot.get_user(userid)
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
         if userid not in admin_data["botAdmin"]:
             return await ctx.send(
                 embed=discord.Embed(
-                    description="This user is not already an admin", color=red
+                    description=f"{username} is not already an admin", color=red
                 )
             )
         admin_data["botAdmin"].remove(userid)
