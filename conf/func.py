@@ -3,7 +3,6 @@ import discord
 
 from discord.ext import commands
 
-
 def get_admins():
     with open("admins.json", "r") as json_read:
         admin_data = json.load(json_read)

@@ -1,4 +1,5 @@
 import platform
+import psutil
 import discord
 import aiohttp
 import json
@@ -70,25 +71,37 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
     async def about_(self, ctx):
         """Retrieves information about the bot, takes no arguments"""
 
-        embed_info = discord.Embed(title="About", description="", color=light_gray)
+        mem = psutil.virtual_memory()
+        mem_str = '{0:.2f}GB used out of {1:.2f}GB ({mem.percent}%)'.format(
+            mem.used / (1024**3), mem.total / (1024**3), mem=mem
+        )
+        embed_info = discord.Embed(title='About', description='')
 
-        embed_info.add_field(name="Guilds", value=len(ctx.bot.guilds), inline=False)
+        embed_info.add_field(name='Guilds', value=len(ctx.bot.guilds), inline=False)
         embed_info.add_field(
-            name="Members", value=len(list(ctx.bot.get_all_members())), inline=False
+            name='Members', value=len(list(ctx.bot.get_all_members())), inline=False
         )
         embed_info.add_field(
-            name="API Version",
-            value="{} ({})".format(discord.__version__, discord.version_info[3]),
+            name='Memory Usage',
+            value=mem_str,
             inline=False,
         )
         embed_info.add_field(
-            name="Python Version", value=sys.version.split("\n")[0], inline=False
+            name='CPU Usage',
+            value='{}%'.format(psutil.cpu_percent()),
+            inline=False,
         )
-        embed_info.add_field(name="Platform", value=platform.platform(), inline=False)
-        embed_info.add_field(name="Kernel", value=platform.version(), inline=False)
+        embed_info.add_field(
+            name='API Version',
+            value='{} ({})'.format(discord.__version__, discord.version_info[3]),
+            inline=False,
+        )
+        embed_info.add_field(
+            name='Python Version', value=sys.version.split('\n')[0], inline=False
+        )
+        embed_info.add_field(name='Platform', value=platform.platform(), inline=False)
 
         await ctx.send(embed=embed_info)
-
 
 async def setup(bot):
     await bot.add_cog(Miscellaneous(bot))

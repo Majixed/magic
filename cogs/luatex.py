@@ -7,7 +7,6 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from conf.func import is_admin
 from conf.var import (
     emo_del,
     light_gray,
@@ -25,7 +24,6 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     @commands.command(
         name="luatex", aliases=["lualatex"], brief="Compile LuaLaTeX code"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def luatex_(self, ctx, *, code):
         """Compiles LuaLaTeX, takes the code as an argument"""
 
@@ -51,16 +49,16 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                 code = "\n".join(final_code).rstrip("\n")
             with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
                 f_input.write(code)
-            subprocess.call(f"sh tex/scripts/runluatex.sh {ctx.author.id}")
+            subprocess.run(f"bash tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
         embed_err = discord.Embed(title="", description="", color=red)
         embed_err.add_field(
             name="Compilation error",
-            value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```",
+            value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 1 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```",
             inline=False,
         )
         embed_err.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         if not subprocess.getoutput(
-            f"grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log"
+            f"grep -A 10 ^! -m 1 tex/staging/{ctx.author.id}/{ctx.author.id}.log"
         ):
             pass
         else:
@@ -97,7 +95,6 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     @commands.command(
         name="luapreamble", brief="Upload your own or another user's LuaLaTeX preamble"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def luapreamble_(self, ctx, *, user: Union[int, discord.User] = None):
         """Uploads your own or another user's LuaLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
@@ -179,7 +176,6 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         name="replaceluapreamble",
         brief="Replace your LuaLaTeX preamble with an input file or code",
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def replaceluapreamble_(self, ctx, *, code=None):
         """Replaces your LuaLaTeX preamble, takes either an input file or code as an argument"""
 
@@ -204,7 +200,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                     for line in c:
                         pass
                 except UnicodeDecodeError:
-                    subprocess.call(f"rm -f tex/luapreamble/tmp/{ctx.author.id}.pre")
+                    subprocess.run(f"rm -f tex/luapreamble/tmp/{ctx.author.id}.pre", shell=True)
                     await ctx.send(
                         embed=discord.Embed(
                             description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
@@ -212,8 +208,9 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                         )
                     )
                 else:
-                    subprocess.call(
-                        f"mv tex/luapreamble/tmp/{ctx.author.id}.pre tex/luapreamble/{ctx.author.id}.tex"
+                    subprocess.run(
+                        f"mv tex/luapreamble/tmp/{ctx.author.id}.pre tex/luapreamble/{ctx.author.id}.tex",
+                        shell=True,
                     )
                     await ctx.send(
                         embed=discord.Embed(
@@ -242,12 +239,11 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     @commands.command(
         name="resetluapreamble", brief="Reset your LuaLaTeX preamble to the default"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def resetluapreamble_(self, ctx):
         """Resets your LuaLaTeX preamble to the default, takes no arguments"""
 
         if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
-            subprocess.call(f"rm -f tex/luapreamble/{ctx.author.id}.tex")
+            subprocess.run(f"rm -f tex/luapreamble/{ctx.author.id}.tex", shell=True)
             await ctx.send(
                 embed=discord.Embed(
                     description="Your preamble has been reset to the default.",
@@ -265,7 +261,6 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     @commands.command(
         name="appendluapreamble", brief="Append lines to your LuaLaTeX preamble"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def appendluapreamble_(self, ctx, *, code):
         """Appends lines to your LuaLaTeX preamble, takes the code as an argument"""
 
@@ -273,8 +268,9 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
-            subprocess.call(
-                f"cp tex/luapreamble/default/default.tex tex/luapreamble/{ctx.author.id}.tex"
+            subprocess.run(
+                f"cp tex/luapreamble/default/default.tex tex/luapreamble/{ctx.author.id}.tex",
+                shell=True,
             )
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")

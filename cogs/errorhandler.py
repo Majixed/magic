@@ -110,6 +110,13 @@ class ErrorHandler(commands.Cog):
                     )
                 )
 
+            elif ctx.command.qualified_name in ["addadmin", "removeadmin"]:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description="Please provide me with a username", color=red
+                    )
+                )
+
             elif ctx.command.qualified_name == "sh":
                 await ctx.send(
                     embed=discord.Embed(

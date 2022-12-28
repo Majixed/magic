@@ -1,6 +1,5 @@
 uid=$1
 
-rm -f ~group/$uid.*
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
@@ -13,28 +12,33 @@ else
     cat ../../preamble/default/default.tex >> $uid.tex
 fi
 
-echo "\n\\\begin{document}" >> $uid.tex
+echo -e "\n\\\begin{document}" >> $uid.tex
 cat ../../inputs/$uid.tmp >> $uid.tex
-echo "\n\\end{document}" >> $uid.tex
+echo -e "\n\\\end{document}" >> $uid.tex
 
-pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
+timeout 15 pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
 
-if [ -f $uid.pdf ]; then
-    mv $uid.pdf ~group
-    open "shortcuts://run-shortcut?name=pdfpng3&input=$uid.pdf"
-else
+if [ $? -eq 124 ]; then
+    echo "Compilation timed out!"
     cp ../../failed.png $uid.png
     cd ../../..
     exit 1
 fi
 
-until [ -f ~group/$uid.png ]; do
-    sleep 0.1
-done
+if [ -f $uid.pdf ]; then
+    timeout 15 pdftoppm $uid.pdf tmp -r 600 -png && mv tmp-1.png $uid.png
 
-mv ~group/$uid.png .
-
-convert -shave 1x1 $uid.png $uid.png
+    if [ $? -eq 124 ]; then
+        echo "Image conversion timed out!"
+        cp ../../failed.png $uid.png
+        cd ../../..
+        exit 1
+    fi
+else
+    cp ../../failed.png $uid.png
+    cd ../../..
+    exit 1
+fi
 
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000

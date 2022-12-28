@@ -1,4 +1,5 @@
 import os
+import ast
 import json
 import asyncio
 import discord
@@ -10,6 +11,18 @@ from typing import Union
 from discord.ext import commands
 from conf.var import emo_del, light_gray, green, red, react_timeout
 
+# Helper function for eval command
+def insert_returns(body):
+    if isinstance(body[-1], ast.Expr):
+        body[-1] = ast.Return(body[-1].value)
+        ast.fix_missing_locations(body[-1])
+
+    if isinstance(body[-1], ast.If):
+        insert_returns(body[-1].body)
+        insert_returns(body[-1].orelse)
+
+    if isinstance(body[-1], ast.With):
+        insert_returns(body[-1].body)
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
     def __init__(self, bot):
@@ -55,13 +68,31 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="eval", brief="Evaluate a python expression")
     @commands.is_owner()
     async def eval_(self, ctx, *, code):
-        """Evaluates a python expression in the same instance as the bot, takes a string of code as an argument"""
+        """Evaluates a python expression, takes a code as an argument"""
 
-        result = eval(code)
-        if inspect.isawaitable(result):
-            await ctx.send(f"```\n{await result}\n```")
-        else:
-            await ctx.send(f"```\n{result}\n```")
+        fn_name = "_eval_expr"
+
+        code = code.strip("` ")
+        code = "\n".join(f"    {i}" for i in code.splitlines())
+
+        body = f"async def {fn_name}():\n{code}"
+
+        parsed = ast.parse(body)
+        body = parsed.body[0].body
+
+        insert_returns(body)
+
+        env = {
+            'bot': ctx.bot,
+            'discord': discord,
+            'commands': commands,
+            'ctx': ctx,
+            '__import__': __import__
+        }
+        exec(compile(parsed, filename="<ast>", mode="exec"), env)
+
+        result = (await eval(f"{fn_name}()", env))
+        await ctx.send(f"```\n{result}\n```")
 
     # Run shell commands
     @commands.command(name="sh", brief="Send commands to the shell for execution")
@@ -75,6 +106,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                shell=True,
             ) as p:
                 out = p.communicate()[0].decode("utf-8")
                 err = p.communicate()[1].decode("utf-8")
@@ -265,10 +297,10 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         """Leaves the specified guild, takes the guild ID as an argument"""
 
         guild = self.bot.get_guild(guildid)
-        await ctx.send(
-            embed=discord.Embed(description=f"Leaving guild {guild}", color=green)
-        )
         await guild.leave()
+        await ctx.send(
+            embed=discord.Embed(description=f"Left guild {guild}", color=green)
+        )
 
     # Shut down the bot
     @commands.command(

@@ -7,7 +7,6 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from conf.func import is_admin
 from conf.var import (
     emo_del,
     light_gray,
@@ -27,7 +26,6 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         aliases=["latex", "pdflatex", "pdftex"],
         brief="Compile pdfLaTeX code",
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def tex_(self, ctx, *, code):
         """Compiles pdfLaTeX, takes the code as an argument"""
 
@@ -53,16 +51,16 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 code = "\n".join(final_code).rstrip("\n")
             with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
                 f_input.write(code)
-            subprocess.call(f"sh tex/scripts/runtex.sh {ctx.author.id}")
+            subprocess.run(f"bash tex/scripts/runtex.sh {ctx.author.id}", shell=True)
         embed_err = discord.Embed(title="", description="", color=red)
         embed_err.add_field(
             name="Compilation error",
-            value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```",
+            value=f"```\n{subprocess.getoutput(f'grep -A 10 ^! -m 1 tex/staging/{ctx.author.id}/{ctx.author.id}.log')[:1016]}\n```",
             inline=False,
         )
         embed_err.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         if not subprocess.getoutput(
-            f"grep -A 10 ^! -m 2 tex/staging/{ctx.author.id}/{ctx.author.id}.log"
+            f"grep -A 10 ^! -m 1 tex/staging/{ctx.author.id}/{ctx.author.id}.log"
         ):
             pass
         else:
@@ -99,7 +97,6 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     @commands.command(
         name="preamble", brief="Upload your own or another user's pdfLaTeX preamble"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def preamble_(self, ctx, *, user: Union[int, discord.User] = None):
         """Uploads your own or another user's pdfLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
@@ -181,7 +178,6 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         name="replacepreamble",
         brief="Replace your pdfLaTeX preamble with an input file or code",
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def replacepreamble_(self, ctx, *, code=None):
         """Replaces your pdfLaTeX preamble, takes either an input file or code as an argument"""
 
@@ -206,7 +202,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     for line in c:
                         pass
                 except UnicodeDecodeError:
-                    subprocess.call(f"rm -f tex/preamble/tmp/{ctx.author.id}.pre")
+                    subprocess.run(f"rm -f tex/preamble/tmp/{ctx.author.id}.pre", shell=True)
                     await ctx.send(
                         embed=discord.Embed(
                             description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
@@ -214,8 +210,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                         )
                     )
                 else:
-                    subprocess.call(
-                        f"mv tex/preamble/tmp/{ctx.author.id}.pre tex/preamble/{ctx.author.id}.tex"
+                    subprocess.run(
+                        f"mv tex/preamble/tmp/{ctx.author.id}.pre tex/preamble/{ctx.author.id}.tex",
+                        shell=True
                     )
                     await ctx.send(
                         embed=discord.Embed(
@@ -244,12 +241,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     @commands.command(
         name="resetpreamble", brief="Reset your pdfLaTeX preamble to the default"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def resetpreamble_(self, ctx):
         """Resets your pdfLaTeX preamble to the default, takes no arguments"""
 
         if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
-            subprocess.call(f"rm -f tex/preamble/{ctx.author.id}.tex")
+            subprocess.run(f"rm -f tex/preamble/{ctx.author.id}.tex", shell=True)
             await ctx.send(
                 embed=discord.Embed(
                     description="Your preamble has been reset to the default.",
@@ -267,7 +263,6 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     @commands.command(
         name="appendpreamble", brief="Append lines to your pdfLaTeX preamble"
     )
-    @commands.check_any(commands.is_owner(), is_admin)
     async def appendpreamble_(self, ctx, *, code):
         """Appends lines to your pdfLaTeX preamble, takes the code as an argument"""
 
@@ -275,8 +270,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
-            subprocess.call(
-                f"cp tex/preamble/default/default.tex tex/preamble/{ctx.author.id}.tex"
+            subprocess.run(
+                f"cp tex/preamble/default/default.tex tex/preamble/{ctx.author.id}.tex",
+                shell=True
             )
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
