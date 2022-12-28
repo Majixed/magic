@@ -95,9 +95,9 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         await ctx.send(f"```\n{result}\n```")
 
     # Run shell commands
-    @commands.command(name="sh", brief="Send commands to the shell for execution")
+    @commands.command(name="shell", aliases=["sh", "bash"], brief="Send commands to the shell for execution")
     @commands.is_owner()
-    async def sh_(self, ctx, *, command):
+    async def shell_(self, ctx, *, command):
         """Sends commands to the shell for execution, takes a string of commands as an argument"""
 
         async with ctx.typing():
