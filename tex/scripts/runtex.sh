@@ -19,7 +19,7 @@ echo -e "\n\\\end{document}" >> $uid.tex
 timeout 15 pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
 
 if [ $? -eq 124 ]; then
-    echo "Compilation timed out!" > error
+    echo "Compilation timed out!" > $uid.error
     cp ../../failed.png $uid.png
     cd ../../..
     exit 1
@@ -29,16 +29,20 @@ if [ -f $uid.pdf ]; then
     timeout 15 pdftoppm $uid.pdf tmp -r 600 -png && mv tmp-1.png $uid.png
 
     if [ $? -eq 124 ]; then
-        echo "Image conversion timed out!" > error
+        echo "Image conversion timed out!" > $uid.error
         cp ../../failed.png $uid.png
         cd ../../..
         exit 1
     fi
 else
-    grep -A 10 "^!" -m 1 $uid.log > error
+    grep -A 10 "^!" -m 1 $uid.log > $uid.error
     cp ../../failed.png $uid.png
     cd ../../..
     exit 1
+fi
+
+if grep -q "^!" $uid.log; then
+    grep -A 10 "^!" -m 1 $uid.log > $uid.error
 fi
 
 width=`identify -ping -format "%w" $uid.png`

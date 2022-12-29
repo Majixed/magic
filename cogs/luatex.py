@@ -50,8 +50,8 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
                 f_input.write(code)
             subprocess.run(f"bash tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
-        if os.path.isfile(f"tex/staging/{ctx.author.id}/error"):
-            err_out = subprocess.getoutput(f"cat tex/staging/{ctx.author.id}/error")
+        if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
+            err_out = subprocess.getoutput(f"cat tex/staging/{ctx.author.id}/{ctx.author.id}.error")
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(
                 name="Compilation error",
