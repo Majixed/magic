@@ -95,7 +95,7 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.MissingRequiredArgument):
 
-            if ctx.command.qualified_name in ["tex", "luatex"]:
+            if ctx.command.qualified_name in ["tex", "luatex", "eval", "shell"]:
                 await ctx.send(
                     embed=discord.Embed(
                         description="Couldn't find any code to process", color=red
@@ -139,10 +139,10 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
             print(
-                "Ignoring exception in command {}:".format(ctx.command), file=sys.stderr
+                "Ignoring exception in command {}:".format(ctx.command), file=sys.stdout
             )
             traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
+                type(error), error, error.__traceback__, file=sys.stdout
             )
 
 
