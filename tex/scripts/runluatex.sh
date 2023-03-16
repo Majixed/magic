@@ -45,6 +45,7 @@ if grep -q "^!" $uid.log; then
     grep -A 10 "^!" -m 1 $uid.log > $uid.error
 fi
 
+convert -shave 1x1 $uid.png $uid.png
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
