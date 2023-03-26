@@ -17,5 +17,5 @@ emo_del = "<:delete:962038961432322128>"
 emo_left = "<:page_left:963100801717403718>"
 emo_right = "<:page_right:963100747787026433>"
 
-# Timeout value
+# Reaction timeout value
 react_timeout = 180.0

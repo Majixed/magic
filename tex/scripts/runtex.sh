@@ -4,7 +4,7 @@ rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
 
-echo "\\documentclass[preview, border=10pt, 12pt]{standalone}" > $uid.tex
+echo -e "\\documentclass[preview, border=10pt, 12pt]{standalone}\n\\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" > $uid.tex
 
 if [ -f "../../preamble/$uid.tex" ]; then
     cat ../../preamble/$uid.tex >> $uid.tex
@@ -26,7 +26,7 @@ if [ $? -eq 124 ]; then
 fi
 
 if [ -f $uid.pdf ]; then
-    timeout 60 pdftoppm $uid.pdf tmp -r 600 -png && mv tmp-1.png $uid.png
+    timeout 60 pdftoppm $uid.pdf tmp -r 500 -png && mv tmp-1.png $uid.png
 
     if [ $? -eq 124 ]; then
         echo "Image conversion timed out!" > $uid.error
@@ -45,7 +45,6 @@ if grep -q "^!" $uid.log; then
     grep -A 10 "^!" -m 1 $uid.log > $uid.error
 fi
 
-convert -shave 1x1 $uid.png $uid.png
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
