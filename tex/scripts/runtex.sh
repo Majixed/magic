@@ -26,7 +26,7 @@ if [ $? -eq 124 ]; then
 fi
 
 if [ -f $uid.pdf ]; then
-    timeout 60 pdftoppm $uid.pdf tmp -r 500 -png && mv tmp-1.png $uid.png
+    timeout 60 pdftoppm $uid.pdf $uid -r 600 -png -singlefile
 
     if [ $? -eq 124 ]; then
         echo "Image conversion timed out!" > $uid.error
