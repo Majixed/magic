@@ -16,7 +16,7 @@ echo -e "\n\\\begin{document}" >> $uid.tex
 cat ../../inputs/$uid.tmp >> $uid.tex
 echo -e "\n\\\end{document}" >> $uid.tex
 
-timeout 60 pdflatex -no-shell-escape -interaction=nonstopmode $uid.tex > ../../log/texout.log
+timeout 60 pdflatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex > ../../log/texout.log
 
 if [ $? -eq 124 ]; then
     echo "Compilation timed out!" > $uid.error
@@ -30,6 +30,11 @@ if [ -f $uid.pdf ]; then
 
     if [ $? -eq 124 ]; then
         echo "Image conversion timed out!" > $uid.error
+        cp ../../failed.png $uid.png
+        cd ../../..
+        exit 1
+    elif [ `stat -c%s $uid.png` -gt 8000000 ]; then
+        echo "Output image too large!" > $uid.error
         cp ../../failed.png $uid.png
         cd ../../..
         exit 1
