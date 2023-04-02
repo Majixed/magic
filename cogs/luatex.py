@@ -51,7 +51,8 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                 f_input.write(code)
             subprocess.run(f"bash tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
-            err_out = subprocess.getoutput(f"cat tex/staging/{ctx.author.id}/{ctx.author.id}.error")
+            with open("tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r") as f_err:
+                err_out = f_err.read()
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(
                 name="Compilation error",

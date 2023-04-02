@@ -37,9 +37,9 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         await ctx.send(file=discord.File(filename))
 
     # Delete a message by ID
-    @commands.command(name="deletemsg", brief="Delete a message by its ID")
+    @commands.command(name="delete", brief="Delete a message by its ID")
     @commands.is_owner()
-    async def deletemsg_(self, ctx, channel_id: int, message_id: int):
+    async def delete_(self, ctx, channel_id: int, message_id: int):
         """Deletes a specific message, takes the channel ID and the message ID as arguments"""
 
         channel = self.bot.get_channel(channel_id)

@@ -53,8 +53,10 @@ fi
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
+# convert -flop $uid.png $uid.png
+
 if [ $width -lt $minwidth ]; then
-    convert -background transparent -extent ${minwidth}x $uid.png $uid.png
+    timeout 60 convert -background transparent -extent ${minwidth}x $uid.png $uid.png
 fi
 
 cd ../../..

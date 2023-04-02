@@ -131,6 +131,13 @@ class ErrorHandler(commands.Cog):
                         color=red,
                     )
                 )
+            else:
+                await ctx.send(
+                    embed=discord.Embed(
+                        description="Missing required arguments",
+                        color=red,
+                    )
+                )
 
         else:
             embed = discord.Embed(color=red)
