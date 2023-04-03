@@ -26,32 +26,32 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         aliases=["latex", "pdflatex", "pdftex"],
         brief="Compile pdfLaTeX code",
     )
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def tex_(self, ctx, *, code):
         """Compiles pdfLaTeX, takes the code as an argument"""
 
-        async with ctx.typing():
-            err_msg = None
-            out_img = None
-            if "```" in code:
-                lines = code.splitlines()
-                codeblock = False
-                final_code = []
-                for line in lines:
-                    if "```" in line:
-                        splits = line.split("```")
-                        for split in splits:
-                            if codeblock and split not in ["", "tex", "latex"]:
-                                final_code.append(f"{split}")
-                            codeblock = not codeblock
-                        if codeblock:
-                            final_code.append("")
+        err_msg = None
+        out_img = None
+        if "```" in code:
+            lines = code.splitlines()
+            codeblock = False
+            final_code = []
+            for line in lines:
+                if "```" in line:
+                    splits = line.split("```")
+                    for split in splits:
+                        if codeblock and split not in ["", "tex", "latex"]:
+                            final_code.append(f"{split}")
                         codeblock = not codeblock
-                    elif codeblock:
-                        final_code.append(line)
-                code = "\n".join(final_code).rstrip("\n")
-            with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
-                f_input.write(code)
-            subprocess.run(f"bash tex/scripts/runtex.sh {ctx.author.id}", shell=True)
+                    if codeblock:
+                        final_code.append("")
+                    codeblock = not codeblock
+                elif codeblock:
+                    final_code.append(line)
+            code = "\n".join(final_code).rstrip("\n")
+        with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
+            f_input.write(code)
+        subprocess.run(f"bash tex/scripts/runtex.sh {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
             with open(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r") as f_err:
                 err_out = f_err.read()

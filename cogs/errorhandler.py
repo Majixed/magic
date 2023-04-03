@@ -35,6 +35,15 @@ class ErrorHandler(commands.Cog):
                 )
             )
 
+        elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(
+                embed=discord.Embed(
+                    description="Command on cooldown, try again in `{:.2f}` seconds".format(error.retry_after),
+                    color=red,
+                ),
+                delete_after=5
+            )
+
         elif isinstance(error, commands.NotOwner):
             await ctx.send(
                 embed=discord.Embed(
