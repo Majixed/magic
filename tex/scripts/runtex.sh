@@ -53,6 +53,7 @@ fi
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
+convert -shave 1x1 $uid.png $uid.png
 # convert -flop $uid.png $uid.png
 
 if [ $width -lt $minwidth ]; then

@@ -50,9 +50,14 @@ if grep -q "^!" $uid.log; then
     grep -A 10 "^!" -m 1 $uid.log > $uid.error
 fi
 
+if grep -q "^\[\\\directlua]" $uid.log; then
+    grep -A 10 "^\[\\\directlua]" -m 1 $uid.log > $uid.error
+fi
+
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
 
+convert -shave 1x1 $uid.png $uid.png
 # convert -flop $uid.png $uid.png
 
 if [ $width -lt $minwidth ]; then
