@@ -1,10 +1,12 @@
+#! /bin/sh
+
 uid=$1
 
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
 
-echo -e "\\documentclass[preview, border=10pt, 12pt]{standalone}\n\\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" > $uid.tex
+echo "\\documentclass[preview, border=10pt, 12pt]{standalone}\n\\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" > $uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
     cat ../../luapreamble/$uid.tex >> $uid.tex
@@ -12,9 +14,9 @@ else
     cat ../../luapreamble/default/default.tex >> $uid.tex
 fi
 
-echo -e "\n\\\begin{document}" >> $uid.tex
+echo "\n\\\begin{document}" >> $uid.tex
 cat ../../inputs/$uid.tmp >> $uid.tex
-echo -e "\n\\\end{document}" >> $uid.tex
+echo "\n\\\end{document}" >> $uid.tex
 
 timeout 60 lualatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex > ../../log/texout.log
 

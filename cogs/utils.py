@@ -100,33 +100,33 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     async def shell_(self, ctx, *, command):
         """Sends commands to the shell for execution, takes a string of commands as an argument"""
 
-        async with ctx.typing():
-            with subprocess.Popen(
-                command,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True,
-            ) as p:
-                out = p.communicate()[0].decode("utf-8")
-                err = p.communicate()[1].decode("utf-8")
-                ret = p.returncode
+        with subprocess.Popen(
+            command,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True,
+            executable="/bin/bash",
+        ) as p:
+            out = p.communicate()[0].decode("utf-8")
+            err = p.communicate()[1].decode("utf-8")
+            ret = p.returncode
 
-                sh_color = light_gray if ret == 0 else red
-                embed_sh = discord.Embed(color=sh_color)
+            sh_color = light_gray if ret == 0 else red
+            embed_sh = discord.Embed(color=sh_color)
+            embed_sh.add_field(
+                name="stdin", value=f"```sh\n{command}\n```", inline=False
+            )
+            embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+            if out:
                 embed_sh.add_field(
-                    name="stdin", value=f"```sh\n{command}\n```", inline=False
+                    name="stdout", value=f"```\n{out[:1016]}\n```", inline=False
                 )
-                embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
-                if out:
-                    embed_sh.add_field(
-                        name="stdout", value=f"```\n{out[:1016]}\n```", inline=False
-                    )
-                if err:
-                    embed_sh.add_field(
-                        name="stderr", value=f"```\n{err[:1016]}\n```", inline=False
-                    )
-                embed_sh.set_footer(text=f"process returned with exit status {ret}")
+            if err:
+                embed_sh.add_field(
+                    name="stderr", value=f"```\n{err[:1016]}\n```", inline=False
+                )
+            embed_sh.set_footer(text=f"process returned with exit status {ret}")
         sh_out = await ctx.send(embed=embed_sh)
         await sh_out.add_reaction(emo_del)
 
