@@ -1,6 +1,6 @@
 import os
-import json
 import codecs
+import shutil
 import discord
 import asyncio
 import subprocess
@@ -9,7 +9,6 @@ from typing import Union
 from discord.ext import commands
 from conf.var import (
     emo_del,
-    light_gray,
     green,
     red,
     react_timeout,
@@ -93,7 +92,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     @commands.command(
         name="luapreamble", brief="Upload your own or another user's LuaLaTeX preamble"
     )
-    async def luapreamble_(self, ctx, *, user: Union[int, discord.User] = None):
+    async def luapreamble_(self, ctx, *, user: Union[int, discord.User] | None):
         """Uploads your own or another user's LuaLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
         if not user:
@@ -185,37 +184,36 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                         color=red,
                     )
                 )
-            else:
-                await ctx.message.attachments[0].save(
-                    f"tex/luapreamble/tmp/{ctx.author.id}.pre"
+            await ctx.message.attachments[0].save(
+                f"tex/luapreamble/{ctx.author.id}.tex"
+            )
+            try:
+                codecs.open(
+                    f"tex/luapreamble/{ctx.author.id}.tex",
+                    encoding="utf-8",
+                    errors="strict",
+                ).readlines()
+            except UnicodeDecodeError:
+                os.remove(f"tex/luapreamble/{ctx.author.id}.tex")
+                return await ctx.send(
+                    embed=discord.Embed(
+                        description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
+                        color=red,
+                    )
                 )
-                try:
-                    c = codecs.open(
-                        f"tex/luapreamble/tmp/{ctx.author.id}.pre",
-                        encoding="utf-8",
-                        errors="strict",
-                    )
-                    for line in c:
-                        pass
-                except UnicodeDecodeError:
-                    subprocess.run(f"rm -f tex/luapreamble/tmp/{ctx.author.id}.pre", shell=True)
-                    await ctx.send(
-                        embed=discord.Embed(
-                            description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
-                            color=red,
-                        )
-                    )
-                else:
-                    subprocess.run(
-                        f"mv tex/luapreamble/tmp/{ctx.author.id}.pre tex/luapreamble/{ctx.author.id}.tex",
-                        shell=True,
-                    )
-                    await ctx.send(
-                        embed=discord.Embed(
-                            description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.",
-                            color=green,
-                        )
-                    )
+            await ctx.send(
+                embed=discord.Embed(
+                    description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.",
+                    color=green,
+                )
+            )
+        elif code and ctx.message.attachments:
+            return await ctx.send(
+                embed=discord.Embed(
+                    description="Please send your code either as a message or in a file, not both.",
+                    color=red,
+                )
+            )
         elif not code and not ctx.message.attachments:
             return await ctx.send(
                 embed=discord.Embed(
@@ -223,7 +221,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                     color=red,
                 )
             )
-        else:
+        elif code and not ctx.message.attachments:
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "w") as r:
                 r.write(code)
             await ctx.send(
@@ -241,7 +239,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         """Resets your LuaLaTeX preamble to the default, takes no arguments"""
 
         if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
-            subprocess.run(f"rm -f tex/luapreamble/{ctx.author.id}.tex", shell=True)
+            os.remove(f"tex/luapreamble/{ctx.author.id}.tex")
             await ctx.send(
                 embed=discord.Embed(
                     description="Your preamble has been reset to the default.",
@@ -266,10 +264,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
-            subprocess.run(
-                f"cp tex/luapreamble/default/default.tex tex/luapreamble/{ctx.author.id}.tex",
-                shell=True,
-            )
+            shutil.copyfile(f"cp tex/luapreamble/default/default.tex", f"tex/luapreamble/{ctx.author.id}.tex")
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
         await ctx.send(
