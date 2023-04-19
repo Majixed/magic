@@ -13,7 +13,6 @@ class ErrorHandler(commands.Cog):
     # Basic error handler implementation
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-
         if hasattr(ctx.command, "on_error"):
             return
 
@@ -38,10 +37,12 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 embed=discord.Embed(
-                    description="Command on cooldown, try again in `{:.2f}` seconds".format(error.retry_after),
+                    description="Command on cooldown, try again in `{:.2f}` seconds".format(
+                        error.retry_after
+                    ),
                     color=red,
                 ),
-                delete_after=5
+                delete_after=5,
             )
 
         elif isinstance(error, commands.NotOwner):
@@ -103,7 +104,6 @@ class ErrorHandler(commands.Cog):
             )
 
         elif isinstance(error, commands.MissingRequiredArgument):
-
             if ctx.command.qualified_name in ["tex", "luatex", "eval", "shell"]:
                 await ctx.send(
                     embed=discord.Embed(

@@ -52,7 +52,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             f_input.write(code)
         subprocess.run(f"tex/scripts/runtex.sh {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
-            with open(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r") as f_err:
+            with open(
+                f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r"
+            ) as f_err:
                 err_out = f_err.read()
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(
@@ -186,9 +188,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                         color=red,
                     )
                 )
-            await ctx.message.attachments[0].save(
-                f"tex/preamble/{ctx.author.id}.tex"
-            )
+            await ctx.message.attachments[0].save(f"tex/preamble/{ctx.author.id}.tex")
             try:
                 codecs.open(
                     f"tex/preamble/{ctx.author.id}.tex",
@@ -266,7 +266,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
-            shutil.copyfile(f"tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex")
+            shutil.copyfile(
+                f"tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
+            )
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
         await ctx.send(

@@ -11,6 +11,7 @@ from typing import Union
 from discord.ext import commands
 from conf.var import emo_del, light_gray, green, red, react_timeout
 
+
 # Helper function for eval command
 def insert_returns(body):
     if isinstance(body[-1], ast.Expr):
@@ -23,6 +24,7 @@ def insert_returns(body):
 
     if isinstance(body[-1], ast.With):
         insert_returns(body[-1].body)
+
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
     def __init__(self, bot):
@@ -83,19 +85,23 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         insert_returns(body)
 
         env = {
-            'bot': ctx.bot,
-            'discord': discord,
-            'commands': commands,
-            'ctx': ctx,
-            '__import__': __import__
+            "bot": ctx.bot,
+            "discord": discord,
+            "commands": commands,
+            "ctx": ctx,
+            "__import__": __import__,
         }
         exec(compile(parsed, filename="<ast>", mode="exec"), env)
 
-        result = (await eval(f"{fn_name}()", env))
+        result = await eval(f"{fn_name}()", env)
         await ctx.send(f"```\n{result}\n```")
 
     # Run shell commands
-    @commands.command(name="shell", aliases=["sh", "bash"], brief="Send commands to the shell for execution")
+    @commands.command(
+        name="shell",
+        aliases=["sh", "bash"],
+        brief="Send commands to the shell for execution",
+    )
     @commands.is_owner()
     async def shell_(self, ctx, *, command):
         """Sends commands to the shell for execution, takes a string of commands as an argument"""

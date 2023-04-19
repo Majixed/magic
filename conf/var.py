@@ -1,15 +1,13 @@
-import discord
-
 # The bot's prefix
 prefix = "-"
 
 # Colors
-red = 0xFF5555
-green = 0x55FF55
-blue = 0x5555FF
+red = 0xED8796
+green = 0xA6DA95
+blue = 0x8AADF4
 white = 0xFFFFFF
 black = 0x000000
-light_gray = 0x2F3136
+light_gray = 0x494D64
 
 # Custom emojis
 # Replace these with your own custom emojis

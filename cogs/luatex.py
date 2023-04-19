@@ -50,7 +50,9 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             f_input.write(code)
         subprocess.run(f"tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
-            with open(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r") as f_err:
+            with open(
+                f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r"
+            ) as f_err:
                 err_out = f_err.read()
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(
@@ -264,7 +266,10 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
-            shutil.copyfile(f"cp tex/luapreamble/default/default.tex", f"tex/luapreamble/{ctx.author.id}.tex")
+            shutil.copyfile(
+                f"cp tex/luapreamble/default/default.tex",
+                f"tex/luapreamble/{ctx.author.id}.tex",
+            )
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
         await ctx.send(

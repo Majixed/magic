@@ -42,6 +42,7 @@ menu = EmojiMenu(
 )
 bot.help_command = PrettyHelp(menu=menu, color=light_gray)
 
+
 # Load all extensions
 async def load_extensions():
     for filename in os.listdir("./cogs"):
