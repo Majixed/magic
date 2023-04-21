@@ -4,9 +4,7 @@ magic.log
 admins.json
 tex/staging/*
 tex/preamble/*.tex
-tex/preamble/tmp/*
 tex/luapreamble/*.tex
-tex/luapreamble/tmp/*
 tex/log/*
 tex/inputs/*
 __pycache__/
