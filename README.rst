@@ -20,26 +20,18 @@ To get started, install the `a-Shell <https://github.com/holzschu/a-shell>`_ ter
 
 This will install the pdfTeX and LuaTeX extensions to a-Shell. Type ``y`` at the prompt and wait for it to install.
 
-This bot is built using `discord.py <https://github.com/Rapptz/discord.py>`_ v2.1.0, which can be installed from PyPI:
-
-.. code:: sh
-
-    $ pip install discord.py
-
-Additionally, the bot makes use of the `discord-pretty-help <https://github.com/stroupbslayen/discord-pretty-help>`_, `python-dotenv <https://github.com/theskumar/python-dotenv>`_ and `googletrans <https://github.com/ssut/py-googletrans>`_ packages, so they must also be installed:
-
-.. code:: sh
-
-    $ pip install discord-pretty-help
-    $ pip install python-dotenv
-    $ pip install googletrans==3.1.0a0
-
 Clone this repository and make it your current working directory:
 
 .. code:: sh
 
     $ lg2 clone https://github.com/Majixed/magic
     $ cd magic
+
+Install dependencies:
+
+.. code:: sh
+
+   $ pip install -r requirements.txt
 
 Add your bot token to a ``.env`` file in the same directory:
 
