@@ -2,4 +2,4 @@ aiohttp==3.8.3
 discord.py==2.2.2
 googletrans==3.1.0a0
 python-dotenv==1.0.0
-discord-pretty-help==2.0.0
+discord-pretty-help==2.0.1
