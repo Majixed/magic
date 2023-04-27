@@ -33,11 +33,11 @@ Add your bot token to a ``.env`` file in the same directory:
 
 To use the TeX commands, install a distribution of TeX Live from the `TUG Website <https://tug.org/texlive/acquire-netinstall.html>`_ (recommended) or your Linux distro's package manager.
 
-Additionally, the ``convert`` and ``pdftoppm`` utilities are also required, which should be installed via your distro's package manager, for example on Ubuntu:
+Additionally, the ``poppler-utils`` and ``imagemagick`` packages are also required, which provide the ``pdftoppm`` and ``convert`` utilities respectively, and should be installed via your distro's package manager (note that ``imagemagick`` may already be installed), for example on Ubuntu:
 
 .. code:: sh
    
-  $ sudo apt install convert pdftoppm
+  $ sudo apt-get install poppler-utils imagemagick
 
 Before starting the bot for the first time, you must edit these variables in ``conf/var.py``:
 
