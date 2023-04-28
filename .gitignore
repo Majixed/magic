@@ -9,3 +9,4 @@ tex/luapreamble/*.tex
 tex/luapreamble/tmp/*
 tex/log/*
 tex/inputs/*
+__pycache__/
