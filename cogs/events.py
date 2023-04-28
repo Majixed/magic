@@ -1,4 +1,3 @@
-import discord
 import datetime
 
 from discord.ext import commands
@@ -20,7 +19,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command(self, ctx):
         print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) - command: {ctx.message.content.lstrip(prefix)}"
+            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) in {ctx.guild} ({ctx.guild.id}) in #{ctx.channel} ({ctx.channel.id}) - command: {ctx.message.content.lstrip(prefix)}"
         )
 
     # Listen for message edits
