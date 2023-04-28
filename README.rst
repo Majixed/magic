@@ -54,3 +54,5 @@ Make sure you have given the bot the privileged Message Content intent in the `D
 The bot's default prefix is ``-``, you can change it by editing the ``prefix`` variable in ``conf/var.py``. Run ``-help`` to get a list of all its commands.
 
 If you have any suggestions or queries, feel free to open an issue.
+
+I borrowed some code from the Paradøx discord bot, check out their repo `here <https://gitlab.paradoxical.pw/team-paradox/paradox>`_.
