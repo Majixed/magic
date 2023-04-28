@@ -267,7 +267,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
                 fc.write(f"\n{code}")
         else:
             shutil.copyfile(
-                f"cp tex/luapreamble/default/default.tex",
+                f"tex/luapreamble/default/default.tex",
                 f"tex/luapreamble/{ctx.author.id}.tex",
             )
             with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
