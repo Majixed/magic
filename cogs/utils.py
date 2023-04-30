@@ -151,10 +151,11 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
             except asyncio.TimeoutError:
                 if ctx.channel.type != discord.ChannelType.private:
-                    await sh_out.clear_reactions()
-                    break
-                else:
-                    break
+                    try:
+                        await sh_out.clear_reactions()
+                    except discord.Forbidden:
+                        pass
+                break
 
     # Load an extension
     @commands.command(name="load", brief="Load an extension")
@@ -320,7 +321,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             embed=discord.Embed(description="Shutting down, goodbye", color=green)
         )
         print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed"
+            f"\n{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed"
         )
         await self.bot.close()
 

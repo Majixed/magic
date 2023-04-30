@@ -87,10 +87,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
             except asyncio.TimeoutError:
                 if ctx.channel.type != discord.ChannelType.private:
-                    await out_img.clear_reactions()
-                    break
-                else:
-                    break
+                    try:
+                        await out_img.clear_reactions()
+                    except discord.Forbidden:
+                        pass
+                break
 
     # Upload your pdfLaTeX preamble
     @commands.command(
@@ -122,10 +123,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
                     except asyncio.TimeoutError:
                         if ctx.channel.type != discord.ChannelType.private:
-                            await p_own.clear_reactions()
-                            break
-                        else:
-                            break
+                            try:
+                                await p_own.clear_reactions()
+                            except discord.Forbidden:
+                                pass
+                        break
             except FileNotFoundError:
                 await ctx.send(
                     embed=discord.Embed(
@@ -160,10 +162,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
                     except asyncio.TimeoutError:
                         if ctx.channel.type != discord.ChannelType.private:
-                            await p_usr.clear_reactions()
-                            break
-                        else:
-                            break
+                            try:
+                                await p_usr.clear_reactions()
+                            except discord.Forbidden:
+                                pass
+                        break
             except FileNotFoundError:
                 await ctx.send(
                     embed=discord.Embed(

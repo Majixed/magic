@@ -19,7 +19,17 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command(self, ctx):
         print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {ctx.author} ({ctx.author.id}) in {ctx.guild} ({ctx.guild.id}) in #{ctx.channel} ({ctx.channel.id}) - command: {ctx.message.content.lstrip(prefix)}"
+            "".join(
+                [
+                "\n",
+                f"   Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+                f"   User: {ctx.author} ({ctx.author.id})\n",
+                f"  {f'Guild: {ctx.guild} ({ctx.guild.id}){chr(10)}' if ctx.guild else f'Guild: DM{chr(10)}'}",
+                f"{f'Channel: {ctx.channel} ({ctx.channel.id}){chr(10)}' if ctx.guild else ''}",
+                f"Command: {ctx.message.content.lstrip(prefix)}\n"
+                ]
+            ),
+            end=""
         )
 
     # Listen for message edits
