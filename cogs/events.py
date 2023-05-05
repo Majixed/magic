@@ -21,15 +21,15 @@ class Events(commands.Cog):
         print(
             "".join(
                 [
-                "\n",
-                f"   Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-                f"   User: {ctx.author} ({ctx.author.id})\n",
-                f"  {f'Guild: {ctx.guild} ({ctx.guild.id}){chr(10)}' if ctx.guild else f'Guild: DM{chr(10)}'}",
-                f"{f'Channel: {ctx.channel} ({ctx.channel.id}){chr(10)}' if ctx.guild else ''}",
-                f"Command: {ctx.message.content.lstrip(prefix)}\n"
+                    "\n",
+                    f"   Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+                    f"   User: {ctx.author} ({ctx.author.id})\n",
+                    f"  {f'Guild: {ctx.guild} ({ctx.guild.id}){chr(10)}' if ctx.guild else f'Guild: DM{chr(10)}'}",
+                    f"{f'Channel: {ctx.channel} ({ctx.channel.id}){chr(10)}' if ctx.guild else ''}",
+                    f"Command: {ctx.message.content.lstrip(prefix)}\n",
                 ]
             ),
-            end=""
+            end="",
         )
 
     # Listen for message edits

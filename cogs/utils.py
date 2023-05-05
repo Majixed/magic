@@ -3,7 +3,6 @@ import ast
 import json
 import asyncio
 import discord
-import inspect
 import datetime
 import subprocess
 
@@ -161,7 +160,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="load", brief="Load an extension")
     @commands.is_owner()
     async def load_(self, ctx, *, extension):
-        """Loads an extension (module) of the bot, takes the extension name as an argument"""
+        """Loads an extension of the bot, takes the extension name as an argument"""
 
         await self.bot.load_extension(f"cogs.{extension}")
         await ctx.send(
@@ -174,7 +173,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     @commands.command(name="unload", brief="Unload an extension")
     @commands.is_owner()
     async def unload_(self, ctx, *, extension):
-        """Unloads an extension (module) of the bot, takes the extension name as an argument"""
+        """Unloads an extension of the bot, takes the extension name as an argument"""
 
         await self.bot.unload_extension(f"cogs.{extension}")
         await ctx.send(
@@ -184,25 +183,20 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             )
         )
 
-    # Reload an extension
-    @commands.command(name="reload", brief="Reload an extension")
+    # Reload extensions
+    @commands.command(name="reload", brief="Reload extensions")
     @commands.is_owner()
-    async def reload_(self, ctx, *, extension):
-        """Reloads an extension (module) of the bot, takes the extension name as an argument"""
+    async def reload_(self, ctx, *, extension=None):
+        """Reloads an extension of the bot, takes its name as an optional argument, reloads all extensions if no argument is given"""
 
-        await self.bot.reload_extension(f"cogs.{extension}")
-        await ctx.send(
-            embed=discord.Embed(
-                description=f"Extension `{extension}` successfully reloaded",
-                color=green,
+        if extension:
+            await self.bot.reload_extension(f"cogs.{extension}")
+            return await ctx.send(
+                embed=discord.Embed(
+                    description=f"Extension `{extension}` successfully reloaded",
+                    color=green,
+                )
             )
-        )
-
-    # Reload all extensions
-    @commands.command(name="reboot", brief="Reload all extensions")
-    @commands.is_owner()
-    async def reboot_(self, ctx):
-        """Reloads all extensions (modules) of the bot, takes no arguments"""
 
         for filename in os.listdir("cogs"):
             if filename.endswith(".py"):
@@ -273,11 +267,9 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         )
 
     # Get a list of all the guilds the bot is in
-    @commands.command(
-        name="showguilds", brief="Show all guilds where the bot is present"
-    )
+    @commands.command(name="guilds", brief="Show all guilds where the bot is present")
     @commands.is_owner()
-    async def showguilds_(self, ctx):
+    async def guilds_(self, ctx):
         """Lists all the guilds the bot is present in, takes no arguments"""
 
         g_list = []
@@ -300,10 +292,10 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     # Make the bot leave a guild
     @commands.command(name="leaveguild", brief="Leave the specified guild")
     @commands.is_owner()
-    async def leaveguild_(self, ctx, guildid: int):
+    async def leaveguild_(self, ctx, guild_id: int):
         """Leaves the specified guild, takes the guild ID as an argument"""
 
-        guild = self.bot.get_guild(guildid)
+        guild = self.bot.get_guild(guild_id)
         await guild.leave()
         await ctx.send(
             embed=discord.Embed(description=f"Left guild {guild}", color=green)
