@@ -5,7 +5,7 @@ import aiohttp
 import json
 import sys
 
-from conf.var import light_gray
+from config.config import light_gray
 from discord.ext import commands
 from googletrans import Translator
 

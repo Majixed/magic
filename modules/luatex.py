@@ -7,7 +7,7 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from conf.var import (
+from config.config import (
     emo_del,
     green,
     red,
@@ -15,19 +15,17 @@ from conf.var import (
 )
 
 
-class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
+class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
     def __init__(self, bot):
         self.bot = bot
 
-    # Compile pdfLaTeX
+    # Compile LuaLaTeX
     @commands.command(
-        name="tex",
-        aliases=["latex", "pdflatex", "pdftex"],
-        brief="Compile pdfLaTeX code",
+        name="luatex", aliases=["lualatex"], brief="Compile LuaLaTeX code"
     )
     @commands.cooldown(1, 2, commands.BucketType.user)
-    async def tex_(self, ctx, *, code):
-        """Compiles pdfLaTeX, takes the code as an argument"""
+    async def luatex_(self, ctx, *, code):
+        """Compiles LuaLaTeX, takes the code as an argument"""
 
         err_msg = None
         out_img = None
@@ -50,7 +48,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             code = "\n".join(final_code).rstrip("\n")
         with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
             f_input.write(code)
-        subprocess.run(f"tex/scripts/runtex.sh {ctx.author.id}", shell=True)
+        subprocess.run(f"tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
             with open(
                 f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r"
@@ -93,18 +91,18 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                         pass
                 break
 
-    # Upload your pdfLaTeX preamble
+    # Upload your LuaLaTeX preamble
     @commands.command(
-        name="preamble", brief="Upload your own or another user's pdfLaTeX preamble"
+        name="luapreamble", brief="Upload your own or another user's LuaLaTeX preamble"
     )
-    async def preamble_(self, ctx, *, user: Union[int, discord.User] | None):
-        """Uploads your own or another user's pdfLaTeX preamble to the current channel, takes the user ID as an optional argument"""
+    async def luapreamble_(self, ctx, *, user: Union[int, discord.User] | None):
+        """Uploads your own or another user's LuaLaTeX preamble to the current channel, takes the user ID as an optional argument"""
 
         if not user:
             try:
                 p_own = await ctx.send(
-                    "Your `pdflatex` preamble",
-                    file=discord.File(f"tex/preamble/{ctx.author.id}.tex"),
+                    "Your `lualatex` preamble",
+                    file=discord.File(f"tex/luapreamble/{ctx.author.id}.tex"),
                 )
                 await p_own.add_reaction(emo_del)
 
@@ -142,8 +140,8 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             username = await self.bot.fetch_user(userid)
             try:
                 p_usr = await ctx.send(
-                    f"{username}'s `pdflatex` preamble",
-                    file=discord.File(f"tex/preamble/{userid}.tex"),
+                    f"{username}'s `lualatex` preamble",
+                    file=discord.File(f"tex/luapreamble/{userid}.tex"),
                 )
                 await p_usr.add_reaction(emo_del)
 
@@ -175,13 +173,13 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     )
                 )
 
-    # Replace your pdfLaTeX preamble
+    # Replace your LuaLaTeX preamble
     @commands.command(
-        name="replacepreamble",
-        brief="Replace your pdfLaTeX preamble with an input file or code",
+        name="replaceluapreamble",
+        brief="Replace your LuaLaTeX preamble with an input file or code",
     )
-    async def replacepreamble_(self, ctx, *, code=None):
-        """Replaces your pdfLaTeX preamble, takes either an input file or code as an argument"""
+    async def replaceluapreamble_(self, ctx, *, code=None):
+        """Replaces your LuaLaTeX preamble, takes either an input file or code as an argument"""
 
         if not code and ctx.message.attachments:
             if ctx.message.attachments[0].size >= 250000:
@@ -191,15 +189,17 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                         color=red,
                     )
                 )
-            await ctx.message.attachments[0].save(f"tex/preamble/{ctx.author.id}.tex")
+            await ctx.message.attachments[0].save(
+                f"tex/luapreamble/{ctx.author.id}.tex"
+            )
             try:
                 codecs.open(
-                    f"tex/preamble/{ctx.author.id}.tex",
+                    f"tex/luapreamble/{ctx.author.id}.tex",
                     encoding="utf-8",
                     errors="strict",
                 ).readlines()
             except UnicodeDecodeError:
-                os.remove(f"tex/preamble/{ctx.author.id}.tex")
+                os.remove(f"tex/luapreamble/{ctx.author.id}.tex")
                 return await ctx.send(
                     embed=discord.Embed(
                         description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
@@ -208,7 +208,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
             await ctx.send(
                 embed=discord.Embed(
-                    description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
+                    description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.",
                     color=green,
                 )
             )
@@ -227,24 +227,24 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
             )
         elif code and not ctx.message.attachments:
-            with open(f"tex/preamble/{ctx.author.id}.tex", "w") as r:
+            with open(f"tex/luapreamble/{ctx.author.id}.tex", "w") as r:
                 r.write(code)
             await ctx.send(
                 embed=discord.Embed(
-                    description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
+                    description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.",
                     color=green,
                 )
             )
 
-    # Reset your pdfLaTeX preamble
+    # Reset your LuaLaTeX preamble
     @commands.command(
-        name="resetpreamble", brief="Reset your pdfLaTeX preamble to the default"
+        name="resetluapreamble", brief="Reset your LuaLaTeX preamble to the default"
     )
-    async def resetpreamble_(self, ctx):
-        """Resets your pdfLaTeX preamble to the default, takes no arguments"""
+    async def resetluapreamble_(self, ctx):
+        """Resets your LuaLaTeX preamble to the default, takes no arguments"""
 
-        if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
-            os.remove(f"tex/preamble/{ctx.author.id}.tex")
+        if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
+            os.remove(f"tex/luapreamble/{ctx.author.id}.tex")
             await ctx.send(
                 embed=discord.Embed(
                     description="Your preamble has been reset to the default.",
@@ -258,29 +258,30 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
             )
 
-    # Append to your pdfLaTeX preamble
+    # Append to your LuaLaTeX preamble
     @commands.command(
-        name="appendpreamble", brief="Append lines to your pdfLaTeX preamble"
+        name="appendluapreamble", brief="Append lines to your LuaLaTeX preamble"
     )
-    async def appendpreamble_(self, ctx, *, code):
-        """Appends lines to your pdfLaTeX preamble, takes the code as an argument"""
+    async def appendluapreamble_(self, ctx, *, code):
+        """Appends lines to your LuaLaTeX preamble, takes the code as an argument"""
 
-        if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
-            with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fc:
+        if os.path.isfile(f"tex/luapreamble/{ctx.author.id}.tex"):
+            with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fc:
                 fc.write(f"\n{code}")
         else:
             shutil.copyfile(
-                f"tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
+                f"tex/luapreamble/default/default.tex",
+                f"tex/luapreamble/{ctx.author.id}.tex",
             )
-            with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
+            with open(f"tex/luapreamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
         await ctx.send(
             embed=discord.Embed(
-                description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
+                description=f"Your preamble has been updated. View it with `{ctx.prefix}luapreamble`.",
                 color=green,
             )
         )
 
 
 async def setup(bot):
-    await bot.add_cog(pdfTeX(bot))
+    await bot.add_cog(LuaTeX(bot))

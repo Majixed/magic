@@ -23,7 +23,7 @@ Install dependencies:
 
 .. code:: sh
 
-   $ pip install -r requirements.txt
+    $ pip install -r requirements.txt
 
 Add your bot token to a ``.env`` file in the same directory:
 
@@ -37,11 +37,13 @@ Additionally, the ``poppler-utils`` and ``imagemagick`` packages are also requir
 
 .. code:: sh
    
-  $ sudo apt-get install poppler-utils imagemagick
+    $ sudo apt-get install poppler-utils imagemagick
 
-Before starting the bot for the first time, you must edit these variables in ``conf/var.py``:
+Rename ``config/config-example.py`` to ``config/config.py``. You may edit the values in this file if you wish:
 
-- Replace the emoji IDs in the ``emo_del``, ``emo_left`` and ``emo_right`` variables with the ID of your own custom emojis, or a default emoji of your choosing
+.. code:: sh
+
+    $ mv config/config-example.py config/config.py
 
 Finally, start up the bot:
 
@@ -51,7 +53,7 @@ Finally, start up the bot:
 
 Make sure you have given the bot the privileged Message Content intent in the `Discord Developer Portal <https://discord.com/developers/>`_, otherwise it may not be able to respond to the prefix and some features may not work.
 
-The bot's default prefix is ``-``, you can change it by editing the ``prefix`` variable in ``conf/var.py``. Run ``-help`` to get a list of all its commands.
+The bot's default prefix is ``-``, you can change it by editing the ``prefix`` variable in ``config/config.py``. Run ``-help`` in discord to get a list of all its commands.
 
 If you have any suggestions or queries, feel free to open an issue.
 

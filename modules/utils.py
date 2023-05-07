@@ -8,21 +8,8 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from conf.var import emo_del, light_gray, green, red, react_timeout
-
-
-# Helper function for eval command
-def insert_returns(body):
-    if isinstance(body[-1], ast.Expr):
-        body[-1] = ast.Return(body[-1].value)
-        ast.fix_missing_locations(body[-1])
-
-    if isinstance(body[-1], ast.If):
-        insert_returns(body[-1].body)
-        insert_returns(body[-1].orelse)
-
-    if isinstance(body[-1], ast.With):
-        insert_returns(body[-1].body)
+from config.config import emo_del, light_gray, green, red, react_timeout
+from config.functions import insert_returns
 
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
@@ -162,7 +149,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     async def load_(self, ctx, *, extension):
         """Loads an extension of the bot, takes the extension name as an argument"""
 
-        await self.bot.load_extension(f"cogs.{extension}")
+        await self.bot.load_extension(f"modules.{extension}")
         await ctx.send(
             embed=discord.Embed(
                 description=f"Extension `{extension}` successfully loaded", color=green
@@ -175,7 +162,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
     async def unload_(self, ctx, *, extension):
         """Unloads an extension of the bot, takes the extension name as an argument"""
 
-        await self.bot.unload_extension(f"cogs.{extension}")
+        await self.bot.unload_extension(f"modules.{extension}")
         await ctx.send(
             embed=discord.Embed(
                 description=f"Extension `{extension}` successfully unloaded",
@@ -190,7 +177,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         """Reloads an extension of the bot, takes its name as an optional argument, reloads all extensions if no argument is given"""
 
         if extension:
-            await self.bot.reload_extension(f"cogs.{extension}")
+            await self.bot.reload_extension(f"modules.{extension}")
             return await ctx.send(
                 embed=discord.Embed(
                     description=f"Extension `{extension}` successfully reloaded",
@@ -198,9 +185,9 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 )
             )
 
-        for filename in os.listdir("cogs"):
+        for filename in os.listdir("modules"):
             if filename.endswith(".py"):
-                await self.bot.reload_extension(f"cogs.{filename[:-3]}")
+                await self.bot.reload_extension(f"modules.{filename[:-3]}")
         await ctx.send(
             embed=discord.Embed(
                 description="All extensions successfully reloaded", color=green

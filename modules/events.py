@@ -1,7 +1,7 @@
 import datetime
 
 from discord.ext import commands
-from conf.var import prefix
+from config.config import prefix
 
 
 class Events(commands.Cog):
@@ -39,16 +39,11 @@ class Events(commands.Cog):
 
     # Respond to messages with uppercase "LOL"
     @commands.Cog.listener()
-    async def on_message(self, message):
-        try:
-            if message.author == self.bot.user:
-                return
-            if message.author.bot:
-                return
-            elif any(trigger in message.content for trigger in ("LOL", "LMAO")):
-                await message.channel.send("Haha. That was so funny.")
-        except Exception as e:
-            print(e)
+    async def on_message(self, msg):
+        if msg.author.bot or msg.author == self.bot.user:
+            return
+        elif any(trigger in msg.content for trigger in ("LOL", "LMAO")):
+            await msg.channel.send("Haha. That was so funny.")
 
 
 async def setup(bot):

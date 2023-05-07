@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from pretty_help import EmojiMenu, PrettyHelp
-from conf.var import emo_del, emo_left, emo_right, prefix, light_gray, react_timeout
+from config.config import emo_del, emo_left, emo_right, prefix, light_gray, react_timeout
 
 load_dotenv()
 
@@ -45,10 +45,10 @@ bot.help_command = PrettyHelp(menu=menu, color=light_gray)
 
 # Load all extensions
 async def load_extensions():
-    for filename in os.listdir("./cogs"):
+    for filename in os.listdir("./modules"):
         if filename.endswith(".py"):
             try:
-                await bot.load_extension(f"cogs.{filename[:-3]}")
+                await bot.load_extension(f"modules.{filename[:-3]}")
             except Exception as e:
                 print(e)
 

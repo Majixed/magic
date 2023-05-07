@@ -3,7 +3,7 @@ import discord
 import traceback
 
 from discord.ext import commands
-from conf.var import red
+from config.config import red
 
 
 class ErrorHandler(commands.Cog):
