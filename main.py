@@ -5,7 +5,14 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from pretty_help import EmojiMenu, PrettyHelp
-from config.config import emo_del, emo_left, emo_right, prefix, light_gray, react_timeout
+from config.config import (
+    emo_del,
+    emo_left,
+    emo_right,
+    prefix,
+    light_gray,
+    react_timeout,
+)
 
 load_dotenv()
 
