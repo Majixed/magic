@@ -16,8 +16,6 @@ from config.config import (
 
 load_dotenv()
 
-intents = discord.Intents.all()
-
 bot = commands.Bot(
     activity=discord.Activity(
         type=discord.ActivityType.listening, name=f"{prefix}help"
@@ -25,7 +23,7 @@ bot = commands.Bot(
     command_prefix=commands.when_mentioned_or(prefix),
     description=f"Hello there! I'm magic. My prefix is {prefix}, but you can also summon me with a mention.",
     case_insensitive=True,
-    intents=intents,
+    intents=~discord.Intents(presences=True),
 )
 
 # Check if admins.json exists, if not, create it.
