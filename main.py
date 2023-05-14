@@ -45,7 +45,7 @@ menu = EmojiMenu(
     remove=emo_del.strip("<>"),
     active_time=react_timeout,
 )
-bot.help_command = PrettyHelp(menu=menu, color=light_gray)
+bot.help_command = PrettyHelp(menu=menu, color=light_gray, send_typing=False)
 
 
 # Load all extensions
