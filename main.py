@@ -1,6 +1,8 @@
 import os
+import sys
 import asyncio
 import discord
+import logging
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -37,6 +39,24 @@ if not os.path.isfile("admins.json"):
 }
 """
         )
+
+# Logging
+logger = logging.getLogger("discord")
+logger.setLevel(logging.INFO)
+
+console_handler = logging.StreamHandler(sys.stdout)
+file_handler = logging.FileHandler(filename="magic.log", encoding="utf-8", mode="a")
+
+dt_fmt = "%Y-%m-%d %H:%M:%S"
+file_formatter = logging.Formatter(
+    "[{asctime}] [{levelname:<8}] {name}: {message}", dt_fmt, style="{"
+)
+
+console_handler.setFormatter(discord.utils._ColourFormatter())
+file_handler.setFormatter(file_formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 # Prettify the help page
 menu = EmojiMenu(

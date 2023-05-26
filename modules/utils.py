@@ -3,13 +3,15 @@ import ast
 import json
 import asyncio
 import discord
-import datetime
+import logging
 import subprocess
 
 from typing import Union
 from discord.ext import commands
 from config.config import emo_del, light_gray, green, red, react_timeout
 from config.functions import insert_returns
+
+logger = logging.getLogger("discord")
 
 
 class Utility(commands.Cog, description="Utility commands (admin only)"):
@@ -299,9 +301,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         await ctx.send(
             embed=discord.Embed(description="Shutting down, goodbye", color=green)
         )
-        print(
-            f"\n{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Connection closed"
-        )
+        logger.info("Closing connection...")
         await self.bot.close()
 
 

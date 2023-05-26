@@ -1,7 +1,9 @@
-import datetime
+import logging
 
 from discord.ext import commands
 from config.config import prefix
+
+logger = logging.getLogger("discord")
 
 
 class Events(commands.Cog):
@@ -11,25 +13,20 @@ class Events(commands.Cog):
     # Message when the bot is ready to be operated
     @commands.Cog.listener()
     async def on_ready(self):
-        print(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Logged in as {self.bot.user} ({self.bot.user.id})"
-        )
+        logger.info(f"Logged in as {self.bot.user} ({self.bot.user.id})")
 
     # Command log
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        print(
-            "".join(
+        logger.info(
+            "\n".join(
                 [
-                    "\n",
-                    f"   Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-                    f"   User: {ctx.author} ({ctx.author.id})\n",
-                    f"  {f'Guild: {ctx.guild} ({ctx.guild.id}){chr(10)}' if ctx.guild else f'Guild: DM{chr(10)}'}",
-                    f"{f'Channel: {ctx.channel} ({ctx.channel.id}){chr(10)}' if ctx.guild else ''}",
-                    f"Command: {ctx.message.content.lstrip(prefix)}\n",
+                    "Command was run:",
+                    f"   User: {ctx.author} ({ctx.author.id})",
+                    f"  {f'Guild: {ctx.guild} ({ctx.guild.id}){chr(10)}Channel: {ctx.channel} ({ctx.channel.id})' if ctx.guild else 'Guild: DM'}",
+                    f"Command: {ctx.message.content.lstrip(prefix)}",
                 ]
             ),
-            end="",
         )
 
     # Listen for message edits

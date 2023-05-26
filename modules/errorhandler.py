@@ -1,9 +1,11 @@
-import sys
 import discord
+import logging
 import traceback
 
 from discord.ext import commands
 from config.config import red
+
+logger = logging.getLogger("discord")
 
 
 class ErrorHandler(commands.Cog):
@@ -154,12 +156,8 @@ class ErrorHandler(commands.Cog):
                 name="An error occurred", value=f"```\n{error}\n```", inline=False
             )
             await ctx.send(embed=embed)
-            print(
-                "Ignoring exception in command {}:".format(ctx.command), file=sys.stdout
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stdout
-            )
+            logger.error("Ignoring exception in command {}:".format(ctx.command))
+            traceback.print_exception(type(error), error, error.__traceback__)
 
 
 async def setup(bot):
