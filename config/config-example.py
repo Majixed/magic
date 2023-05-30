@@ -15,4 +15,4 @@ emo_left = "◀️"
 emo_right = "▶️"
 
 # Reaction timeout value
-react_timeout = 180.0
+react_timeout = 180
