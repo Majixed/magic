@@ -12,7 +12,7 @@ from config.config import (
     emo_left,
     emo_right,
     prefix,
-    light_gray,
+    gray,
     react_timeout,
 )
 
@@ -65,7 +65,7 @@ menu = EmojiMenu(
     remove=emo_del.strip("<>"),
     active_time=react_timeout,
 )
-bot.help_command = PrettyHelp(menu=menu, color=light_gray, send_typing=False)
+bot.help_command = PrettyHelp(menu=menu, color=gray, send_typing=False)
 
 
 # Load all extensions

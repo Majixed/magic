@@ -8,7 +8,7 @@ import subprocess
 
 from typing import Union
 from discord.ext import commands
-from config.config import emo_del, light_gray, green, red, react_timeout
+from config.config import emo_del, gray, green, red, react_timeout
 from config.functions import insert_returns
 
 logger = logging.getLogger("discord")
@@ -106,7 +106,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             err = p.communicate()[1].decode("utf-8")
             ret = p.returncode
 
-            sh_color = light_gray if ret == 0 else red
+            sh_color = gray if ret == 0 else red
             embed_sh = discord.Embed(color=sh_color)
             embed_sh.add_field(
                 name="stdin", value=f"```sh\n{command}\n```", inline=False
@@ -274,7 +274,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             embed=discord.Embed(
                 title="List of my guilds",
                 description=f"```\n{g_out}\n```",
-                color=light_gray,
+                color=gray,
             )
         )
 

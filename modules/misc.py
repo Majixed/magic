@@ -5,7 +5,7 @@ import aiohttp
 import json
 import sys
 
-from config.config import light_gray
+from config.config import gray
 from discord.ext import commands
 from googletrans import Translator
 
@@ -75,7 +75,7 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         mem_str = "{0:.2f}GB used out of {1:.2f}GB ({mem.percent}%)".format(
             mem.used / (1024**3), mem.total / (1024**3), mem=mem
         )
-        embed_info = discord.Embed(title="About", description="", color=light_gray)
+        embed_info = discord.Embed(title="About", description="", color=gray)
 
         embed_info.add_field(name="Guilds", value=len(ctx.bot.guilds), inline=False)
         embed_info.add_field(
