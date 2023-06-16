@@ -37,7 +37,7 @@ Additionally, the ``poppler-utils`` and ``imagemagick`` packages are also requir
 
 .. code:: sh
    
-    $ sudo apt-get install poppler-utils imagemagick
+    $ sudo apt install poppler-utils imagemagick
 
 Copy ``config/config-example.py`` as ``config/config.py`` in the same directory. This will be the configuration file. You may edit the values in this file if you wish:
 
