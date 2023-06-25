@@ -48,7 +48,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             code = "\n".join(final_code).rstrip("\n")
         with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
             f_input.write(code)
-        subprocess.run(f"tex/scripts/runluatex.sh {ctx.author.id}", shell=True)
+        subprocess.run(f"tex/scripts/runluatex {ctx.author.id}", shell=True)
         if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
             with open(
                 f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r"
