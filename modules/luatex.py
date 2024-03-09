@@ -101,37 +101,36 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
         if not user:
             try:
                 p_own = await ctx.send(
-                    "Your `lualatex` preamble",
+                    "Your custom `lualatex` preamble",
                     file=discord.File(f"tex/luapreamble/{ctx.author.id}.tex"),
                 )
-                await p_own.add_reaction(emo_del)
-
-                def check(reaction, user):
-                    return reaction.message.id == p_own.id and user == ctx.author
-
-                while True:
-                    try:
-                        reaction, user = await self.bot.wait_for(
-                            "reaction_add", timeout=react_timeout, check=check
-                        )
-
-                        if str(reaction.emoji) == emo_del:
-                            await p_own.delete()
-                            break
-
-                    except asyncio.TimeoutError:
-                        if ctx.channel.type != discord.ChannelType.private:
-                            try:
-                                await p_own.clear_reactions()
-                            except discord.Forbidden:
-                                pass
-                        break
             except FileNotFoundError:
-                await ctx.send(
-                    embed=discord.Embed(
-                        description="You haven't set a custom preamble.", color=red
-                    )
+                p_own = await ctx.send(
+                    "No custom `lualatex` preamble found, displaying the default",
+                    file=discord.File("tex/luapreamble/default/default.tex"),
                 )
+            await p_own.add_reaction(emo_del)
+
+            def check(reaction, user):
+                return reaction.message.id == p_own.id and user == ctx.author
+
+            while True:
+                try:
+                    reaction, user = await self.bot.wait_for(
+                        "reaction_add", timeout=react_timeout, check=check
+                    )
+
+                    if str(reaction.emoji) == emo_del:
+                        await p_own.delete()
+                        break
+
+                except asyncio.TimeoutError:
+                    if ctx.channel.type != discord.ChannelType.private:
+                        try:
+                            await p_own.clear_reactions()
+                        except discord.Forbidden:
+                            pass
+                    break
         else:
             if isinstance(user, int):
                 userid = user
@@ -140,38 +139,36 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
             username = await self.bot.fetch_user(userid)
             try:
                 p_usr = await ctx.send(
-                    f"{username}'s `lualatex` preamble",
+                    f"{username}'s custom `lualatex` preamble",
                     file=discord.File(f"tex/luapreamble/{userid}.tex"),
                 )
-                await p_usr.add_reaction(emo_del)
-
-                def check(reaction, user):
-                    return reaction.message.id == p_usr.id and user == ctx.author
-
-                while True:
-                    try:
-                        reaction, user = await self.bot.wait_for(
-                            "reaction_add", timeout=react_timeout, check=check
-                        )
-
-                        if str(reaction.emoji) == emo_del:
-                            await p_usr.delete()
-                            break
-
-                    except asyncio.TimeoutError:
-                        if ctx.channel.type != discord.ChannelType.private:
-                            try:
-                                await p_usr.clear_reactions()
-                            except discord.Forbidden:
-                                pass
-                        break
             except FileNotFoundError:
-                await ctx.send(
-                    embed=discord.Embed(
-                        description="This user does not have a custom preamble.",
-                        color=red,
-                    )
+                p_usr = await ctx.send(
+                    "No custom `lualatex` preamble found, displaying the default",
+                    file=discord.File("tex/luapreamble/default/default.tex"),
                 )
+            await p_usr.add_reaction(emo_del)
+
+            def check(reaction, user):
+                return reaction.message.id == p_usr.id and user == ctx.author
+
+            while True:
+                try:
+                    reaction, user = await self.bot.wait_for(
+                        "reaction_add", timeout=react_timeout, check=check
+                    )
+
+                    if str(reaction.emoji) == emo_del:
+                        await p_usr.delete()
+                        break
+
+                except asyncio.TimeoutError:
+                    if ctx.channel.type != discord.ChannelType.private:
+                        try:
+                            await p_usr.clear_reactions()
+                        except discord.Forbidden:
+                            pass
+                    break
 
     # Replace your LuaLaTeX preamble
     @commands.command(
