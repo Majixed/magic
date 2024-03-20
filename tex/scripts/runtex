@@ -1,10 +1,24 @@
 #! /bin/sh
 
 uid=$1
+proglist="identify pdftoppm pdflatex"
 
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
+
+hash $proglist &> /dev/null
+
+if [ $? -eq 1 ]; then
+  echo -e "Could not locate the following program(s):\n" > $uid.error
+  for p in $proglist; do
+    hash "$p" &> /dev/null || echo "$p" >> $uid.error
+  done
+  echo -e "\nPlease ensure they are installed and available in the system path." >> $uid.error
+  cp ../../failed.png $uid.png
+  cd ../../..
+  exit 1
+fi
 
 echo -e "\\documentclass[preview, border=10pt, 12pt]{standalone}\n\\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" > $uid.tex
 
