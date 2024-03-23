@@ -1,7 +1,7 @@
 #! /bin/sh
 
 uid=$1
-proglist="identify pdftoppm lualatex"
+proglist="convert identify pdftoppm lualatex"
 
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
@@ -16,7 +16,6 @@ if [ $? -eq 1 ]; then
   done
   echo -e "\nPlease ensure they are installed and available in the system path." >> $uid.error
   cp ../../failed.png $uid.png
-  cd ../../..
   exit 1
 fi
 
@@ -37,7 +36,6 @@ timeout 60 lualatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_
 if [ $? -eq 124 ]; then
     echo "Compilation timed out!" > $uid.error
     cp ../../failed.png $uid.png
-    cd ../../..
     exit 1
 fi
 
@@ -47,18 +45,15 @@ if [ -f $uid.pdf ]; then
     if [ $? -eq 124 ]; then
         echo "Image conversion timed out!" > $uid.error
         cp ../../failed.png $uid.png
-        cd ../../..
         exit 1
     elif [ `stat -c%s $uid.png` -gt 8000000 ]; then
         echo "Output image too large!" > $uid.error
         cp ../../failed.png $uid.png
-        cd ../../..
         exit 1
     fi
 else
     grep -A 10 "^!" -m 1 $uid.log > $uid.error
     cp ../../failed.png $uid.png
-    cd ../../..
     exit 1
 fi
 
@@ -80,4 +75,3 @@ if [ $width -lt $minwidth ]; then
     timeout 60 convert -background transparent -extent ${minwidth}x $uid.png $uid.png
 fi
 
-cd ../../..
