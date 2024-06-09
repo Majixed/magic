@@ -8,4 +8,5 @@ tex/preamble/*.tex
 tex/luapreamble/*.tex
 tex/log/*
 tex/inputs/*
+.venv/
 __pycache__/
