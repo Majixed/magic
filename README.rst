@@ -34,7 +34,7 @@ Add your bot token to a ``.env`` file in the same directory:
 
 To use the TeX commands, install a distribution of TeX Live from the `TUG Website <https://tug.org/texlive/acquire-netinstall.html>`_ (recommended) or your Linux distro's package manager.
 
-There are two more prerequisites required for this feature, ``imagemagick``, which provides the ``convert`` and ``identify`` utilties, and the ``ghostscript`` package. To install on Ubuntu:
+There are two more prerequisites required for this feature, ``imagemagick``, which provides the ``magick`` and ``identify`` commands, and ``ghostscript``. To install on Ubuntu:
 
 .. code:: sh
 
