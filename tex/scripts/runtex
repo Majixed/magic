@@ -1,7 +1,7 @@
 #! /bin/sh
 
 uid=$1
-proglist="magick identify pdftoppm pdflatex"
+proglist="magick identify gs pdflatex"
 
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
@@ -40,7 +40,7 @@ if [ $? -eq 124 ]; then
 fi
 
 if [ -f $uid.pdf ]; then
-    timeout 60 pdftoppm $uid.pdf $uid -r 600 -png -singlefile
+    timeout 60 gs -q -r1800 -sDEVICE=png16m -dBATCH -dNOPAUSE -dDownScaleFactor=3 -sOutputFile=$uid.png $uid.pdf
 
     if [ $? -eq 124 ]; then
         echo "Image conversion timed out!" > $uid.error
@@ -63,8 +63,6 @@ fi
 
 width=`identify -ping -format "%w" $uid.png`
 minwidth=1000
-
-magick $uid.png -shave 1x1 $uid.png
 
 if [ $width -lt $minwidth ]; then
     timeout 60 magick $uid.png -background transparent -extent ${minwidth}x $uid.png
