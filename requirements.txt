@@ -4,3 +4,5 @@ psutil
 python-dotenv
 discord-pretty-help
 googletrans==3.1.0a0
+audioop-lts; python_version>='3.13'
+legacy-cgi; python_version>='3.13'
