@@ -1,7 +1,42 @@
+import os
+import subprocess
 import ast
 import json
 
 from discord.ext import commands
+
+
+# TeX compile routine
+def compile_tex(userid, code, script):
+    with open(f"tex/inputs/{userid}.tmp", "w") as f_input:
+        f_input.write(code)
+    subprocess.run(f"tex/scripts/{script} {userid}", shell=True)
+    if os.path.isfile(f"tex/staging/{userid}/{userid}.error"):
+        with open(f"tex/staging/{userid}/{userid}.error", "r") as f_err:
+            err_out = f_err.read()
+        return err_out
+
+
+# Codeblock detection for pdftex and luatex
+def detect_codeblock(code):
+    if "```" in code:
+        lines = code.splitlines()
+        codeblock = False
+        final_code = []
+        for line in lines:
+            if "```" in line:
+                splits = line.split("```")
+                for split in splits:
+                    if codeblock and split not in ["", "tex", "latex"]:
+                        final_code.append(f"{split}")
+                    codeblock = not codeblock
+                if codeblock:
+                    final_code.append("")
+                codeblock = not codeblock
+            elif codeblock:
+                final_code.append(line)
+        code = "\n".join(final_code).rstrip("\n")
+    return code
 
 
 # Helper function for eval command

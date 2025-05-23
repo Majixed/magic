@@ -3,10 +3,13 @@ import codecs
 import shutil
 import discord
 import asyncio
-import subprocess
 
 from typing import Union
 from discord.ext import commands
+from config.functions import (
+    detect_codeblock,
+    compile_tex,
+)
 from config.config import (
     emo_del,
     green,
@@ -31,31 +34,15 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         err_msg = None
         out_img = None
-        if "```" in code:
-            lines = code.splitlines()
-            codeblock = False
-            final_code = []
-            for line in lines:
-                if "```" in line:
-                    splits = line.split("```")
-                    for split in splits:
-                        if codeblock and split not in ["", "tex", "latex"]:
-                            final_code.append(f"{split}")
-                        codeblock = not codeblock
-                    if codeblock:
-                        final_code.append("")
-                    codeblock = not codeblock
-                elif codeblock:
-                    final_code.append(line)
-            code = "\n".join(final_code).rstrip("\n")
-        with open(f"tex/inputs/{ctx.author.id}.tmp", "w") as f_input:
-            f_input.write(code)
-        subprocess.run(f"tex/scripts/runtex {ctx.author.id}", shell=True)
-        if os.path.isfile(f"tex/staging/{ctx.author.id}/{ctx.author.id}.error"):
-            with open(
-                f"tex/staging/{ctx.author.id}/{ctx.author.id}.error", "r"
-            ) as f_err:
-                err_out = f_err.read()
+
+        code = detect_codeblock(code)
+
+        err_list = await asyncio.gather(
+            asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex")
+        )
+        err_out = err_list[0]
+
+        if err_out:
             embed_err = discord.Embed(title="", description="", color=red)
             embed_err.add_field(
                 name="Compilation error",
