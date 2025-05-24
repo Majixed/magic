@@ -25,39 +25,44 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     # Compile pdfLaTeX
     @commands.command(
         name="tex",
-        aliases=["latex", "pdflatex", "pdftex"],
+        aliases=["latex", "pdflatex", "pdftex", "-"],
         brief="Compile pdfLaTeX code",
     )
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def tex_(self, ctx, *, code):
         """Compiles pdfLaTeX, takes the code as an argument"""
 
-        err_msg = None
-        out_img = None
+        output = None
 
         code = detect_codeblock(code)
 
-        err_list = await asyncio.gather(
+        if ctx.invoked_with == "-":
+            code = "\\begin{gather*}\n" + code + "\n\\end{gather*}"
+
+        result = await asyncio.gather(
             asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex")
         )
-        err_out = err_list[0]
+        compile_err = result[0]
 
-        if err_out:
-            embed_err = discord.Embed(title="", description="", color=red)
-            embed_err.add_field(
-                name="Compilation error",
-                value=f"```\n{err_out[:1016]}\n```",
-                inline=False,
+        if compile_err:
+            output = await ctx.reply(
+                f"**Compilation error**\n```\n{compile_err[:1016]}\n```",
+                file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"),
+                mention_author=False,
             )
-            embed_err.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
-            err_msg = await ctx.send(embed=embed_err)
-        out_img = await ctx.send(
-            file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png")
-        )
-        await out_img.add_reaction(emo_del)
+        else:
+            output = await ctx.reply(
+                file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"),
+                mention_author=False,
+            )
+        await output.add_reaction(emo_del)
 
         def check(reaction, user):
-            return reaction.message.id == out_img.id and user == ctx.author
+            return (
+                reaction.message.id == output.id
+                and user == ctx.author
+                and str(reaction.emoji) == emo_del
+            )
 
         while True:
             try:
@@ -66,18 +71,11 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
 
                 if str(reaction.emoji) == emo_del:
-                    if out_img:
-                        await out_img.delete()
-                    if err_msg:
-                        await err_msg.delete()
+                    await output.delete()
                     break
 
             except asyncio.TimeoutError:
-                if ctx.channel.type != discord.ChannelType.private:
-                    try:
-                        await out_img.clear_reactions()
-                    except discord.Forbidden:
-                        pass
+                await output.remove_reaction(emo_del, self.bot.user)
                 break
 
     # Upload your pdfLaTeX preamble
@@ -85,41 +83,21 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         name="preamble", brief="Upload your own or another user's pdfLaTeX preamble"
     )
     async def preamble_(self, ctx, *, user: Union[int, discord.User] | None):
-        """Uploads your own or another user's pdfLaTeX preamble to the current channel, takes the user ID as an optional argument"""
+        """Uploads your own or another user's pdfLaTeX preamble to the current channel, takes a username or user ID as an optional argument"""
 
         if not user:
             try:
-                p_own = await ctx.send(
+                preamble = await ctx.reply(
                     "Your custom `pdflatex` preamble",
                     file=discord.File(f"tex/preamble/{ctx.author.id}.tex"),
+                    mention_author=False,
                 )
             except FileNotFoundError:
-                p_own = await ctx.send(
-                    "No custom `pdflatex` preamble found, displaying the default",
+                preamble = await ctx.reply(
+                    "No custom `pdflatex` preamble found, showing the default",
                     file=discord.File("tex/preamble/default/default.tex"),
+                    mention_author=False,
                 )
-            await p_own.add_reaction(emo_del)
-
-            def check(reaction, user):
-                return reaction.message.id == p_own.id and user == ctx.author
-
-            while True:
-                try:
-                    reaction, user = await self.bot.wait_for(
-                        "reaction_add", timeout=react_timeout, check=check
-                    )
-
-                    if str(reaction.emoji) == emo_del:
-                        await p_own.delete()
-                        break
-
-                except asyncio.TimeoutError:
-                    if ctx.channel.type != discord.ChannelType.private:
-                        try:
-                            await p_own.clear_reactions()
-                        except discord.Forbidden:
-                            pass
-                    break
         else:
             if isinstance(user, int):
                 userid = user
@@ -127,37 +105,39 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 userid = user.id
             username = await self.bot.fetch_user(userid)
             try:
-                p_usr = await ctx.send(
+                preamble = await ctx.reply(
                     f"{username}'s custom `pdflatex` preamble",
                     file=discord.File(f"tex/preamble/{userid}.tex"),
+                    mention_author=False,
                 )
             except FileNotFoundError:
-                p_usr = await ctx.send(
-                    "No custom `pdflatex` preamble found, displaying the default",
+                preamble = await ctx.reply(
+                    f"No custom `pdflatex` preamble found for {username}, showing the default",
                     file=discord.File("tex/preamble/default/default.tex"),
+                    mention_author=False,
                 )
-            await p_usr.add_reaction(emo_del)
+        await preamble.add_reaction(emo_del)
 
-            def check(reaction, user):
-                return reaction.message.id == p_usr.id and user == ctx.author
+        def check(reaction, user):
+            return (
+                reaction.message.id == preamble.id
+                and user == ctx.author
+                and str(reaction.emoji) == emo_del
+            )
 
-            while True:
-                try:
-                    reaction, user = await self.bot.wait_for(
-                        "reaction_add", timeout=react_timeout, check=check
-                    )
+        while True:
+            try:
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add", timeout=react_timeout, check=check
+                )
 
-                    if str(reaction.emoji) == emo_del:
-                        await p_usr.delete()
-                        break
-
-                except asyncio.TimeoutError:
-                    if ctx.channel.type != discord.ChannelType.private:
-                        try:
-                            await p_usr.clear_reactions()
-                        except discord.Forbidden:
-                            pass
+                if str(reaction.emoji) == emo_del:
+                    await preamble.delete()
                     break
+
+            except asyncio.TimeoutError:
+                await preamble.remove_reaction(emo_del, self.bot.user)
+                break
 
     # Replace your pdfLaTeX preamble
     @commands.command(
@@ -169,55 +149,62 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         if not code and ctx.message.attachments:
             if ctx.message.attachments[0].size >= 250000:
-                return await ctx.send(
+                return await ctx.reply(
                     embed=discord.Embed(
                         description="Attached file is too large (over `250KB`).",
                         color=red,
-                    )
+                    ),
+                    mention_author=False,
                 )
-            await ctx.message.attachments[0].save(f"tex/preamble/{ctx.author.id}.tex")
+            await ctx.message.attachments[0].save(f"tex/preamble/{ctx.author.id}.tmp")
             try:
                 codecs.open(
-                    f"tex/preamble/{ctx.author.id}.tex",
+                    f"tex/preamble/{ctx.author.id}.tmp",
                     encoding="utf-8",
                     errors="strict",
                 ).readlines()
             except UnicodeDecodeError:
-                os.remove(f"tex/preamble/{ctx.author.id}.tex")
-                return await ctx.send(
+                os.remove(f"tex/preamble/{ctx.author.id}.tmp")
+                return await ctx.reply(
                     embed=discord.Embed(
                         description="Could not decode attached file, please ensure it is encoded in `utf-8`.",
                         color=red,
-                    )
+                    ),
+                    mention_author=False,
                 )
-            await ctx.send(
+            shutil.move(f"tex/preamble/{ctx.author.id}.tmp", f"tex/preamble/{ctx.author.id}.tex")
+            await ctx.reply(
                 embed=discord.Embed(
                     description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
                     color=green,
-                )
+                ),
+                mention_author=False,
             )
         elif code and ctx.message.attachments:
-            return await ctx.send(
+            return await ctx.reply(
                 embed=discord.Embed(
                     description="Please send your code either as a message or in a file, not both.",
                     color=red,
-                )
+                ),
+                mention_author=False,
             )
         elif not code and not ctx.message.attachments:
-            return await ctx.send(
+            return await ctx.reply(
                 embed=discord.Embed(
                     description="You need to attach the file containing your preamble or enter the replacement text.",
                     color=red,
-                )
+                ),
+                mention_author=False,
             )
         elif code and not ctx.message.attachments:
             with open(f"tex/preamble/{ctx.author.id}.tex", "w") as r:
                 r.write(code)
-            await ctx.send(
+            await ctx.reply(
                 embed=discord.Embed(
                     description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
                     color=green,
-                )
+                ),
+                mention_author=False,
             )
 
     # Reset your pdfLaTeX preamble
@@ -229,17 +216,19 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         if os.path.isfile(f"tex/preamble/{ctx.author.id}.tex"):
             os.remove(f"tex/preamble/{ctx.author.id}.tex")
-            await ctx.send(
+            await ctx.reply(
                 embed=discord.Embed(
                     description="Your preamble has been reset to the default.",
                     color=green,
-                )
+                ),
+                mention_author=False,
             )
         else:
-            await ctx.send(
+            await ctx.reply(
                 embed=discord.Embed(
                     description="You already have the default preamble.", color=red
-                )
+                ),
+                mention_author=False,
             )
 
     # Append to your pdfLaTeX preamble
@@ -258,11 +247,12 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
             )
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")
-        await ctx.send(
+        await ctx.reply(
             embed=discord.Embed(
                 description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
                 color=green,
-            )
+            ),
+            mention_author=False,
         )
 
 
