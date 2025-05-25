@@ -12,7 +12,7 @@ A personal discord.py utility bot for Linux.
 How to use
 ----------
 
-Ensure your python is at least version ``3.8``. Bot functionality is not guaranteed with earlier versions of python.
+Ensure you have at least ``python3.9``. Bot functionality is not guaranteed with earlier versions of python.
 
 Clone this repository and make it your current working directory:
 

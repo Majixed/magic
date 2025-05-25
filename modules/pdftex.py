@@ -75,7 +75,10 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     break
 
             except asyncio.TimeoutError:
-                await output.remove_reaction(emo_del, self.bot.user)
+                try:
+                    await output.remove_reaction(emo_del, self.bot.user)
+                except discord.NotFound:
+                    pass
                 break
 
     # Upload your pdfLaTeX preamble
@@ -136,7 +139,10 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     break
 
             except asyncio.TimeoutError:
-                await preamble.remove_reaction(emo_del, self.bot.user)
+                try:
+                    await preamble.remove_reaction(emo_del, self.bot.user)
+                except discord.NotFound:
+                    pass
                 break
 
     # Replace your pdfLaTeX preamble
@@ -148,10 +154,10 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         """Replaces your pdfLaTeX preamble, takes either an input file or code as an argument"""
 
         if not code and ctx.message.attachments:
-            if ctx.message.attachments[0].size >= 250000:
+            if ctx.message.attachments[0].size >= 1048576:
                 return await ctx.reply(
                     embed=discord.Embed(
-                        description="Attached file is too large (over `250KB`).",
+                        description="Attached file is too large (over `1MB`).",
                         color=red,
                     ),
                     mention_author=False,
@@ -172,7 +178,9 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                     ),
                     mention_author=False,
                 )
-            shutil.move(f"tex/preamble/{ctx.author.id}.tmp", f"tex/preamble/{ctx.author.id}.tex")
+            shutil.move(
+                f"tex/preamble/{ctx.author.id}.tmp", f"tex/preamble/{ctx.author.id}.tex"
+            )
             await ctx.reply(
                 embed=discord.Embed(
                     description=f"Your preamble has been updated. View it with `{ctx.prefix}preamble`.",
