@@ -9,7 +9,7 @@ import subprocess
 from typing import Union
 from discord.ext import commands
 from config.config import emo_del, gray, green, red, react_timeout
-from config.functions import insert_returns
+from .helper.functions import detect_codeblock, insert_returns, reaction_check
 
 logger = logging.getLogger("discord")
 
@@ -62,6 +62,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
         fn_name = "_eval_expr"
 
+        code = detect_codeblock(code, ["", "py", "python"])
         code = code.strip("` ")
         code = "\n".join(f"    {i}" for i in code.splitlines())
 
@@ -82,7 +83,7 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         exec(compile(parsed, filename="<ast>", mode="exec"), env)
 
         result = await eval(f"{fn_name}()", env)
-        await ctx.send(f"```\n{result}\n```")
+        await ctx.reply(f"```\n{result}\n```", mention_author=False)
 
     # Run shell commands
     @commands.command(
@@ -106,12 +107,11 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             err = p.communicate()[1].decode("utf-8")
             ret = p.returncode
 
-            sh_color = gray if ret == 0 else red
-            embed_sh = discord.Embed(color=sh_color)
+            ret_color = gray if ret == 0 else red
+            embed_sh = discord.Embed(color=ret_color)
             embed_sh.add_field(
                 name="stdin", value=f"```sh\n{command}\n```", inline=False
             )
-            embed_sh.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
             if out:
                 embed_sh.add_field(
                     name="stdout", value=f"```\n{out[:1016]}\n```", inline=False
@@ -120,12 +120,11 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 embed_sh.add_field(
                     name="stderr", value=f"```\n{err[:1016]}\n```", inline=False
                 )
-            embed_sh.set_footer(text=f"process returned with exit status {ret}")
-        sh_out = await ctx.send(embed=embed_sh)
-        await sh_out.add_reaction(emo_del)
+            embed_sh.set_footer(text=f"RETCODE {ret}")
+        output = await ctx.reply(embed=embed_sh, mention_author=False)
+        await output.add_reaction(emo_del)
 
-        def check(reaction, user):
-            return reaction.message.id == sh_out.id and user == ctx.author
+        check = reaction_check(output.id, ctx.author, emo_del)
 
         while True:
             try:
@@ -134,15 +133,14 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
                 )
 
                 if str(reaction.emoji) == emo_del:
-                    await sh_out.delete()
+                    await output.delete()
                     break
 
             except asyncio.TimeoutError:
-                if ctx.channel.type != discord.ChannelType.private:
-                    try:
-                        await sh_out.clear_reactions()
-                    except discord.Forbidden:
-                        pass
+                try:
+                    await output.remove_reaction(emo_del, self.bot.user)
+                except discord.NotFound:
+                    pass
                 break
 
     # Load an extension
@@ -203,20 +201,20 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         """Adds a user to the bot administrators, takes the user ID as an argument"""
 
         if isinstance(user, int):
-            userid = user
+            user_id = user
         elif isinstance(user, discord.User):
-            userid = user.id
-        username = self.bot.get_user(userid)
+            user_id = user.id
+        username = self.bot.get_user(user_id)
 
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
-        if userid in admin_data["botAdmin"]:
+        if user_id in admin_data["botAdmin"]:
             return await ctx.send(
                 embed=discord.Embed(
                     description=f"{username} is already an admin", color=red
                 )
             )
-        admin_data["botAdmin"] += [userid]
+        admin_data["botAdmin"] += [user_id]
 
         with open("admins.json", "w") as json_write:
             json.dump(admin_data, json_write, indent=4)
@@ -232,19 +230,19 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
         """Removes a user from the bot administrators, takes the user ID as an argument"""
 
         if isinstance(user, int):
-            userid = user
+            user_id = user
         elif isinstance(user, discord.User):
-            userid = user.id
-        username = self.bot.get_user(userid)
+            user_id = user.id
+        username = self.bot.get_user(user_id)
         with open("admins.json", "r") as json_read:
             admin_data = json.load(json_read)
-        if userid not in admin_data["botAdmin"]:
+        if user_id not in admin_data["botAdmin"]:
             return await ctx.send(
                 embed=discord.Embed(
                     description=f"{username} is not already an admin", color=red
                 )
             )
-        admin_data["botAdmin"].remove(userid)
+        admin_data["botAdmin"].remove(user_id)
 
         with open("admins.json", "w") as json_write:
             json.dump(admin_data, json_write, indent=4)

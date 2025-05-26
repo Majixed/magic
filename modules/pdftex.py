@@ -6,9 +6,10 @@ import asyncio
 
 from typing import Union
 from discord.ext import commands
-from config.functions import (
+from .helper.functions import (
     detect_codeblock,
     compile_tex,
+    reaction_check,
 )
 from config.config import (
     emo_del,
@@ -21,6 +22,12 @@ from config.config import (
 class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     def __init__(self, bot):
         self.bot = bot
+        self.user_locks = {}
+
+    def get_user_lock(self, user_id):
+        if user_id not in self.user_locks:
+            self.user_locks[user_id] = asyncio.Lock()
+        return self.user_locks[user_id]
 
     # Compile pdfLaTeX
     @commands.command(
@@ -32,37 +39,39 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     async def tex_(self, ctx, *, code):
         """Compiles pdfLaTeX, takes the code as an argument"""
 
+        lock = self.get_user_lock(ctx.author.id)
+
         output = None
 
-        code = detect_codeblock(code)
+        code = detect_codeblock(code, ["", "tex", "latex"])
 
         if ctx.invoked_with == "-":
             code = "\\begin{gather*}\n" + code + "\n\\end{gather*}"
 
-        result = await asyncio.gather(
-            asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex")
-        )
-        compile_err = result[0]
+        async with lock:
+            result = await asyncio.gather(
+                asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex")
+            )
+            compile_err = result[0]
 
-        if compile_err:
-            output = await ctx.reply(
-                f"**Compilation error**\n```\n{compile_err[:1016]}\n```",
-                file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"),
-                mention_author=False,
-            )
-        else:
-            output = await ctx.reply(
-                file=discord.File(f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"),
-                mention_author=False,
-            )
+            if compile_err:
+                output = await ctx.reply(
+                    f"**Compilation error**\n```\n{compile_err[:1016]}\n```",
+                    file=discord.File(
+                        f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"
+                    ),
+                    mention_author=False,
+                )
+            else:
+                output = await ctx.reply(
+                    file=discord.File(
+                        f"tex/staging/{ctx.author.id}/{ctx.author.id}.png"
+                    ),
+                    mention_author=False,
+                )
         await output.add_reaction(emo_del)
 
-        def check(reaction, user):
-            return (
-                reaction.message.id == output.id
-                and user == ctx.author
-                and str(reaction.emoji) == emo_del
-            )
+        check = reaction_check(output.id, ctx.author, emo_del)
 
         while True:
             try:
@@ -103,14 +112,14 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
         else:
             if isinstance(user, int):
-                userid = user
+                user_id = user
             elif isinstance(user, discord.User):
-                userid = user.id
-            username = await self.bot.fetch_user(userid)
+                user_id = user.id
+            username = await self.bot.fetch_user(user_id)
             try:
                 preamble = await ctx.reply(
                     f"{username}'s custom `pdflatex` preamble",
-                    file=discord.File(f"tex/preamble/{userid}.tex"),
+                    file=discord.File(f"tex/preamble/{user_id}.tex"),
                     mention_author=False,
                 )
             except FileNotFoundError:
@@ -121,12 +130,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 )
         await preamble.add_reaction(emo_del)
 
-        def check(reaction, user):
-            return (
-                reaction.message.id == preamble.id
-                and user == ctx.author
-                and str(reaction.emoji) == emo_del
-            )
+        check = reaction_check(preamble.id, ctx.author, emo_del)
 
         while True:
             try:

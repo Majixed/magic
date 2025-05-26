@@ -6,19 +6,31 @@ import json
 from discord.ext import commands
 
 
+# Condition check for reaction buttons
+def reaction_check(msg_id, author, emoji):
+    def check(reaction, user):
+        return (
+            reaction.message.id == msg_id
+            and user == author
+            and str(reaction.emoji) == emoji
+        )
+
+    return check
+
+
 # TeX compile routine
-def compile_tex(userid, code, script):
-    with open(f"tex/inputs/{userid}.tmp", "w") as f_input:
+def compile_tex(user_id, code, script):
+    with open(f"tex/inputs/{user_id}.tmp", "w") as f_input:
         f_input.write(code)
-    subprocess.run(f"tex/scripts/{script} {userid}", shell=True)
-    if os.path.isfile(f"tex/staging/{userid}/{userid}.error"):
-        with open(f"tex/staging/{userid}/{userid}.error", "r") as f_err:
+    subprocess.run(f"tex/scripts/{script} {user_id}", shell=True)
+    if os.path.isfile(f"tex/staging/{user_id}/{user_id}.error"):
+        with open(f"tex/staging/{user_id}/{user_id}.error", "r") as f_err:
             err_out = f_err.read()
         return err_out
 
 
 # Codeblock detection for pdftex and luatex
-def detect_codeblock(code):
+def detect_codeblock(code, langs: list):
     if "```" in code:
         lines = code.splitlines()
         codeblock = False
@@ -27,7 +39,7 @@ def detect_codeblock(code):
             if "```" in line:
                 splits = line.split("```")
                 for split in splits:
-                    if codeblock and split not in ["", "tex", "latex"]:
+                    if codeblock and split not in langs:
                         final_code.append(f"{split}")
                     codeblock = not codeblock
                 if codeblock:
