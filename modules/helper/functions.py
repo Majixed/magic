@@ -1,4 +1,3 @@
-import os
 import subprocess
 import ast
 import json
@@ -22,10 +21,15 @@ def reaction_check(msg_id, author, emoji):
 def compile_tex(user_id, code, script):
     with open(f"tex/inputs/{user_id}.tmp", "w") as f_input:
         f_input.write(code)
-    subprocess.run(f"tex/scripts/{script} {user_id}", shell=True)
-    if os.path.isfile(f"tex/staging/{user_id}/{user_id}.error"):
-        with open(f"tex/staging/{user_id}/{user_id}.error", "r") as f_err:
-            err_out = f_err.read()
+    output = subprocess.run(
+        f"tex/scripts/{script} {user_id}",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        shell=True,
+    )
+    if output.stdout:
+        err_out = output.stdout
         return err_out
 
 
