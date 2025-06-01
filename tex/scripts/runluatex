@@ -7,12 +7,12 @@ rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
 
-hash $proglist &> /dev/null
+hash $proglist >/dev/null
 
 if [ $? -eq 1 ]; then
   printf '%s\n' 'Could not locate the following program(s):'
   for p in $proglist; do
-    hash "$p" &> /dev/null || printf '\n%s' "$p"
+    hash "$p" >/dev/null || printf '\n%s' "$p"
   done
   printf '\n\n%s' 'Please ensure they are installed and available in the system path.'
   cp ../../failed.png $uid.png
@@ -20,51 +20,51 @@ if [ $? -eq 1 ]; then
 fi
 
 printf '%s\n' '\makeatletter' \
-              '\def\texit@alwayswide{0}' \
-              '\makeatother' \
-              '\documentclass{luatexit}' \
-              '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' > $uid.tex
+  '\def\texit@alwayswide{0}' \
+  '\makeatother' \
+  '\documentclass{luatexit}' \
+  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >$uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
-    cat ../../luapreamble/$uid.tex >> $uid.tex
+  cat ../../luapreamble/$uid.tex >>$uid.tex
 else
-    cat ../../luapreamble/default/default.tex >> $uid.tex
+  cat ../../luapreamble/default/default.tex >>$uid.tex
 fi
 
-printf '\n%s\n' '\begin{document}' >> $uid.tex
-cat ../../inputs/$uid.tmp >> $uid.tex
-printf '\n%s' '\end{document}' >> $uid.tex
+printf '\n%s\n' '\begin{document}' >>$uid.tex
+cat ../../inputs/$uid.tmp >>$uid.tex
+printf '\n%s' '\end{document}' >>$uid.tex
 
-timeout 60 lualatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex > ../../log/texout.log
+timeout 60 lualatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex >../../log/texout.log
 
 if [ $? -eq 124 ]; then
-    printf 'Compilation timed out!'
-    cp ../../failed.png $uid.png
-    exit 1
+  printf 'Compilation timed out!'
+  cp ../../failed.png $uid.png
+  exit 1
 fi
 
 if [ -f $uid.pdf ]; then
-    timeout 60 gs -q -r1800 -sDEVICE=pngalpha -dBATCH -dNOPAUSE -dDownScaleFactor=3 -sOutputFile=$uid.png $uid.pdf
+  timeout 60 gs -q -r1800 -sDEVICE=pngalpha -dBATCH -dNOPAUSE -dDownScaleFactor=3 -sOutputFile=$uid.png $uid.pdf
 
-    if [ $? -eq 124 ]; then
-        printf 'Image conversion timed out!'
-        cp ../../failed.png $uid.png
-        exit 1
-    elif [ `stat -c%s $uid.png` -gt 8000000 ]; then
-        printf 'Output image too large!'
-        cp ../../failed.png $uid.png
-        exit 1
-    fi
-else
-    grep -A 10 "^!" -m 1 $uid.log
+  if [ $? -eq 124 ]; then
+    printf 'Image conversion timed out!'
     cp ../../failed.png $uid.png
     exit 1
+  elif [ $(stat -c%s $uid.png) -gt 8000000 ]; then
+    printf 'Output image too large!'
+    cp ../../failed.png $uid.png
+    exit 1
+  fi
+else
+  grep -A 10 "^!" -m 1 $uid.log
+  cp ../../failed.png $uid.png
+  exit 1
 fi
 
 if grep -q "^!" $uid.log; then
-    grep -A 10 "^!" -m 1 $uid.log
+  grep -A 10 "^!" -m 1 $uid.log
 fi
 
 if grep -q "\[\\\directlua]" $uid.log; then
-    grep -A 10 "\[\\\directlua]" -m 1 $uid.log | sed "1s/^)//"
+  grep -A 10 "\[\\\directlua]" -m 1 $uid.log | sed "1s/^)//"
 fi
