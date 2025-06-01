@@ -1,7 +1,6 @@
 .env
 .git
 *.log
-admins.json
 config/config.py
 tex/staging/
 tex/preamble/*.tex

@@ -67,19 +67,3 @@ def insert_returns(body):
 
     if isinstance(body[-1], ast.With):
         insert_returns(body[-1].body)
-
-
-# Decorator for admin check
-def get_admins():
-    with open("admins.json", "r") as data:
-        admin_data = json.load(data)
-    admin_list = admin_data["botAdmin"]
-    return admin_list
-
-
-def check_admin(ctx):
-    bot_admin = get_admins()
-    return ctx.author.id in bot_admin
-
-
-is_admin = commands.check(check_admin)
