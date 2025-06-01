@@ -1,20 +1,18 @@
 import os
 import ast
-import json
 import asyncio
 import discord
 import logging
 import subprocess
 
-from typing import Union
 from discord.ext import commands
 from config.config import emo_del, gray, green, red, react_timeout
-from .helper.functions import detect_codeblock, insert_returns, reaction_check
+from .helper.util import detect_codeblock, insert_returns, reaction_check
 
 logger = logging.getLogger("discord")
 
 
-class Utility(commands.Cog, description="Utility commands (admin only)"):
+class Admin(commands.Cog, description="Admin utility commands"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -245,4 +243,4 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
 
 async def setup(bot):
-    await bot.add_cog(Utility(bot))
+    await bot.add_cog(Admin(bot))

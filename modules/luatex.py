@@ -6,7 +6,7 @@ import asyncio
 
 from typing import Union
 from discord.ext import commands
-from .helper.functions import (
+from .helper.util import (
     detect_codeblock,
     compile_tex,
     reaction_check,
