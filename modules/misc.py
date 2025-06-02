@@ -92,12 +92,14 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
                 mention_author=False,
             )
         with open(f"tex/config/{ctx.author.id}.tex", "w") as config:
-            config.write(f"""\\makeatletter
+            config.write(
+                f"""\\makeatletter
 \\def\\texit@textcolor{{{fg_hex}}}
 \\def\\texit@bgcolor{{{bg_hex}}}
 \\def\\texit@alwayswide{{0}}
 \\makeatother
-""")
+"""
+            )
         await ctx.reply(
             embed=discord.Embed(
                 description="LaTeX color settings saved\n```text: #{}\npage: #{}```".format(
