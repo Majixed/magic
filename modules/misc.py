@@ -83,6 +83,10 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         pattern = "[a-fA-F0-9]*"
         fg_hex = fg_hex.strip("#")
         bg_hex = bg_hex.strip("#")
+        trans_bg_hex = None
+        if bg_hex == "trans":
+            trans_bg_hex = bg_hex
+            bg_hex = "000000"
         hex_check = bool(fullmatch(pattern, fg_hex) and fullmatch(pattern, bg_hex))
         if not hex_check or len(fg_hex) != 6 or len(bg_hex) != 6:
             return await ctx.reply(
@@ -91,6 +95,8 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
                 ),
                 mention_author=False,
             )
+        if trans_bg_hex:
+            bg_hex = trans_bg_hex
         with open(f"tex/config/{ctx.author.id}.tex", "w") as config:
             config.write(
                 f"""\\makeatletter
@@ -102,8 +108,8 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
             )
         await ctx.reply(
             embed=discord.Embed(
-                description="LaTeX color settings saved\n```text: #{}\npage: #{}```".format(
-                    fg_hex, bg_hex
+                description="LaTeX color settings saved\n```text: #{}\npage: {}```".format(
+                    fg_hex, str("#" + bg_hex) if bg_hex != "trans" else bg_hex
                 ),
                 color=green,
             ),

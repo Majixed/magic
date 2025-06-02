@@ -128,6 +128,13 @@ class ErrorHandler(commands.Cog):
                         color=red,
                     )
                 )
+            elif ctx.command.qualified_name == "texcolor":
+                await ctx.send(
+                    embed=discord.Embed(
+                        description="Missing one or both hex values, I need both of them",
+                        color=red,
+                    )
+                )
             else:
                 await ctx.send(
                     embed=discord.Embed(
