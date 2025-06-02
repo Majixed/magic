@@ -34,6 +34,7 @@ req_dirs = [
     "tex/inputs",
     "tex/staging",
     "tex/log",
+    "tex/config",
 ]
 
 for dir in req_dirs:

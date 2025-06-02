@@ -2,10 +2,11 @@
 .git
 *.log
 config/config.py
-tex/staging/
 tex/preamble/*.tex
 tex/luapreamble/*.tex
 tex/log/
 tex/inputs/
+tex/staging/
+tex/config/
 .venv/
 __pycache__/

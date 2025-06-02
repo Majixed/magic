@@ -46,7 +46,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         code = detect_codeblock(code, ["", "tex", "latex"])
 
         if ctx.invoked_with == "-":
-            code = "\\begin{gather*}\n" + code + "\n\\end{gather*}"
+            code = "$\\begin{gathered}\n" + code + "\n\\end{gathered}$"
 
         async with lock:
             result = await asyncio.gather(
@@ -255,7 +255,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 fc.write(f"\n{code}")
         else:
             shutil.copyfile(
-                f"tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
+                "tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
             )
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")

@@ -19,11 +19,16 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
-printf '%s\n' '\makeatletter' \
-  '\def\texit@alwayswide{0}' \
-  '\makeatother' \
-  '\documentclass{luatexit}' \
-  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >$uid.tex
+if [ -f "../../config/$uid.tex" ]; then
+  cat ../../config/$uid.tex >$uid.tex
+else
+  printf '%s\n' '\makeatletter' \
+    '\def\texit@alwayswide{0}' \
+    '\makeatother' >$uid.tex
+fi
+
+printf '%s\n' '\documentclass{luatexit}' \
+  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
   cat ../../luapreamble/$uid.tex >>$uid.tex
