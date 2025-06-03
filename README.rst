@@ -20,7 +20,7 @@ Clone this repository and make it your current working directory:
 
     git clone https://github.com/Majixed/magic && cd ./magic/
 
-Install dependencies:
+Install dependencies. If you are using a virtual environment, preferably name it ``.venv``:
 
 .. code:: sh
 
