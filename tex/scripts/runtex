@@ -40,7 +40,13 @@ printf '\n%s\n' '\begin{document}' >>$uid.tex
 cat ../../inputs/$uid.tmp >>$uid.tex
 printf '\n%s' '\end{document}' >>$uid.tex
 
-timeout 60 pdflatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex >../../log/texout.log
+timeout 60 pdflatex \
+  -no-shell-escape \
+  -no-parse-first-line \
+  -interaction=nonstopmode \
+  -cnf-line 'openin_any=r' \
+  -cnf-line 'openout_any=p' \
+  $uid.tex >../../log/texout.log
 
 if [ $? -eq 124 ]; then
   printf 'Compilation timed out!'
