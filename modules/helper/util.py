@@ -2,8 +2,6 @@ import subprocess
 import ast
 import json
 
-from discord.ext import commands
-
 
 # Condition check for reaction buttons
 def reaction_check(msg_id, author, emoji):
@@ -18,11 +16,30 @@ def reaction_check(msg_id, author, emoji):
 
 
 # TeX compile routine
-def compile_tex(user_id, code, script):
+def compile_tex(user_id, code, script, doc_class):
+    fg = None
+    bg = None
+    user_id = str(user_id)
+
+    try:
+        with open("tex/config/texconfig.json", "r") as cfg:
+            config_data = json.load(cfg)
+
+            fg = config_data[user_id]["fg"]
+            bg = config_data[user_id]["bg"]
+    except FileNotFoundError:
+        pass
+
+    DOC_CLASS = (
+        "\\documentclass[bgcolor={}, textcolor={}]{{{}}}".format(bg, fg, doc_class)
+        if fg and bg
+        else "\\documentclass{{{}}}".format(doc_class)
+    )
+
     with open(f"tex/inputs/{user_id}.tmp", "w") as f_input:
         f_input.write(code)
     output = subprocess.run(
-        f"tex/scripts/{script} {user_id}",
+        f"tex/scripts/{script} {user_id} '{DOC_CLASS}'",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,

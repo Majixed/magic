@@ -1,6 +1,7 @@
 #! /bin/sh
 
 uid=$1
+doc_class=$2
 proglist='pdftocairo lualatex'
 
 rm -rf tex/staging/$uid
@@ -19,15 +20,7 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
-if [ -f "../../config/$uid.tex" ]; then
-  cat ../../config/$uid.tex >$uid.tex
-else
-  printf '%s\n' '\makeatletter' \
-    '\def\texit@alwayswide{0}' \
-    '\makeatother' >$uid.tex
-fi
-
-printf '%s\n' '\documentclass{luatexit}' \
+printf '%s\n' "$doc_class" \
   '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then

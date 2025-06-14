@@ -1,6 +1,8 @@
 #! /bin/sh
 
 uid=$1
+doc_class=$2
+
 proglist='pdftocairo pdflatex'
 
 rm -rf tex/staging/$uid
@@ -19,15 +21,7 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
-if [ -f "../../config/$uid.tex" ]; then
-  cat ../../config/$uid.tex >$uid.tex
-else
-  printf '%s\n' '\makeatletter' \
-    '\def\texit@alwayswide{0}' \
-    '\makeatother' >$uid.tex
-fi
-
-printf '%s\n' '\documentclass{texit}' \
+printf '%s\n' "$doc_class" \
   '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
 
 if [ -f "../../preamble/$uid.tex" ]; then
@@ -44,7 +38,7 @@ timeout 60 pdflatex \
   -no-shell-escape \
   -no-parse-first-line \
   -interaction=nonstopmode \
-  -cnf-line 'openin_any=r' \
+  -cnf-line 'openin_any=p' \
   -cnf-line 'openout_any=p' \
   $uid.tex >../../log/texout.log
 

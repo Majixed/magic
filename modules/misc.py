@@ -81,13 +81,18 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         """Change the color of your LaTeX output, takes the text color and page color hex codes as respective arguments"""
 
         pattern = "[a-fA-F0-9]*"
+
         fg_hex = fg_hex.strip("#")
         bg_hex = bg_hex.strip("#")
+
         trans_bg_hex = None
+
         if bg_hex == "trans":
             trans_bg_hex = bg_hex
             bg_hex = "000000"
+
         hex_check = bool(fullmatch(pattern, fg_hex) and fullmatch(pattern, bg_hex))
+
         if not hex_check or len(fg_hex) != 6 or len(bg_hex) != 6:
             return await ctx.reply(
                 embed=discord.Embed(
@@ -95,17 +100,27 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
                 ),
                 mention_author=False,
             )
+
         if trans_bg_hex:
             bg_hex = trans_bg_hex
-        with open(f"tex/config/{ctx.author.id}.tex", "w") as config:
-            config.write(
-                f"""\\makeatletter
-\\def\\texit@textcolor{{{fg_hex}}}
-\\def\\texit@bgcolor{{{bg_hex}}}
-\\def\\texit@alwayswide{{0}}
-\\makeatother
-"""
-            )
+
+        try:
+            with open("tex/config/texconfig.json", "r") as cfg:
+                config_data = json.load(cfg)
+        except (FileNotFoundError, json.JSONDecodeError):
+            config_data = {}
+
+        user_id = str(ctx.author.id)
+
+        if user_id not in config_data:
+            config_data[user_id] = {}
+
+        config_data[user_id]["bg"] = bg_hex
+        config_data[user_id]["fg"] = fg_hex
+
+        with open("tex/config/texconfig.json", "w") as cfg:
+            json.dump(config_data, cfg, indent=4)
+
         await ctx.reply(
             embed=discord.Embed(
                 description="LaTeX color settings saved\n```text: #{}\npage: {}```".format(
