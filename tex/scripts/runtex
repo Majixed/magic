@@ -21,6 +21,8 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
+ln -sf ../../cls/texit.cls ./texit.cls
+
 printf '%s\n' "$doc_class" \
   '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
 
