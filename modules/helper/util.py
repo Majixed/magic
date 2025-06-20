@@ -50,6 +50,9 @@ def compile_tex(user_id, code, script, doc_class):
         return err_out
 
 
+user_locks = {}
+
+
 # Codeblock detection for pdftex and luatex
 def detect_codeblock(code, langs: list):
     if "```" in code:

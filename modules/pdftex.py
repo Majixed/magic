@@ -10,6 +10,7 @@ from .helper.util import (
     detect_codeblock,
     compile_tex,
     reaction_check,
+    user_locks,
 )
 from config.config import (
     emo_del,
@@ -22,12 +23,11 @@ from config.config import (
 class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     def __init__(self, bot):
         self.bot = bot
-        self.user_locks = {}
 
     def get_user_lock(self, user_id):
-        if user_id not in self.user_locks:
-            self.user_locks[user_id] = asyncio.Lock()
-        return self.user_locks[user_id]
+        if user_id not in user_locks:
+            user_locks[user_id] = asyncio.Lock()
+        return user_locks[user_id]
 
     # Compile pdfLaTeX
     @commands.command(
