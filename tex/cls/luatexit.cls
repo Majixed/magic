@@ -1,8 +1,8 @@
 % LuaTeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.1f}
-\ProvidesClass{luatexit}[2025-06-11 LuaTeXit Standard Class v\texit@version]
+\def\texit@version{1.1h}
+\ProvidesClass{luatexit}[2025-07-06 LuaTeXit Standard Class v\texit@version]
 
 
 
@@ -295,7 +295,7 @@
 					\fi
 					\iftexit@debug \texit@debug@draw@box{0 1 0}{}\tw@ \fi
 				\else
-					\ifdim\wd\z@=#1%
+					\ifdim\dimexpr\wd\z@+1sp>#1%
 						\let\next=\relax
 					\else
 						\ifdim\wd\z@>\dimen@
@@ -305,8 +305,12 @@
 					\iftexit@debug \texit@debug@draw@box{0 1 0}{}\z@ \fi
 				\fi
 			\else
-				\ifdim\wd\z@>\dimen@
-					\dimen@=\wd\z@
+				\ifdim\dimexpr\wd\z@+1sp>#1%
+					\let\next=\relax
+				\else
+					\ifdim\wd\z@>\dimen@
+						\dimen@=\wd\z@
+					\fi
 				\fi
 				\iftexit@debug \texit@debug@draw@box{0 0 1}{}\z@ \fi
 			\fi
@@ -455,6 +459,7 @@
 		\pdfextension literal\relax{\texit@temp rg \texit@temp RG}%
 		\vbox to\z@{%
 			\hrule height\pageheight width\dimexpr\texit@pagebox@realwd+2\texit@border \relax
+			% \hrule height\pageheight width\pagewidth
 			\vss
 		}%
 	\pdfextension restore\relax
