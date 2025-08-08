@@ -16,24 +16,24 @@ def reaction_check(msg_id, author, emoji):
 
 
 # TeX compile routine
-def compile_tex(user_id, code, script, doc_class):
-    fg = None
-    bg = None
+def compile_tex(user_id, code, script):
+    fg = "ffffff"
+    bg = "1a1a1e"
     user_id = str(user_id)
 
     try:
         with open("tex/config/texconfig.json", "r") as cfg:
             config_data = json.load(cfg)
-
-            fg = config_data[user_id]["fg"]
-            bg = config_data[user_id]["bg"]
+            try:
+                fg = config_data[user_id]["fg"]
+                bg = config_data[user_id]["bg"]
+            except KeyError:
+                pass
     except FileNotFoundError:
         pass
 
-    DOC_CLASS = (
-        "\\documentclass[bgcolor={}, textcolor={}]{{{}}}".format(bg, fg, doc_class)
-        if fg and bg
-        else "\\documentclass{{{}}}".format(doc_class)
+    DOC_CLASS = "\\documentclass[12pt, bgcolor={}, textcolor={}, minpagewidth=110pt]{{texit}}".format(
+        bg, fg
     )
 
     with open(f"tex/inputs/{user_id}.tmp", "w") as f_input:

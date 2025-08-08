@@ -48,9 +48,7 @@ class LuaTeX(commands.Cog, description="The LuaTeX command suite"):
 
         async with lock:
             result = await asyncio.gather(
-                asyncio.to_thread(
-                    compile_tex, ctx.author.id, code, "runluatex", "luatexit"
-                )
+                asyncio.to_thread(compile_tex, ctx.author.id, code, "runluatex")
             )
             compile_err = result[0]
 

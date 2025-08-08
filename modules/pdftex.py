@@ -50,7 +50,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
 
         async with lock:
             result = await asyncio.gather(
-                asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex", "texit")
+                asyncio.to_thread(compile_tex, ctx.author.id, code, "runtex")
             )
             compile_err = result[0]
 
