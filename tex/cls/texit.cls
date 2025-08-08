@@ -1,8 +1,8 @@
 % TeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.2-rc4}
-\ProvidesClass{texit}[2025-08-05 TeXit Standard Class v\texit@version]
+\def\texit@version{1.2-rc4-p1}
+\ProvidesClass{texit}[2025-08-08 TeXit Standard Class v\texit@version]
 
 
 
