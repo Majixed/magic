@@ -1,9 +1,6 @@
-import os
 import subprocess
 import ast
 import json
-
-from discord.ext import commands
 
 
 # Condition check for reaction buttons
@@ -20,13 +17,40 @@ def reaction_check(msg_id, author, emoji):
 
 # TeX compile routine
 def compile_tex(user_id, code, script):
+    fg = "ffffff"
+    bg = "1a1a1e"
+    user_id = str(user_id)
+
+    try:
+        with open("tex/config/texconfig.json", "r") as cfg:
+            config_data = json.load(cfg)
+            try:
+                fg = config_data[user_id]["fg"]
+                bg = config_data[user_id]["bg"]
+            except KeyError:
+                pass
+    except FileNotFoundError:
+        pass
+
+    DOC_CLASS = "\\documentclass[12pt, bgcolor={}, textcolor={}, minpagewidth=110pt]{{texit}}".format(
+        bg, fg
+    )
+
     with open(f"tex/inputs/{user_id}.tmp", "w") as f_input:
         f_input.write(code)
-    subprocess.run(f"tex/scripts/{script} {user_id}", shell=True)
-    if os.path.isfile(f"tex/staging/{user_id}/{user_id}.error"):
-        with open(f"tex/staging/{user_id}/{user_id}.error", "r") as f_err:
-            err_out = f_err.read()
+    output = subprocess.run(
+        f"tex/scripts/{script} {user_id} '{DOC_CLASS}'",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        shell=True,
+    )
+    if output.stdout:
+        err_out = output.stdout
         return err_out
+
+
+user_locks = {}
 
 
 # Codeblock detection for pdftex and luatex
@@ -63,19 +87,3 @@ def insert_returns(body):
 
     if isinstance(body[-1], ast.With):
         insert_returns(body[-1].body)
-
-
-# Decorator for admin check
-def get_admins():
-    with open("admins.json", "r") as data:
-        admin_data = json.load(data)
-    admin_list = admin_data["botAdmin"]
-    return admin_list
-
-
-def check_admin(ctx):
-    bot_admin = get_admins()
-    return ctx.author.id in bot_admin
-
-
-is_admin = commands.check(check_admin)

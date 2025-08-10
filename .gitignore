@@ -1,12 +1,11 @@
 .env
-.git
+.venv/
 *.log
-admins.json
 config/config.py
-tex/staging/
 tex/preamble/*.tex
 tex/luapreamble/*.tex
 tex/log/
 tex/inputs/
-.venv/
+tex/staging/
+tex/config/
 __pycache__/

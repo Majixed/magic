@@ -5,7 +5,8 @@ import aiohttp
 import json
 import sys
 
-from config.config import gray
+from re import fullmatch
+from config.config import gray, red, green
 from discord.ext import commands
 from googletrans import Translator
 
@@ -35,7 +36,9 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         """Retrieves the bot's latency, takes no arguments"""
 
         resp = "Pong" if ctx.invoked_with == "ping" else "Ping"
-        await ctx.send(f"{resp}! `{round(self.bot.latency * 1000)} ms`")
+        await ctx.reply(
+            f"{resp}! `{round(self.bot.latency * 1000)} ms`", mention_author=False
+        )
 
     # Basic calculator
     @commands.command(
@@ -51,9 +54,13 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
             async with session.post(addr, data=json.dumps(request)) as resp:
                 result = await resp.json()
         if result["error"]:
-            await ctx.send("```\n{}\n```".format(result["error"]))
+            await ctx.reply(
+                "```\n{}\n```".format(result["error"]), mention_author=False
+            )
             return
-        await ctx.send("```\n{}\n```".format("\n".join(result["result"])))
+        await ctx.reply(
+            "```\n{}\n```".format("\n".join(result["result"])), mention_author=False
+        )
 
     # Translate between languages
     @commands.command(
@@ -64,7 +71,65 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
 
         transl = Translator()
         result = transl.translate(content, src=src, dest=dest).text
-        await ctx.send(result)
+        await ctx.reply(result, mention_author=False)
+
+    # Change color of LaTeX output
+    @commands.command(
+        name="texcolor", aliases=["tc"], brief="Change the color of your LaTeX output"
+    )
+    async def texcolor_(self, ctx, fg_hex: str, bg_hex: str):
+        """Change the color of your LaTeX output, takes the text color and page color hex codes as respective arguments"""
+
+        pattern = "[a-fA-F0-9]*"
+
+        fg_hex = fg_hex.strip("#")
+        bg_hex = bg_hex.strip("#")
+
+        trans_bg_hex = None
+
+        if bg_hex == "trans":
+            trans_bg_hex = bg_hex
+            bg_hex = "000000"
+
+        hex_check = bool(fullmatch(pattern, fg_hex) and fullmatch(pattern, bg_hex))
+
+        if not hex_check or len(fg_hex) != 6 or len(bg_hex) != 6:
+            return await ctx.reply(
+                embed=discord.Embed(
+                    description="Invalid hex, please recheck your hex values", color=red
+                ),
+                mention_author=False,
+            )
+
+        if trans_bg_hex:
+            bg_hex = trans_bg_hex
+
+        try:
+            with open("tex/config/texconfig.json", "r") as cfg:
+                config_data = json.load(cfg)
+        except (FileNotFoundError, json.JSONDecodeError):
+            config_data = {}
+
+        user_id = str(ctx.author.id)
+
+        if user_id not in config_data:
+            config_data[user_id] = {}
+
+        config_data[user_id]["bg"] = bg_hex
+        config_data[user_id]["fg"] = fg_hex
+
+        with open("tex/config/texconfig.json", "w") as cfg:
+            json.dump(config_data, cfg, indent=4)
+
+        await ctx.reply(
+            embed=discord.Embed(
+                description="LaTeX color settings saved\n```text: #{}\npage: {}```".format(
+                    fg_hex, str("#" + bg_hex) if bg_hex != "trans" else bg_hex
+                ),
+                color=green,
+            ),
+            mention_author=False,
+        )
 
     # Retrieve bot info
     @commands.command(name="about", brief="Retrieve information about the bot")
@@ -101,7 +166,7 @@ class Miscellaneous(commands.Cog, description="Miscellaneous commands"):
         )
         embed_info.add_field(name="Platform", value=platform.platform(), inline=False)
 
-        await ctx.send(embed=embed_info)
+        await ctx.reply(embed=embed_info, mention_author=False)
 
 
 async def setup(bot):

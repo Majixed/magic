@@ -1,20 +1,18 @@
 import os
 import ast
-import json
 import asyncio
 import discord
 import logging
 import subprocess
 
-from typing import Union
 from discord.ext import commands
 from config.config import emo_del, gray, green, red, react_timeout
-from .helper.functions import detect_codeblock, insert_returns, reaction_check
+from .helper.util import detect_codeblock, insert_returns, reaction_check
 
 logger = logging.getLogger("discord")
 
 
-class Utility(commands.Cog, description="Utility commands (admin only)"):
+class Admin(commands.Cog, description="Admin utility commands"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -194,65 +192,6 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
             )
         )
 
-    # Add a bot administrator
-    @commands.command(name="addadmin", brief="Add a bot administrator")
-    @commands.is_owner()
-    async def addadmin_(self, ctx, user: Union[int, discord.User]):
-        """Adds a user to the bot administrators, takes the user ID as an argument"""
-
-        if isinstance(user, int):
-            user_id = user
-        elif isinstance(user, discord.User):
-            user_id = user.id
-        username = self.bot.get_user(user_id)
-
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        if user_id in admin_data["botAdmin"]:
-            return await ctx.send(
-                embed=discord.Embed(
-                    description=f"{username} is already an admin", color=red
-                )
-            )
-        admin_data["botAdmin"] += [user_id]
-
-        with open("admins.json", "w") as json_write:
-            json.dump(admin_data, json_write, indent=4)
-
-        await ctx.send(
-            embed=discord.Embed(description=f"{username} is now an admin", color=green)
-        )
-
-    # Remove a bot administrator
-    @commands.command(name="removeadmin", brief="Remove a bot administrator")
-    @commands.is_owner()
-    async def removeadmin_(self, ctx, user: Union[int, discord.User]):
-        """Removes a user from the bot administrators, takes the user ID as an argument"""
-
-        if isinstance(user, int):
-            user_id = user
-        elif isinstance(user, discord.User):
-            user_id = user.id
-        username = self.bot.get_user(user_id)
-        with open("admins.json", "r") as json_read:
-            admin_data = json.load(json_read)
-        if user_id not in admin_data["botAdmin"]:
-            return await ctx.send(
-                embed=discord.Embed(
-                    description=f"{username} is not already an admin", color=red
-                )
-            )
-        admin_data["botAdmin"].remove(user_id)
-
-        with open("admins.json", "w") as json_write:
-            json.dump(admin_data, json_write, indent=4)
-
-        await ctx.send(
-            embed=discord.Embed(
-                description=f"{username} is no longer an admin", color=green
-            )
-        )
-
     # Get a list of all the guilds the bot is in
     @commands.command(name="guilds", brief="Show all guilds where the bot is present")
     @commands.is_owner()
@@ -304,4 +243,4 @@ class Utility(commands.Cog, description="Utility commands (admin only)"):
 
 
 async def setup(bot):
-    await bot.add_cog(Utility(bot))
+    await bot.add_cog(Admin(bot))

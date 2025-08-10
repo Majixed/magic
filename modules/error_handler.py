@@ -98,13 +98,6 @@ class ErrorHandler(commands.Cog):
                 )
             )
 
-        elif isinstance(error, commands.CheckAnyFailure):
-            await ctx.send(
-                embed=discord.Embed(
-                    description="You must be a bot admin to use this command", color=red
-                )
-            )
-
         elif isinstance(error, commands.MissingRequiredArgument):
             if ctx.command.qualified_name in ["tex", "luatex", "eval", "shell"]:
                 await ctx.send(
@@ -121,13 +114,6 @@ class ErrorHandler(commands.Cog):
                     )
                 )
 
-            elif ctx.command.qualified_name in ["addadmin", "removeadmin"]:
-                await ctx.send(
-                    embed=discord.Embed(
-                        description="Please provide me with a username", color=red
-                    )
-                )
-
             elif ctx.command.qualified_name == "sh":
                 await ctx.send(
                     embed=discord.Embed(
@@ -139,6 +125,13 @@ class ErrorHandler(commands.Cog):
                 await ctx.send(
                     embed=discord.Embed(
                         description="Couldn't find an expression to calculate",
+                        color=red,
+                    )
+                )
+            elif ctx.command.qualified_name == "texcolor":
+                await ctx.send(
+                    embed=discord.Embed(
+                        description="Missing one or both hex values, I need both of them",
                         color=red,
                     )
                 )

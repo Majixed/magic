@@ -6,10 +6,11 @@ import asyncio
 
 from typing import Union
 from discord.ext import commands
-from .helper.functions import (
+from .helper.util import (
     detect_codeblock,
     compile_tex,
     reaction_check,
+    user_locks,
 )
 from config.config import (
     emo_del,
@@ -22,12 +23,11 @@ from config.config import (
 class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
     def __init__(self, bot):
         self.bot = bot
-        self.user_locks = {}
 
     def get_user_lock(self, user_id):
-        if user_id not in self.user_locks:
-            self.user_locks[user_id] = asyncio.Lock()
-        return self.user_locks[user_id]
+        if user_id not in user_locks:
+            user_locks[user_id] = asyncio.Lock()
+        return user_locks[user_id]
 
     # Compile pdfLaTeX
     @commands.command(
@@ -46,7 +46,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
         code = detect_codeblock(code, ["", "tex", "latex"])
 
         if ctx.invoked_with == "-":
-            code = "\\begin{gather*}\n" + code + "\n\\end{gather*}"
+            code = "$\\begin{gathered}\n" + code + "\n\\end{gathered}$"
 
         async with lock:
             result = await asyncio.gather(
@@ -255,7 +255,7 @@ class pdfTeX(commands.Cog, description="The pdfTeX command suite"):
                 fc.write(f"\n{code}")
         else:
             shutil.copyfile(
-                f"tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
+                "tex/preamble/default/default.tex", f"tex/preamble/{ctx.author.id}.tex"
             )
             with open(f"tex/preamble/{ctx.author.id}.tex", "a") as fd:
                 fd.write(f"\n{code}")

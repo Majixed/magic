@@ -20,7 +20,7 @@ Clone this repository and make it your current working directory:
 
     git clone https://github.com/Majixed/magic && cd ./magic/
 
-Install dependencies:
+Install dependencies. If you are using a virtual environment, preferably name it ``.venv``:
 
 .. code:: sh
 
@@ -32,19 +32,19 @@ Add your bot token to a ``.env`` file in the same directory:
 
     echo "TOKEN=<your bot's token>" > .env
 
-To use the TeX commands, install a distribution of TeX Live from the `TUG Website <https://tug.org/texlive/acquire-netinstall.html>`_ (recommended) or your Linux distro's package manager.
+To use the TeX commands, install a distribution of TeX Live from the `TUG Website <https://tug.org/texlive/acquire-netinstall.html>`_ or your Linux distro's package manager.
 
-There are two more prerequisites required for this feature, ``imagemagick``, which provides the ``magick`` and ``identify`` commands, and ``ghostscript``. To install on Ubuntu:
+A prerequisite for using TeX commands is ``poppler-utils``, which provides the ``pdftocairo`` command for image conversion. To install on Ubuntu:
 
 .. code:: sh
 
-    sudo apt install ghostscript imagemagick
+    sudo apt install poppler-utils
 
 Copy ``config/config-example.py`` as ``config/config.py`` in the same directory. This will be the configuration file. You may edit the values in this file if you wish:
 
 .. code:: sh
 
-    mv config/config-example.py config/config.py
+    cp config/config-example.py config/config.py
 
 Finally, start up the bot:
 

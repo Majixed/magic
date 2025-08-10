@@ -1,74 +1,76 @@
 #! /bin/sh
 
 uid=$1
-proglist="magick identify gs lualatex"
+doc_class=$2
+proglist='pdftocairo lualatex'
 
 rm -rf tex/staging/$uid
 mkdir tex/staging/$uid
 cd tex/staging/$uid
 
-hash $proglist &> /dev/null
+hash $proglist >/dev/null
 
 if [ $? -eq 1 ]; then
-  echo -e "Could not locate the following program(s):\n" > $uid.error
+  printf '%s\n' 'Could not locate the following program(s):'
   for p in $proglist; do
-    hash "$p" &> /dev/null || echo "$p" >> $uid.error
+    hash "$p" >/dev/null || printf '\n%s' "$p"
   done
-  echo -e "\nPlease ensure they are installed and available in the system path." >> $uid.error
+  printf '\n\n%s' 'Please ensure they are installed and available in the system path.'
   cp ../../failed.png $uid.png
   exit 1
 fi
 
-echo -e "\\documentclass[preview, border=10pt, 12pt]{standalone}\n\\\IfFileExists{eggs.sty}{\\usepackage{eggs}}{}" > $uid.tex
+ln -sf ../../cls/texit.cls ./texit.cls
+
+printf '%s\n' "$doc_class" \
+  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
-    cat ../../luapreamble/$uid.tex >> $uid.tex
+  cat ../../luapreamble/$uid.tex >>$uid.tex
 else
-    cat ../../luapreamble/default/default.tex >> $uid.tex
+  cat ../../luapreamble/default/default.tex >>$uid.tex
 fi
 
-echo -e "\n\\\begin{document}" >> $uid.tex
-cat ../../inputs/$uid.tmp >> $uid.tex
-echo -e "\n\\\end{document}" >> $uid.tex
+printf '\n%s\n' '\begin{document}' >>$uid.tex
+cat ../../inputs/$uid.tmp >>$uid.tex
+printf '\n%s' '\end{document}' >>$uid.tex
 
-timeout 60 lualatex -no-shell-escape -interaction=nonstopmode -cnf-line 'openin_any=r' $uid.tex > ../../log/texout.log
+timeout 60 lualatex \
+  -no-shell-escape \
+  -nosocket \
+  -interaction=nonstopmode \
+  -cnf-line 'openin_any=r' \
+  -cnf-line 'openout_any=p' \
+  $uid.tex >../../log/texout.log
 
 if [ $? -eq 124 ]; then
-    echo "Compilation timed out!" > $uid.error
-    cp ../../failed.png $uid.png
-    exit 1
+  printf 'Compilation timed out!'
+  cp ../../failed.png $uid.png
+  exit 1
 fi
 
 if [ -f $uid.pdf ]; then
-    timeout 60 gs -q -r1800 -sDEVICE=png16m -dBATCH -dNOPAUSE -dDownScaleFactor=3 -sOutputFile=$uid.png $uid.pdf
+  timeout 60 pdftocairo $uid.pdf $uid -r 600 -transp -png -singlefile
 
-    if [ $? -eq 124 ]; then
-        echo "Image conversion timed out!" > $uid.error
-        cp ../../failed.png $uid.png
-        exit 1
-    elif [ `stat -c%s $uid.png` -gt 8000000 ]; then
-        echo "Output image too large!" > $uid.error
-        cp ../../failed.png $uid.png
-        exit 1
-    fi
-else
-    grep -A 10 "^!" -m 1 $uid.log > $uid.error
+  if [ $? -eq 124 ]; then
+    printf 'Image conversion timed out!'
     cp ../../failed.png $uid.png
     exit 1
+  elif [ $(stat -c%s $uid.png) -gt 8000000 ]; then
+    printf 'Output image too large!'
+    cp ../../failed.png $uid.png
+    exit 1
+  fi
+else
+  grep -A 10 "^!" -m 1 $uid.log
+  cp ../../failed.png $uid.png
+  exit 1
 fi
 
 if grep -q "^!" $uid.log; then
-    grep -A 10 "^!" -m 1 $uid.log > $uid.error
+  grep -A 10 "^!" -m 1 $uid.log
 fi
 
 if grep -q "\[\\\directlua]" $uid.log; then
-    grep -A 10 "\[\\\directlua]" -m 1 $uid.log | sed "1s/^)//" > $uid.error
+  grep -A 10 "\[\\\directlua]" -m 1 $uid.log | sed "1s/^)//"
 fi
-
-width=`identify -ping -format "%w" $uid.png`
-minwidth=1000
-
-if [ $width -lt $minwidth ]; then
-    timeout 60 magick $uid.png -background transparent -extent ${minwidth}x $uid.png
-fi
-

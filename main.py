@@ -28,23 +28,13 @@ bot = commands.Bot(
     intents=~discord.Intents(presences=True),
 )
 
-# Check if admins.json exists, if not, create it
-if not os.path.isfile("admins.json"):
-    with open("admins.json", "w") as json_new:
-        json_new.write(
-            """
-{
-    "botAdmin": [
-    ]
-}
-"""
-        )
 
 # Create required directories if they don't exist
 req_dirs = [
     "tex/inputs",
     "tex/staging",
     "tex/log",
+    "tex/config",
 ]
 
 for dir in req_dirs:
