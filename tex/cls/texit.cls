@@ -1,8 +1,14 @@
 % TeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.2-rc4-p2}
-\ProvidesClass{texit}[2025-08-09 TeXit Standard Class v\texit@version]
+\def\texit@version{1.2-rc8}
+\ProvidesClass{texit}[2025-08-15 TeXit Standard Class v\texit@version]
+
+
+
+\ifdefined\directlua
+	\RequirePackage{luatex85}
+\fi
 
 
 
@@ -15,6 +21,7 @@
 	textgradientangle.tl_gset_e:N = \texit@textgradientangle,
 	minpagewidth.tl_gset_e:N      = \texit@minpagewidth,
 	border.tl_gset_e:N            = \texit@border@,
+	debug.legacy_if_gset:n        = texit@debug,
 % Options for article.cls
 	draft.code  = \PassOptionsToClass{\CurrentOption}{article}, draft.usage = load,
 	leqno.code  = \PassOptionsToClass{\CurrentOption}{article}, leqno.usage = load,
@@ -24,31 +31,26 @@
 	10pt.code   = \PassOptionsToClass{\CurrentOption}{article}, 10pt.usage  = load
 }
 \ProcessKeyOptions[texit]
-\protected\def\texitset{\SetKeys[texit]}
+\protected\long\def\texitset#1{%
+	\SetKeys[texit]{#1}%
+	\texit@processgradients
+	\texit@processcolors
+}
 
 \LoadClass{article}
 
-\RequirePackage{ifluatex}
 
-\def\texit@engine{pdfTeX}
-
-\ifluatex
-  \RequirePackage{luatex85}
-  \RequirePackage{pdftexcmds}
-  \let\pdfstrcmp=\pdf@strcmp
-  \def\texit@engine{LuaTeX}
-  \let\texit@engineversion=\luatexversion
-  \let\texit@enginerevision=\luatexrevision
-\else
-  \let\texit@engineversion=\pdftexversion
-  \let\texit@enginerevision=\pdftexrevision
-\fi
 
 \parindent=0pt
 
+\textheight=\maxdimen
 \textwidth=345pt
 
-\textheight=\maxdimen
+\pdfpageheight=10pt
+\pdfpagewidth=110pt
+
+\font\texit@debugfont=phvr7t at 2.5pt
+\font\texit@debugfontbold=phvb7t at 2.5pt
 
 
 
@@ -58,68 +60,77 @@
 \newif\iftexit@textgradient
 \newdimen\texit@border
 
+\ifx\texit@bgcolor\empty \def\texit@bgcolor{ffffff}\fi
+\ifx\texit@textcolor\empty \def\texit@textcolor{000000}\fi
+\ifx\texit@bggradientangle\empty \def\texit@bggradientangle{0}\fi
+\ifx\texit@textgradientangle\empty \def\texit@textgradientangle{0}\fi
+\ifx\texit@minpagewidth\empty \def\texit@minpagewidth{\z@}\fi
+
+\protected\def\texit@processcolors{%
+	\texit@remhash\texit@bgcolor
+	\texit@remhash\texit@textcolor
+	\@ifpackageloaded{xcolor}{%
+		\definecolor{texittextcolor}{HTML}{\texit@textcolor}%
+		\global\expandafter\let\expandafter\default@color
+			\csname \string\color @\iftexit@textgradient white\else texittextcolor\fi\endcsname
+		\global\let\current@color\default@color
+		\global\expandafter\let \csname \string\color @defaultcolor\endcsname \default@color
+		\colorlet{.}{defaultcolor}%
+		\global\let\XC@current@color=\default@color
+		\global\let\XC@default@color=\default@color
+		\iftexit@textgradient
+			\global\chardef\main@pdfcolorstack=\pdfcolorstackinit{1 g 1 G}%
+		\else
+			\texit@htmltorgb\texit@textcolor
+			\global\chardef\main@pdfcolorstack=\pdfcolorstackinit{\texit@temp rg \texit@temp RG}%
+		\fi
+		\if t\expandafter\@car\texit@bgcolor.\@nil \else
+			\definecolor{texitbgcolor}{HTML}{\texit@bgcolor}%
+			\@ifpackageloaded{tikz-cd}{%
+				\iftexit@textgradient
+					\tikzcdset{background color=black}%
+				\else
+					\tikzcdset{background color=texitbgcolor}%
+				\fi
+			}{}%
+		\fi
+	}{}%
+}
+
 \protected\def\texit@processgradients{%
-	\ifx\texit@bggradient\empty
+	\global \ifx\texit@bggradient\empty
 		\texit@bggradientfalse
 	\else
 		\texit@bggradienttrue
-		\ifx\texit@bggradientangle\empty
-			\def\texit@bggradientangle{0}%
-		\fi
+		\texit@remhash\texit@bggradient
 	\fi
-	\ifx\texit@textgradient\empty
+	\global \ifx\texit@textgradient\empty
 		\texit@textgradientfalse
 	\else
 		\texit@textgradienttrue
-		\ifx\texit@textgradientangle\empty
-			\def\texit@textgradientangle{0}%
-		\fi
-	\fi
-}
-\protected\def\texit@processborder{%
-	% Border width function
-	% (default: max(5, min(15, d/24 - 5))pt where d = max(ht255+dp255, wd255))
-	\ifx\texit@border@\empty
-		\protected\def\texit@border@calc##1{%
-			\texit@border=\dimexpr\ht##1+\dp##1\relax
-			\ifdim\wd##1>\texit@border \texit@border=\wd##1\fi
-			\texit@border=\dimexpr\texit@border/24-5\p@ \relax
-			\ifdim\texit@border<5\p@ \texit@border=5\p@ \fi
-			\ifdim\texit@border>15\p@ \texit@border=15\p@ \fi
-		}%
-	\else
-		\protected\edef\texit@border@calc##1{\texit@border=\the\dimexpr\texit@border@\relax\relax}%
+		\texit@remhash\texit@textgradient
 	\fi
 }
 
-\AtBeginDocument{
-	% Background color given in hex or "trans" (fallback: white)
-	\ifx\texit@bgcolor\empty
-		\def\texit@bgcolor{ffffff}
-	\fi
-	% Global text color given in hex (fallback: black)
-	\ifx\texit@textcolor\empty
-		\def\texit@textcolor{000000}
-	\fi
+\protected\def\texit@processall{%
 	\texit@processgradients
-	\texit@processborder
-	% Whether to fix the page width (fallback: false) and minimum width of physical page (if alwayswide is false)
-	\ifx\texit@minpagewidth\empty
-		\def\texit@minpagewidth{\z@}
-	\fi
+	\texit@processcolors
 }
-\AtEndDocument{
-	\texit@processgradients
-	\texit@processborder
-}
+
+% Border width function used if border option not given
+% (default: max(5, min(15, d/24 - 5))pt where d = max(ht255+dp255, wd255))
+\protected\gdef\texit@border@calc#1{%
+	\texit@border=\dimexpr\ht#1+\dp#1\relax
+	\ifdim\wd#1>\texit@border \texit@border=\wd#1\fi
+	\texit@border=\dimexpr\texit@border/24-5\p@ \relax
+	\ifdim\texit@border<5\p@ \texit@border=5\p@ \fi
+	\ifdim\texit@border>15\p@ \texit@border=15\p@ \fi
+}%
 
 % Parameter that controls greediness of horizontal cropping (lower = more greedy, must be between 1 and 10000)
 \mathchardef\texit@realwd@minhbadness=1000
 
-% Debug
-\newif\iftexit@debug
-\font\texit@debugfont=phvr7t at 2.5pt
-\font\texit@debugfontbold=phvb7t at 2.5pt
+\AtBeginDocument{\texit@processall}
 
 
 
@@ -164,7 +175,6 @@
 
 \AddToHook{begindocument/end}{
 	\null \vfil \penalty\texit@discardpage
-	\texit@setdocumentcolor
 	\topskip=0pt
 	\postdisplaypenalty=\texit@realwd@postdisplaypenalty
 	\null \nointerlineskip \penalty\texit@realwd@marker
@@ -207,7 +217,11 @@
 		\fi
 	}%
 	\wd\texit@pagebox=\texit@pagebox@realwd
-	\texit@border@calc\texit@pagebox
+	\ifx\texit@border@\empty
+		\texit@border@calc\texit@pagebox
+	\else
+		\texit@border \dimexpr\texit@border@\relax
+	\fi
 %
 	\voffset=-1in
 	\hoffset=\voffset
@@ -279,7 +293,7 @@
 	\fi
 }
 
-% Compute real width of #1 and store in #2 (\global)
+% Compute real width of #1 and store in #2
 % A more robust algorithm is available in LuaTeX; see https://tex.stackexchange.com/q/734916/
 \protected\def\texit@realwd#1#2{%
 	#2=\wd#1%
@@ -433,18 +447,13 @@
 	\strip@pt\dimexpr"#5#6\p@/"FF\relax\space
 }
 
-\protected\def\texit@setdocumentcolor{%
-	\@ifpackageloaded{xcolor}{%
-		\definecolor{texittextcolor}{HTML}{\texit@textcolor}%
-		\global\expandafter\let\expandafter\default@color
-			\csname \string\color @\iftexit@textgradient white\else texittextcolor\fi\endcsname
-		\ifnum\pdfstrcmp{trans}{\texit@bgcolor}=\z@ \else
-			\definecolor{texitbgcolor}{HTML}{\texit@bgcolor}%
-			\@ifpackageloaded{tikz-cd}{%
-				\tikzcdset{background color=texitbgcolor}%
-			}{}%
-		\fi
-	}{}%
+% Remove hashes and spaces in-place from macro #1
+\protected\def\texit@remhash#1{%
+	\xdef#1{\expandafter\texit@remhashA#1{\expandafter\@gobble}}%
+}
+\long\def\texit@remhashA#1{%
+	\if###1\else #1\fi
+	\texit@remhashA
 }
 
 \protected\def\texit@paintbg{%
@@ -467,7 +476,7 @@
 			\vss
 		}%
 	\else
-		\ifnum\pdfstrcmp{trans}{\texit@bgcolor}=\z@ \else
+		\if t\expandafter\@car\texit@bgcolor.\@nil \else
 			\pdfsave
 				\texit@htmltorgb\texit@bgcolor
 				\pdfliteral{\texit@temp rg \texit@temp RG}%
@@ -529,7 +538,7 @@
 	\def\do##1##2{%
 		\texit@htmltorgb{##2}%
 		\ifnum##1=1
-			\edef\next{<< /FunctionType 2 /Domain [0 1] /C0 [\texit@temp] /C1 }%
+			\edef\next{ << /FunctionType 2 /Domain [0 1] /C0 [\texit@temp] /C1 }%
 		\else
 			\ifnum##1=\texit@gradient@count
 				\edef\next{\next [\texit@temp] /N 1 >> }%
@@ -561,15 +570,15 @@
 			/ColorSpace /DeviceRGB
 			/Domain [0 \the\numexpr\texit@gradient@count-1\relax]
 			/Coords [
-				\expandafter\rem@pt\texit@gradientbox@startx\space
-				\expandafter\rem@pt\texit@gradientbox@starty\space
-				\expandafter\rem@pt\texit@gradientbox@endx\space
-				\expandafter\rem@pt\texit@gradientbox@endy\space
+				\expandafter\rem@pt \texit@gradientbox@startx\space
+				\expandafter\rem@pt \texit@gradientbox@starty\space
+				\expandafter\rem@pt \texit@gradientbox@endx\space
+				\expandafter\rem@pt \texit@gradientbox@endy\space
 			]
 			/Function <<
 				/FunctionType 3
 				/Domain [0 \the\numexpr\texit@gradient@count-1\relax]
-				/Functions [ \next ]
+				/Functions [\next]
 				/Bounds [\texit@gradient@bounds 1\texit@gradient@count]
 				/Encode [\texit@gradient@encode 1\texit@gradient@count]
 			>>
@@ -710,14 +719,18 @@
 	\nointerlineskip \moveright\p@ \vbox to\z@{%
 		\vss
 		\hbox{\texit@debugfont
-			\texit@engine\ {\texit@debugfontbold v\the\texit@engineversion:\texit@enginerevision}\quad
+			\ifdefined\directlua
+				LuaTeX {\texit@debugfontbold v\number\luatexversion:\number\luatexrevision}%
+			\else
+				pdfTeX {\texit@debugfontbold v\number\pdftexversion:\number\pdftexrevision}%
+			\fi \quad
 			texit.cls {\texit@debugfontbold v\texit@version}\quad
 			id: {\texit@debugfontbold \jobname}\quad
 			\iftexit@textgradient
 				textgradient: {\texit@debugfontbold
 					\texit@textgradient\space (\texit@textgradientangle)}%
 			\else
-				textcolor: {\texit@debugfontbold \texit@textcolor}%
+				textcolor: {\texit@debugfontbold \texit@bgcolor}%
 			\fi \quad
 			\iftexit@bggradient
 				bggradient: {\texit@debugfontbold
