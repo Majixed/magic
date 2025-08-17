@@ -20,7 +20,7 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
-kpsewhich texit.cls
+kpsewhich texit.cls >/dev/null
 
 if [ $? -ne 0 ]; then
   ln -sf ../../cls/texit.cls ./texit.cls
