@@ -1,8 +1,8 @@
 % TeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.2-rc8}
-\ProvidesClass{texit}[2025-08-15 TeXit Standard Class v\texit@version]
+\def\texit@version{1.2-rc9}
+\ProvidesClass{texit}[2025-08-18 TeXit Standard Class v\texit@version]
 
 
 
@@ -314,9 +314,7 @@
 	\setbox\z@=\lastbox
 	\ifvoid\z@
 		\ifnum\lastpenalty=\texit@realwd@marker
-			\ifnum\dimen@<#1%
-				\texit@realwd@sift@end{#1}%
-			\fi
+			\texit@realwd@sift@end{#1}%
 		\fi
 		\let\next\relax
 	\else
@@ -730,7 +728,7 @@
 				textgradient: {\texit@debugfontbold
 					\texit@textgradient\space (\texit@textgradientangle)}%
 			\else
-				textcolor: {\texit@debugfontbold \texit@bgcolor}%
+				textcolor: {\texit@debugfontbold \texit@textcolor}%
 			\fi \quad
 			\iftexit@bggradient
 				bggradient: {\texit@debugfontbold
