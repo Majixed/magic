@@ -1,8 +1,8 @@
 % TeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.2-rc10}
-\ProvidesClass{texit}[2025-08-19 TeXit Standard Class v\texit@version]
+\def\texit@version{1.2-rc11}
+\ProvidesClass{texit}[2025-08-22 TeXit Standard Class v\texit@version]
 
 
 
@@ -82,8 +82,8 @@
 		\iftexit@textgradient
 			\global\chardef\main@pdfcolorstack=\pdfcolorstackinit{1 g 1 G}%
 		\else
-			\texit@htmltorgb\texit@textcolor
-			\global\chardef\main@pdfcolorstack=\pdfcolorstackinit{\texit@temp rg \texit@temp RG}%
+			\texit@parsecolor\texit@textcolor
+			\global\chardef\main@pdfcolorstack=\pdfcolorstackinit{\texit@temp}%
 		\fi
 		\if t\expandafter\@car\texit@bgcolor.\@nil \else
 			\definecolor{texitbgcolor}{HTML}{\texit@bgcolor}%
@@ -205,8 +205,8 @@
 	\texit@shipout@setrealwd
 	\setbox\texit@pagebox=\vbox{%
 		\iftexit@textgradient \else
-			\texit@htmltorgb\texit@textcolor
-			\pdfliteral{\texit@temp rg \texit@temp RG}%
+			\texit@parsecolor\texit@textcolor
+			\pdfliteral{\texit@temp}%
 		\fi
 		\unvbox\@cclv
 		\ifvoid\footins \else
@@ -270,7 +270,6 @@
 		\ifdim\texit@footins@realwd>\texit@pagebox@realwd
 			\texit@pagebox@realwd=\texit@footins@realwd
 		\fi
-		% Width of the footnoterule
 		\ifdim\texit@pagebox@realwd<\footnoterulewd
 			\texit@pagebox@realwd=\footnoterulewd
 		\fi
@@ -434,17 +433,38 @@
 
 % Colors
 
-% Convert HTML color #1 to rgb and save results in \texit@temp
-\protected\def\texit@htmltorgb#1{%
-	\uppercase\expanded{{\edef\noexpand\texit@temp{\noexpand\texit@htmltorgbA#1}}}%
+% Convert HTML or named color to pdf color operator and save results in \texit@temp
+\protected\def\texit@parsecolor#1{%
+	\begingroup
+	\escapechar=`\\%
+	\ifcsname \string\color @#1\endcsname
+		\long\def\xcolor@##1##2##3##4{##2}%
+		\xdef\texit@temp{\csname \string\color @#1\endcsname}%
+	\else
+		\uppercase\expanded{{\edef\noexpand\texit@temp{\noexpand\texit@parsecolorA#1}}}%
+		\xdef\texit@temp{\texit@temp rg \texit@temp RG}%
+	\fi
+	\endgroup
 }
-\def\texit@htmltorgbA#1#2#3#4#5#6{%
+\def\texit@parsecolorA#1#2#3#4#5#6{%
 	\strip@pt\dimexpr"#1#2\p@/"FF\relax\space
 	\strip@pt\dimexpr"#3#4\p@/"FF\relax\space
 	\strip@pt\dimexpr"#5#6\p@/"FF\relax\space
 }
+% Convert HTML or named color to tuple of rgb values and save results in \texit@temp
+\protected\def\texit@parsecolor@rgb#1{%
+	\begingroup
+	\escapechar=`\\%
+	\ifcsname \string\color @#1\endcsname
+		\convertcolorspec{named}{#1}{HTML}\texit@temp
+		\xdef\texit@temp{\expandafter\texit@parsecolorA \texit@temp}%
+	\else
+		\uppercase\expanded{{\xdef\noexpand\texit@temp{\noexpand\texit@parsecolorA#1}}}%
+	\fi
+	\endgroup
+}
 
-% Remove hashes and spaces in-place from macro #1
+% Remove hashes (and spaces) in-place from macro
 \protected\def\texit@remhash#1{%
 	\xdef#1{\expandafter\texit@remhashA#1{\expandafter\@gobble}}%
 }
@@ -476,8 +496,8 @@
 	\else
 		\if t\expandafter\@car\texit@bgcolor.\@nil \else
 			\pdfsave
-				\texit@htmltorgb\texit@bgcolor
-				\pdfliteral{\texit@temp rg \texit@temp RG}%
+				\texit@parsecolor\texit@bgcolor
+				\pdfliteral{\texit@temp}%
 				\vbox to\z@{%
 					\hrule height\pdfpageheight width\dimexpr\texit@pagebox@realwd+2\texit@border \relax
 					\vss
@@ -534,7 +554,7 @@
 	\immediate\pdfxform attr{/Group << /S /Transparency /CS /DeviceGray >>}4
 	\count@=\pdflastxform
 	\def\do##1##2{%
-		\texit@htmltorgb{##2}%
+		\texit@parsecolor@rgb{##2}%
 		\ifnum##1=1
 			\edef\next{ << /FunctionType 2 /Domain [0 1] /C0 [\texit@temp] /C1 }%
 		\else

@@ -26,8 +26,9 @@ if [ $? -ne 0 ]; then
   ln -sf ../../cls/texit.cls ./texit.cls
 fi
 
-printf '%s\n' "$doc_class" \
-  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' >>$uid.tex
+printf '%s\n%s\n' "$doc_class" \
+  '\IfFileExists{eggs.sty}{\usepackage{eggs}}{}' \
+  '\IfFileExists{texit-kapa.sty}{\usepackage{texit-kapa}}{}' >>$uid.tex
 
 if [ -f "../../luapreamble/$uid.tex" ]; then
   cat ../../luapreamble/$uid.tex >>$uid.tex
