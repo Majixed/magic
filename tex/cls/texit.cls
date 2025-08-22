@@ -1,8 +1,8 @@
 % TeXit Standard Class
 
 \NeedsTeXFormat{LaTeX2e}
-\def\texit@version{1.2-rc9}
-\ProvidesClass{texit}[2025-08-18 TeXit Standard Class v\texit@version]
+\def\texit@version{1.2-rc10}
+\ProvidesClass{texit}[2025-08-19 TeXit Standard Class v\texit@version]
 
 
 
@@ -13,15 +13,16 @@
 
 
 \DeclareKeys[texit]{
-	bgcolor.tl_gset_e:N           = \texit@bgcolor,
-	bggradient.tl_gset_e:N        = \texit@bggradient,
-	bggradientangle.tl_gset_e:N   = \texit@bggradientangle,
-	textcolor.tl_gset_e:N         = \texit@textcolor,
-	textgradient.tl_gset_e:N      = \texit@textgradient,
-	textgradientangle.tl_gset_e:N = \texit@textgradientangle,
-	minpagewidth.tl_gset_e:N      = \texit@minpagewidth,
-	border.tl_gset_e:N            = \texit@border@,
-	debug.legacy_if_gset:n        = texit@debug,
+	bgcolor.tl_gset_e:N               = \texit@bgcolor,
+	bggradient.tl_gset_e:N            = \texit@bggradient,
+	bggradientangle.tl_gset_e:N       = \texit@bggradientangle,
+	textcolor.tl_gset_e:N             = \texit@textcolor,
+	textgradient.tl_gset_e:N          = \texit@textgradient,
+	textgradientangle.tl_gset_e:N     = \texit@textgradientangle,
+	textgradientglow.legacy_if_gset:n = texit@textgradientglow,
+	minpagewidth.tl_gset_e:N          = \texit@minpagewidth,
+	border.tl_gset_e:N                = \texit@border@,
+	debug.legacy_if_gset:n            = texit@debug,
 % Options for article.cls
 	draft.code  = \PassOptionsToClass{\CurrentOption}{article}, draft.usage = load,
 	leqno.code  = \PassOptionsToClass{\CurrentOption}{article}, leqno.usage = load,
@@ -203,9 +204,7 @@
 \protected\def\texit@shipout{%
 	\texit@shipout@setrealwd
 	\setbox\texit@pagebox=\vbox{%
-		\iftexit@textgradient
-			\pdfliteral{1 g 1 G}%
-		\else
+		\iftexit@textgradient \else
 			\texit@htmltorgb\texit@textcolor
 			\pdfliteral{\texit@temp rg \texit@temp RG}%
 		\fi
@@ -463,6 +462,7 @@
 				\vss
 			}%
 			\texit@gradient@parse\texit@bggradient
+			\texit@textgradientglowfalse
 			\texit@gradientbox@overshoot=\z@
 			\def\texit@debug@node@color{1 .5 0}%
 			\texit@gradientbox\z@\texit@bggradientangle
@@ -524,7 +524,7 @@
 		\kern\texit@gradientbox@overshoot
 		\vbox to\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot{%
 			\kern\texit@gradientbox@overshoot
-			\box#1
+				\texit@gradientboxA{#1}%
 			\vfil
 		}%
 		\hfil
@@ -556,6 +556,28 @@
 	\endgroup
 	\else \box#1
 	\fi
+}
+\def\texit@gradientboxA#1{%
+	\iftexit@textgradientglow
+		\texit@gradientboxB#1.0149;4.5;%
+		\texit@gradientboxB#1.0291;3.5;%
+		\texit@gradientboxB#1.0406;3;%
+		\texit@gradientboxB#1.0567;2.5;%
+		\texit@gradientboxB#1.0791;2;%
+		\texit@gradientboxB#1.0934;1.75;%
+		\texit@gradientboxB#1.1104;1.5;%
+		\texit@gradientboxB#1.1304;1.25;%
+		\texit@gradientboxB#1.1540;1;%
+		\texit@gradientboxB#1.1820;.75;%
+		\texit@gradientboxB#1.2150;.5;%
+		\texit@gradientboxB#1.2539;.25;%
+	\fi
+	\pdfliteral{1 g 1 G}\nointerlineskip\box#1
+}
+\def\texit@gradientboxB#1.#2;#3;{%
+	\pdfliteral{q .#2 g .#2 G 1 j 1 J 1 Tr #3 w}%
+	\nointerlineskip \vbox to\z@{\copy#1 \vss}%
+	\pdfliteral{Q}%
 }
 
 \newdimen\texit@gradientbox@overshoot
@@ -726,7 +748,7 @@
 			id: {\texit@debugfontbold \jobname}\quad
 			\iftexit@textgradient
 				textgradient: {\texit@debugfontbold
-					\texit@textgradient\space (\texit@textgradientangle)}%
+					\texit@textgradient\space (\texit@textgradientangle \iftexit@textgradientglow, glow\fi)}%
 			\else
 				textcolor: {\texit@debugfontbold \texit@textcolor}%
 			\fi \quad
